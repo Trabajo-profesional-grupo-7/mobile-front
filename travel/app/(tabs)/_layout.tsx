@@ -6,10 +6,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import { View, Image, Text } from 'react-native';
 import Colors from '../../constants/Colors';
+import { useRouter } from 'expo-router';
 
 
 function CustomDrawerContent(props:any){
-
+  const router = useRouter();
   return (
     <View style={{flex:1, marginTop:-0}}>
       <DrawerContentScrollView {...props} scrollEnabled={false} style={{marginTop:-30}}>
@@ -34,7 +35,9 @@ function CustomDrawerContent(props:any){
             <Ionicons name='exit-outline' size={size} color={color}/>
           )}
           label={"Logout"} 
-          onPress={function (): void {throw new Error('Function not implemented.');} }/>
+          onPress={() => {
+            console.log("Logout");
+          }}/>
       </DrawerContentScrollView>
     </View>
   );
@@ -50,12 +53,22 @@ const DrawerLayout = () => {
       }}
       >
       <Drawer.Screen
+        name="profile"
+        options={{
+          drawerLabel:'Profile',
+          headerTitle:'Profile',
+          drawerIcon: ({size, color}) => (
+            <Ionicons name='person-outline' size={size} color={color}/>
+          )
+        }}
+      />
+      <Drawer.Screen
         name="index"
         options={{
-          drawerLabel:'Home',
-          headerTitle:'Home',
+          drawerLabel:'Feed',
+          headerTitle:'Feed',
           drawerIcon: ({size, color}) => (
-            <Ionicons name='home-outline' size={size} color={color}/>
+            <Ionicons name='newspaper-outline' size={size} color={color}/>
           )
         }}
       />
