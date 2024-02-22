@@ -8,6 +8,7 @@ import { View, Image, Text } from 'react-native';
 import Colors from '../../constants/Colors';
 import { useRouter } from 'expo-router';
 
+const colors = Colors.light;
 
 function CustomDrawerContent(props:any){
   const router = useRouter();
@@ -36,7 +37,7 @@ function CustomDrawerContent(props:any){
           )}
           label={"Logout"} 
           onPress={() => {
-            console.log("Logout");
+            router.replace("../..")
           }}/>
       </DrawerContentScrollView>
     </View>
@@ -48,20 +49,10 @@ const DrawerLayout = () => {
     <Drawer 
       drawerContent={CustomDrawerContent}
       screenOptions={{
-        drawerActiveBackgroundColor: Colors.light.primary,
-        drawerActiveTintColor:Colors.light.background
+        drawerActiveBackgroundColor: colors.primary,
+        drawerActiveTintColor:colors.background
       }}
       >
-      <Drawer.Screen
-        name="profile"
-        options={{
-          drawerLabel:'Profile',
-          headerTitle:'Profile',
-          drawerIcon: ({size, color}) => (
-            <Ionicons name='person-outline' size={size} color={color}/>
-          )
-        }}
-      />
       <Drawer.Screen
         name="index"
         options={{
@@ -69,6 +60,16 @@ const DrawerLayout = () => {
           headerTitle:'Feed',
           drawerIcon: ({size, color}) => (
             <Ionicons name='newspaper-outline' size={size} color={color}/>
+          )
+        }}
+      />
+      <Drawer.Screen
+        name="profile"
+        options={{
+          drawerLabel:'Profile',
+          headerTitle:'Profile',
+          drawerIcon: ({size, color}) => (
+            <Ionicons name='person-outline' size={size} color={color}/>
           )
         }}
       />
