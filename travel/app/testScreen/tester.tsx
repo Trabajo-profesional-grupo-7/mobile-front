@@ -1,15 +1,12 @@
-import { Button, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
-import { useRouter } from 'expo-router';
 
-export default function FeedScreen() {
-  const router = useRouter();
+export default function TestScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Feed</Text>
-      <Button title="Test" onPress={() => router.navigate("../testScreen/tester")}/>
+      <Text style={styles.title}>TEST</Text>
     </View>
   );
 }
