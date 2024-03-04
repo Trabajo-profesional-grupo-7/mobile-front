@@ -1,12 +1,44 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Image, Text } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+import { View } from '@/components/Themed';
+import Colors from '@/constants/Colors';
+import { Ionicons } from '@expo/vector-icons';
+
+const colors = Colors.light;
 
 export default function ProfileScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Profile</Text>
+      <View style={styles.topView}>
+        <Image 
+            style={{width:150, height:150, borderRadius:100}}
+            source={{
+              uri:"https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"}}
+          />
+        <Text style={{
+            fontWeight: '700',
+            fontSize: 25,
+          }}>
+            Name
+          </Text>
+      </View>
+      <View style={styles.bottomView}>
+
+        <View style={styles.profileItem}>
+          <Ionicons name='location-outline' size={25}/>
+          <Text style={{fontSize:20, flex:1, marginLeft:5}}>Location</Text>
+          <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>Country</Text>
+        </View>
+
+        <View style={styles.profileItem}>
+          <Ionicons name='mail-outline' size={25}/>
+          <Text style={{fontSize:20, flex:1, marginLeft:5}}>Email</Text>
+          <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>Email</Text>
+        </View>
+
+
+      </View>
     </View>
   );
 }
@@ -15,15 +47,37 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  topView: {
+    height: "30%",
+    width: '100%',
+    backgroundColor:colors.dimmed,
+    borderBottomWidth:2,
+    borderBottomColor:colors.primary,
+    alignItems: "center",
+    justifyContent: "center"
   },
+  bottomView: {
+    height: "55%", // remove
+    width: '80%',
+    backgroundColor:colors.secondary,
+    alignItems: "center",
+    marginTop: "5%",
+    borderRadius:30
+  },
+  profileItem: {
+    width:"100%",
+    flexDirection:"row", 
+    justifyContent:"space-between",
+    backgroundColor:"transparent",
+    alignItems:"center",
+    paddingVertical:10,
+    paddingHorizontal:15,
+    borderBottomColor:colors.background,
+    borderBottomWidth:1
+  }
 });
