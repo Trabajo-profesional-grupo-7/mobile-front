@@ -1,11 +1,13 @@
-import { StyleSheet, Image, Text } from 'react-native';
+import { StyleSheet, Image, Text, Dimensions } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-
+import { TouchableOpacity } from 'react-native-gesture-handler';
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 const colors = Colors.light;
 
 export default function ProfileScreen() {
@@ -15,51 +17,55 @@ export default function ProfileScreen() {
   const [preferences, setPreferences] = React.useState(["Item 1", "Item 2"]);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.topView}>
-        <Image 
-            style={{width:150, height:150, borderRadius:100}}
-            source={{
-              uri:"https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"}}
-          />
-        <Text style={{
-            fontWeight: '700',
-            fontSize: 25,
-          }}>
-            Name
-          </Text>
+    <>
+      <TouchableOpacity style={styles.floatingButton}>
+        <Ionicons name='pencil' size={35}/>
+      </TouchableOpacity>
+      <View style={styles.container}>
+        <View style={styles.topView}>
+          <Image 
+              style={{width:150, height:150, borderRadius:100}}
+              source={{
+                uri:"https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"}}
+            />
+          <Text style={{
+              fontWeight: '700',
+              fontSize: 25,
+            }}>
+              Name
+            </Text>
+        </View>
+        <View style={styles.bottomView}>
+            
+
+          <View style={styles.profileItem}>
+            <Ionicons name='location-outline' size={25}/>
+            <Text style={{fontSize:20, flex:1, marginLeft:5}}>Location</Text>
+            <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>{country}</Text>
+          </View>
+
+          <View style={styles.profileItem}>
+            <Ionicons name='mail-outline' size={25}/>
+            <Text style={{fontSize:20, flex:1, marginLeft:5}}>Email</Text>
+            <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>{email}</Text>
+          </View>
+
+          <View style={styles.travelPreferences}>
+            <Text style={{fontSize:20, marginLeft:5, fontWeight:'bold'}}>Travel preferences</Text>
+            {preferences.map((item, index) => (
+              <Text key={index} style={{marginLeft:10, fontSize:20}}>• {item}</Text>
+            ))}
+          </View>
+        </View>
       </View>
-      <View style={styles.bottomView}>
-
-        <View style={styles.profileItem}>
-          <Ionicons name='location-outline' size={25}/>
-          <Text style={{fontSize:20, flex:1, marginLeft:5}}>Location</Text>
-          <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>{country}</Text>
-        </View>
-
-        <View style={styles.profileItem}>
-          <Ionicons name='mail-outline' size={25}/>
-          <Text style={{fontSize:20, flex:1, marginLeft:5}}>Email</Text>
-          <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>{email}</Text>
-        </View>
-
-        <View style={styles.travelPreferences}>
-          <Text style={{fontSize:20, marginLeft:5, fontWeight:'bold'}}>Travel preferences</Text>
-          {preferences.map((item, index) => (
-            <Text style={{marginLeft:10, fontSize:20}}>• {item}</Text>
-          ))}
-        </View>
-
-
-      </View>
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    zIndex:-1
   },
   title: {
     fontSize: 20,
@@ -74,17 +80,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
-  bullet: {
-    marginRight: 5,
-    fontSize: 14,
-    color: 'black', // Adjust the color as needed
-  },
   bottomView: {
     width: '80%',
     backgroundColor:colors.secondary,
     alignItems: "center",
     marginTop: "5%",
-    borderRadius:30
+    borderRadius:30,
+    alignSelf:"center",
+  },
+  floatingButton: {
+    position: 'absolute',
+    zIndex:1,
+    width: 70,
+    height: 70,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor:colors.primary,
+    borderRadius:50,
+    right:30,
+    top:windowHeight-200
   },
   profileItem: {
     width:"100%",
