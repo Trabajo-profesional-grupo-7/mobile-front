@@ -6,19 +6,20 @@ import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useRouter } from 'expo-router';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const colors = Colors.light;
 
 export default function ProfileScreen() {
-
+  const router = useRouter();
   const [email, setEmail] = React.useState('Email');
   const [country, setCountry] = React.useState('Country');
   const [preferences, setPreferences] = React.useState(["Item 1", "Item 2"]);
 
   return (
     <>
-      <TouchableOpacity style={styles.floatingButton}>
+      <TouchableOpacity style={styles.floatingButton} onPress={() => router.navigate("profile/editProfile")}>
         <Ionicons name='pencil' size={35}/>
       </TouchableOpacity>
       <View style={styles.container}>
