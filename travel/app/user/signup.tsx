@@ -16,33 +16,43 @@ export default function LoginScreen() {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [repeatPassword, setRepeatPassword] = React.useState('');
+    const [username, setUsername] = React.useState('');
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Sign up</Text>
-            
-            <TextInput
-              style={styles.input}
-              onChangeText={setEmail}
-              value={email}
-              placeholder="E-mail"
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={setPassword}
-              value={password}
-              placeholder="Password"
-              secureTextEntry
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={setRepeatPassword}
-              value={repeatPassword}
-              placeholder="Repeat password"
-              secureTextEntry
-            />
-            <View style={styles.separator} />
-            <AccountButton title="Sign Up" onPress={() => {router.navigate("./confirmSignup")}}/>
+            <View style={{marginTop:"40%"}}>
+              <Text style={styles.title}>Sign up</Text>
+              
+              <TextInput
+                style={styles.input}
+                onChangeText={setUsername}
+                value={username}
+                placeholder="Username"
+              />
+              <TextInput
+                style={styles.input}
+                onChangeText={setEmail}
+                value={email}
+                placeholder="E-mail"
+              />
+              <TextInput
+                style={styles.input}
+                onChangeText={setPassword}
+                value={password}
+                placeholder="Password"
+                secureTextEntry
+              />
+              <TextInput
+                style={styles.input}
+                onChangeText={setRepeatPassword}
+                value={repeatPassword}
+                placeholder="Repeat password"
+                secureTextEntry
+              />
+            </View>
+            <View style={{marginBottom:"20%"}}>
+              <AccountButton title="Sign Up" onPress={() => {router.navigate("./confirmSignup")}}/>
+            </View>
         </View>
     );
 }
@@ -51,7 +61,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     minHeight: Math.round(windowHeight)
   },
   title: {

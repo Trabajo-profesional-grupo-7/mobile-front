@@ -4,10 +4,16 @@ import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
 
 const colors = Colors.light;
 
 export default function ProfileScreen() {
+
+  const [email, setEmail] = React.useState('Email');
+  const [country, setCountry] = React.useState('Country');
+  const [preferences, setPreferences] = React.useState(["Item 1", "Item 2"]);
+
   return (
     <View style={styles.container}>
       <View style={styles.topView}>
@@ -28,13 +34,20 @@ export default function ProfileScreen() {
         <View style={styles.profileItem}>
           <Ionicons name='location-outline' size={25}/>
           <Text style={{fontSize:20, flex:1, marginLeft:5}}>Location</Text>
-          <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>Country</Text>
+          <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>{country}</Text>
         </View>
 
         <View style={styles.profileItem}>
           <Ionicons name='mail-outline' size={25}/>
           <Text style={{fontSize:20, flex:1, marginLeft:5}}>Email</Text>
-          <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>Email</Text>
+          <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>{email}</Text>
+        </View>
+
+        <View style={styles.travelPreferences}>
+          <Text style={{fontSize:20, marginLeft:5, fontWeight:'bold'}}>Travel preferences</Text>
+          {preferences.map((item, index) => (
+            <Text style={{marginLeft:10, fontSize:20}}>• {item}</Text>
+          ))}
         </View>
 
 
@@ -61,8 +74,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
+  bullet: {
+    marginRight: 5,
+    fontSize: 14,
+    color: 'black', // Adjust the color as needed
+  },
   bottomView: {
-    height: "55%", // remove
     width: '80%',
     backgroundColor:colors.secondary,
     alignItems: "center",
@@ -75,6 +92,15 @@ const styles = StyleSheet.create({
     justifyContent:"space-between",
     backgroundColor:"transparent",
     alignItems:"center",
+    paddingVertical:10,
+    paddingHorizontal:15,
+    borderBottomColor:colors.background,
+    borderBottomWidth:1
+  },
+  travelPreferences: {
+    width:"100%",
+    flexDirection:"column", 
+    backgroundColor:"transparent",
     paddingVertical:10,
     paddingHorizontal:15,
     borderBottomColor:colors.background,
