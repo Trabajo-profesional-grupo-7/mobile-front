@@ -15,11 +15,12 @@ export default function ProfileScreen() {
   const router = useRouter();
   const [email, setEmail] = React.useState('Email');
   const [country, setCountry] = React.useState('Country');
+  const [birthday, setBirthday] = React.useState('Birthday');
   const [preferences, setPreferences] = React.useState(["Item 1", "Item 2"]);
 
   return (
     <>
-      <TouchableOpacity style={styles.floatingButton} onPress={() => router.navigate("profile/editProfile")}>
+      <TouchableOpacity style={styles.floatingButton} onPress={() => router.navigate("../profile/editProfile")}>
         <Ionicons name='pencil' size={35}/>
       </TouchableOpacity>
       <View style={styles.container}>
@@ -49,6 +50,12 @@ export default function ProfileScreen() {
             <Ionicons name='mail-outline' size={25}/>
             <Text style={{fontSize:20, flex:1, marginLeft:5}}>Email</Text>
             <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>{email}</Text>
+          </View>
+
+          <View style={styles.profileItem}>
+            <Ionicons name='calendar-outline' size={25}/>
+            <Text style={{fontSize:20, flex:1, marginLeft:5}}>Birthday</Text>
+            <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>{birthday}</Text>
           </View>
 
           <View style={styles.travelPreferences}>
@@ -96,7 +103,7 @@ const styles = StyleSheet.create({
     height: 70,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor:colors.primary,
+    backgroundColor:colors.secondary,
     borderRadius:50,
     right:30,
     top:windowHeight-200
