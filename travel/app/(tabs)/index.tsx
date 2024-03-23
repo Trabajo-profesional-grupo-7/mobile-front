@@ -59,7 +59,7 @@ export default function FeedScreen() {
                 value={search}
                 placeholder="Search..."
           />
-          <Ionicons name='filter-outline' color="white" size={30}/>
+          <Ionicons name='filter-outline' color="white" size={30} onPress={() => router.navigate("../feed/searchFilter")}/>
         </View>
       </View>
 
