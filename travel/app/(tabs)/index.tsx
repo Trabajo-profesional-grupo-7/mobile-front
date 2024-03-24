@@ -2,7 +2,7 @@ import { Button, StyleSheet, Image, Dimensions, TextInput } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
-import { useRouter } from 'expo-router';
+import { router, useRouter } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useState } from 'react';
@@ -25,7 +25,7 @@ export const AttractionCard: React.FC<AttractionCardProps> = (props: AttractionC
 
   return (
     <View style={styles.attractionCard}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => {router.navigate("../feed/attraction")}}>
           <View style={{flexDirection:"row", backgroundColor:"transparent"}}>
             <Image 
               style={{width:150, height:150, borderTopLeftRadius:15, borderBottomLeftRadius:15, marginLeft:-1,marginTop:-1}}

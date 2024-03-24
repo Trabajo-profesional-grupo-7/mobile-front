@@ -13,11 +13,10 @@ const windowHeight = Dimensions.get('window').height;
 const preferences = ["Cat1", "Cat2", "Cat3"]
 
 
-export default function TestScreen() {
+export default function SearchFilter() {
 
-  const [name, setName] = useState('Search term');
+  const [searchTerm, setSearchTerm] = useState('Search term');
   const [location, setLocation] = useState('');
-  const [birthday, setBirthday] = useState('Birthday');
   const [selectedPreferences, setSelectedPreferences] = useState<string[]>(["Cat2"]); //get de prefs
 
   const handleSelect = (val: string) => {
@@ -37,9 +36,9 @@ export default function TestScreen() {
       <Text style={styles.title}>Search term</Text>
       <TextInput
         style={styles.input}
-        onChangeText={setName}
-        value={name}
-        placeholder="Name"
+        onChangeText={setSearchTerm}
+        value={searchTerm}
+        placeholder="Search term"
       />
 
       <Text style={styles.title}>Location</Text>

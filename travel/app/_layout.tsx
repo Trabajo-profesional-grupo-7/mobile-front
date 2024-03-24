@@ -56,9 +56,9 @@ function RootLayoutNav() {
         <Stack.Screen name="user/login" options={{ headerShown: false }} />
         <Stack.Screen name="user/signup" options={{ headerShown: false }} />
         <Stack.Screen name="user/recoverPassword" options={{ headerShown: false }} />
-        <Stack.Screen name="testScreen/tester" options={{ headerTitle:"TEST" }} />
         <Stack.Screen name="profile/editProfile" options={{ headerTitle:"Edit profile", headerStyle:{backgroundColor:Colors.light.primary}, headerTitleAlign:"center", headerTintColor:"white" }} />
         <Stack.Screen name="feed/searchFilter" options={{ headerTitle:"Search filters", headerStyle:{backgroundColor:Colors.light.primary}, headerTitleAlign:"center", headerTintColor:"white" }} />
+        <Stack.Screen name="feed/attraction" options={{ headerTitle:"Attraction", headerStyle:{backgroundColor:Colors.light.primary}, headerTitleAlign:"center", headerTintColor:"white" }} />
       </Stack>
     </ThemeProvider>
   );
