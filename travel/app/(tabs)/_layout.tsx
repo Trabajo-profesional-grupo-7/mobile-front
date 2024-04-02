@@ -79,6 +79,19 @@ const DrawerLayout = () => {
           )
         }}
       />
+      <Drawer.Screen
+        name="information"
+        options={{
+          drawerLabel:'Info',
+          headerTitle:'Info',
+          headerTintColor:"white",
+          headerTitleAlign:"center",
+          headerStyle:{backgroundColor:Colors.light.primary},
+          drawerIcon: ({size, color}) => (
+            <Ionicons name='information-circle-outline' size={size} color={color}/>
+          )
+        }}
+      />
     </Drawer>
   </GestureHandlerRootView>
 };
