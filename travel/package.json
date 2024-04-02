@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.0",
+    "@react-native-picker/picker": "^2.7.2",
     "@react-navigation/drawer": "^6.6.7",
     "@react-navigation/native": "^6.0.2",
     "expo": "~50.0.7",
@@ -31,6 +32,7 @@
     "react-native": "0.73.4",
     "react-native-confirmation-code-field": "^7.3.2",
     "react-native-confirmation-code-input": "^1.0.4",
+    "react-native-format-currency": "^0.0.5",
     "react-native-gesture-handler": "~2.14.0",
     "react-native-ico-flags": "^5.1.2",
     "react-native-paper": "^5.12.3",
