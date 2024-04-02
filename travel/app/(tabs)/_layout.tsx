@@ -58,6 +58,9 @@ const DrawerLayout = () => {
         options={{
           drawerLabel:'Feed',
           headerTitle:'Feed',
+          headerTintColor:"white",
+          headerTitleAlign:"center",
+          headerStyle:{backgroundColor:Colors.light.primary},
           drawerIcon: ({size, color}) => (
             <Ionicons name='newspaper-outline' size={size} color={color}/>
           )
@@ -68,6 +71,9 @@ const DrawerLayout = () => {
         options={{
           drawerLabel:'Profile',
           headerTitle:'Profile',
+          headerTintColor:"white",
+          headerTitleAlign:"center",
+          headerStyle:{backgroundColor:Colors.light.primary},
           drawerIcon: ({size, color}) => (
             <Ionicons name='person-outline' size={size} color={color}/>
           )
