@@ -7,11 +7,13 @@ import { DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navi
 import { View, Image, Text } from 'react-native';
 import Colors from '../../constants/Colors';
 import { useRouter } from 'expo-router';
+import { useAuth } from '../context/AuthContext';
 
 const colors = Colors.light;
 
 function CustomDrawerContent(props:any){
   const router = useRouter();
+  const {onLogout} = useAuth();
   return (
     <View style={{flex:1, marginTop:-0}}>
       <DrawerContentScrollView {...props} scrollEnabled={false} style={{marginTop:-30}}>
@@ -37,6 +39,7 @@ function CustomDrawerContent(props:any){
           )}
           label={"Logout"} 
           onPress={() => {
+            onLogout!()
             router.replace("../..")
           }}/>
       </DrawerContentScrollView>

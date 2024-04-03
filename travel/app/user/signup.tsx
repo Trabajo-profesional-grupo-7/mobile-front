@@ -7,16 +7,29 @@ import React from 'react';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Colors from '@/constants/Colors';
+import { useAuth } from '../context/AuthContext';
 
 const colors = Colors.light;
 
 export default function LoginScreen() {
     const router = useRouter();
-
+    const {onRegister} = useAuth();
+    
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [repeatPassword, setRepeatPassword] = React.useState('');
     const [username, setUsername] = React.useState('');
+
+    const register = async () => {
+      const result = await onRegister!(email, password, username, "2024-01-01", ["asd", "hola"]);
+      if (result && result.error) {
+        console.log(result);
+        alert("Error registering")
+      } else {
+        console.log(result);
+        router.navigate("./confirmSignup");
+      }
+    };
 
     return (
         <View style={styles.container}>
@@ -51,7 +64,7 @@ export default function LoginScreen() {
               />
             </View>
             <View style={{marginBottom:"20%"}}>
-              <AccountButton title="Sign Up" onPress={() => {router.navigate("./confirmSignup")}}/>
+              <AccountButton title="Sign Up" onPress={() => {register()}}/>
             </View>
         </View>
     );

@@ -7,14 +7,26 @@ import React from 'react';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Colors from '@/constants/Colors';
-
+import { useAuth } from '../context/AuthContext';
+import axios, { AxiosError } from 'axios';
 const colors = Colors.light;
+
 
 export default function LoginScreen() {
     const router = useRouter();
+    const {onLogin} = useAuth();
 
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
+
+    const login = async () => {
+      console.log("asd")
+      const result = await onLogin!(email, password);
+      if (result && result.error){
+        alert("Incorrect email or password");
+      }
+      
+    }
 
     return (
         <View style={styles.container}>
@@ -39,7 +51,7 @@ export default function LoginScreen() {
             />
             <Text style={styles.passwordRecoveryText} onPress={()=> router.navigate("./recoverPassword")}>Forgot your password?</Text>
             <View style={styles.separator} />
-            <AccountButton title="Log In" onPress={() => {router.back(); router.replace("/(tabs)")}}/>
+            <AccountButton title="Log In" onPress={() => {login()}}/>
         </View>
     );
 }
