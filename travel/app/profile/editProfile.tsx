@@ -2,20 +2,21 @@ import { Dimensions, StyleSheet, TextInput, TouchableOpacity } from 'react-nativ
 import { Chip } from 'react-native-paper';
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const preferences = ["Cat1", "Cat2", "Cat3"]
 
 export default function EditProfile() {
-
-  const [name, setName] = React.useState('Name');
-  const [location, setLocation] = useState('Location');
-  const [birthday, setBirthday] = useState('Birthday');
+  const item = useLocalSearchParams();
+  
+  const [name, setName] = React.useState(`${item.username}`);
+  const [location, setLocation] = useState(`${item.country}`);
+  const [birthday, setBirthday] = useState(`${item.birth_date}`);
   const [selectedPreferences, setSelectedPreferences] = useState<string[]>(["Cat2"]); //get de prefs
 
   const handleSelect = (val: string) => {

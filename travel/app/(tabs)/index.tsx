@@ -4,10 +4,12 @@ import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import { router, useRouter } from 'expo-router';
 import Colors from '@/constants/Colors';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useState } from 'react';
+import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import { useEffect, useState } from 'react';
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios';
+import { ActivityIndicator } from 'react-native-paper';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -47,6 +49,38 @@ export const AttractionCard: React.FC<AttractionCardProps> = (props: AttractionC
 export default function FeedScreen() {
   const router = useRouter();
   const [search, setSearch] = useState('');
+  const [attractions, setAttractions] = useState(["","","","","","",""]);
+
+  const getAttractions = async () => {
+    try {
+      const result = ["","","","","","",""]
+      setAttractions([...attractions, ...result])
+    } catch (e) {
+      alert(e);
+    }
+  }
+
+  const renderAttraction = () => {
+    return (
+      <AttractionCard title="hola"></AttractionCard>
+    )
+  }
+
+  const renderLoader = () => {
+    return (
+      <View style={{margin:15}}>
+        <ActivityIndicator size="large" color={Colors.light.primary}/>
+      </View>
+    )
+  }
+
+  const loadMoreAttractions = () => {
+    getAttractions()
+  }
+
+  useEffect(() => {
+    getAttractions()
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -63,13 +97,20 @@ export default function FeedScreen() {
         </View>
       </View>
 
-      <View style={{paddingHorizontal:10}}>
+      <View style={{padding:10, flex:1}}>
         <View style={{alignItems:"flex-start"}}>
           <Text style={{fontSize: 25, fontWeight: 'bold', marginBottom:10}}>Recommended attracions</Text>
         </View>
-        <View style={{alignItems:"center"}}>
-          <AttractionCard title="hola"></AttractionCard>
-          <AttractionCard title="hola"></AttractionCard>
+        <View style={{paddingBottom:30}}>
+          <FlatList 
+            data={attractions} 
+            renderItem={renderAttraction}
+            style={{width:"100%"}}
+            ListFooterComponent={renderLoader}
+            onEndReached={loadMoreAttractions}
+            onEndReachedThreshold={0}
+          >
+          </FlatList>
         </View>
       </View>
     </View>
@@ -96,6 +137,7 @@ const styles = StyleSheet.create({
     borderWidth:1,
     borderRadius:15,
     marginBottom:10,
+    alignSelf:"center"
   },
   input: {
     height: windowHeight*0.05,

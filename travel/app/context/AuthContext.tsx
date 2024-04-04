@@ -75,7 +75,7 @@ export const AuthProvider = ({children}: any) => {
 
             await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
 
-            router.replace("/(tabs)")
+            
             return result;
 
         } catch (e) {

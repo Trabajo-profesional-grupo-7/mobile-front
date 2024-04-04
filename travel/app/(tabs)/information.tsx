@@ -17,7 +17,7 @@ export default function Information() {
     return(
         <View style={styles.container}>
             <Text style={styles.title}>
-                Hola
+                Location
             </Text>
             <TextInput
                 style={styles.input}

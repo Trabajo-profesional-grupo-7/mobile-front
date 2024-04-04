@@ -1,14 +1,15 @@
-import { StyleSheet, Image, Dimensions, TextInput } from 'react-native';
+import { StyleSheet, Image, Dimensions, TextInput, ActivityIndicator } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
 import AccountButton from '@/components/AccountButton';
-import React from 'react';
+import React, { useState } from 'react';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Colors from '@/constants/Colors';
 import { useAuth } from '../context/AuthContext';
 import axios, { AxiosError } from 'axios';
+import LoadingIndicator from '@/components/LoadingIndicator';
 const colors = Colors.light;
 
 
@@ -16,16 +17,20 @@ export default function LoginScreen() {
     const router = useRouter();
     const {onLogin} = useAuth();
 
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const login = async () => {
-      console.log("asd")
+      console.log("Logging in")
+      setIsLoading(true)
       const result = await onLogin!(email, password);
       if (result && result.error){
         alert("Incorrect email or password");
+      } else {
+        router.replace("/(tabs)")
       }
-      
+      setIsLoading(false)
     }
 
     return (
@@ -52,6 +57,10 @@ export default function LoginScreen() {
             <Text style={styles.passwordRecoveryText} onPress={()=> router.navigate("./recoverPassword")}>Forgot your password?</Text>
             <View style={styles.separator} />
             <AccountButton title="Log In" onPress={() => {login()}}/>
+
+            {isLoading && (
+              <LoadingIndicator/>
+            )}
         </View>
     );
 }
