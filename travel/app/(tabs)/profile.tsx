@@ -9,6 +9,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useRouter } from 'expo-router';
 import { API_URL } from '../context/AuthContext';
 import axios from 'axios';
+import LoadingIndicator from '@/components/LoadingIndicator';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const colors = Colors.light;
@@ -20,6 +21,7 @@ export default function ProfileScreen() {
   const [birth_date, setBirthdate] = useState('Birthday');
   const [username, setUsername] = useState("Name")
   const [preferences, setPreferences] = useState(["Item 1", "Item 2"]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getProfileData = async () => {
     try {
@@ -27,6 +29,7 @@ export default function ProfileScreen() {
       setEmail(result.data.email);
       setBirthdate(result.data.birth_date);
       setUsername(result.data.username);
+      setIsLoading(false);
     } catch (e) {
       alert("Error getting profile info");
     }
@@ -42,6 +45,10 @@ export default function ProfileScreen() {
 
   return (
     <>
+      {isLoading ? (
+              <LoadingIndicator/>
+      ):(
+      <>
       <TouchableOpacity style={styles.floatingButton} onPress={navigateToEditProfile}>
         <Ionicons name='pencil' size={35}/>
       </TouchableOpacity>
@@ -88,6 +95,8 @@ export default function ProfileScreen() {
           </View>
         </View>
       </View>
+      </>
+      )}
     </>
   );
 }

@@ -1,14 +1,15 @@
-import { StyleSheet, Image, Text, Dimensions, TextInput } from 'react-native';
+import { StyleSheet, Image, Text, Dimensions, TextInput, TouchableOpacity } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
 import Icon from 'react-native-ico-flags';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { getSupportedCurrencies } from "react-native-format-currency";
+import { API_URL } from '../context/AuthContext';
+import axios from 'axios';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -17,14 +18,30 @@ const colors = Colors.light;
 const currencyList = getSupportedCurrencies();
 
 export default function ExchangeRates() {
-  const [sourceCurrencyAmt, setSourceCurrencyAmt] = useState("1");
+  const [sourceCurrencyAmt, setSourceCurrencyAmt] = useState("");
   const [sourceCurrency, setSourceCurrency] = useState("ARS");
 
   const [destCurrencyAmt, setDestCurrencyAmt] = useState("");
   const [destCurrency, setDestCurrency] = useState("USD");
 
   
+  const getCurrencyExchange = async () => {
+    try {
+      const result = await axios.get(`${API_URL}/currency`,{params:{
+        "currency": sourceCurrency,
+        "interest_currency": destCurrency,
+        "amount":sourceCurrencyAmt
+      }});
+      setDestCurrencyAmt(result.data.conversion as string)
+    } catch (e) {
+      alert("Error getting profile info");
+    }
+  }
 
+  useEffect(() => {
+    setSourceCurrencyAmt("");
+    setDestCurrencyAmt("");
+  },[sourceCurrency, destCurrency])
 
   return (
     <View style={styles.container}>
@@ -60,15 +77,16 @@ export default function ExchangeRates() {
             {sourceCurrency}
           </Text>
         </View>
-        <Ionicons name='chevron-expand-outline' size={70}/>
+
+        <TouchableOpacity style={styles.button} onPress={getCurrencyExchange}>
+          <Ionicons name='chevron-expand-outline' size={70}/>
+        </TouchableOpacity>
+
+
         <View style={{flexDirection:"row", alignItems:"center"}}>
-          <TextInput
-            style={styles.input}
-            onChangeText={setDestCurrencyAmt}
-            value={destCurrencyAmt}
-            placeholder=""
-            keyboardType="numeric"
-          />
+          <Text numberOfLines={1} style={{fontSize:40, marginHorizontal:30, marginVertical:20, width:140}}>
+            {destCurrencyAmt}
+          </Text>
           <Text style={{fontSize:40}}>
             {destCurrency}
           </Text>
@@ -113,5 +131,13 @@ const styles = StyleSheet.create({
     borderRadius:10,
     borderBottomColor:Colors.light.primary,
     fontSize:45,
+  },
+  button: {
+    width: 70,
+    height: 70,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor:colors.primary,
+    borderRadius:50,
   },
 });
