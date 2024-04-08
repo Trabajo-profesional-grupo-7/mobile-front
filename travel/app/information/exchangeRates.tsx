@@ -8,8 +8,9 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { getSupportedCurrencies } from "react-native-format-currency";
-import { API_URL } from '../context/AuthContext';
+import { API_URL, useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import LoadingIndicator from '@/components/LoadingIndicator';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -20,22 +21,29 @@ const currencyList = getSupportedCurrencies();
 export default function ExchangeRates() {
   const [sourceCurrencyAmt, setSourceCurrencyAmt] = useState("");
   const [sourceCurrency, setSourceCurrency] = useState("ARS");
-
   const [destCurrencyAmt, setDestCurrencyAmt] = useState("");
   const [destCurrency, setDestCurrency] = useState("USD");
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const {onRefreshToken} = useAuth();
   
   const getCurrencyExchange = async () => {
-    try {
-      const result = await axios.get(`${API_URL}/currency`,{params:{
-        "currency": sourceCurrency,
-        "interest_currency": destCurrency,
-        "amount":sourceCurrencyAmt
-      }});
-      setDestCurrencyAmt(result.data.conversion as string)
-    } catch (e) {
-      alert("Error getting profile info");
-    }
+    await onRefreshToken!();
+    if (!isNaN(parseFloat(sourceCurrencyAmt))) {
+      try {
+        setIsLoading(true);
+        const result = await axios.get(`${API_URL}/currency`,{params:{
+          "currency": sourceCurrency,
+          "interest_currency": destCurrency,
+          "amount":sourceCurrencyAmt
+        }});
+        setDestCurrencyAmt(result.data.conversion as string)
+        setIsLoading(false);
+      } catch (e) {
+        alert("Error geting exchange rates")
+      }
+    } 
   }
 
   useEffect(() => {
@@ -107,6 +115,9 @@ export default function ExchangeRates() {
           />
         ))}
       </Picker>
+      {isLoading && (
+              <LoadingIndicator/>
+      )}
     </View>
   );
 }

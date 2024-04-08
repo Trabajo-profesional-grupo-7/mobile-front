@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useRouter } from 'expo-router';
-import { API_URL } from '../context/AuthContext';
+import { API_URL, useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import LoadingIndicator from '@/components/LoadingIndicator';
 const windowWidth = Dimensions.get('window').width;
@@ -22,8 +22,10 @@ export default function ProfileScreen() {
   const [username, setUsername] = useState("Name")
   const [preferences, setPreferences] = useState(["Item 1", "Item 2"]);
   const [isLoading, setIsLoading] = useState(true);
+  const {onRefreshToken} = useAuth();
 
   const getProfileData = async () => {
+    await onRefreshToken!();
     try {
       const result = await axios.get(`${API_URL}/users`);
       setEmail(result.data.email);
