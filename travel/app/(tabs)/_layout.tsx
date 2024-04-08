@@ -8,6 +8,7 @@ import { View, Image, Text } from 'react-native';
 import Colors from '../../constants/Colors';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
+import { confirmActionAlert } from '@/components/ConfirmActionAlert';
 
 const colors = Colors.light;
 
@@ -38,9 +39,11 @@ function CustomDrawerContent(props:any){
             <Ionicons name='exit-outline' size={size} color={color}/>
           )}
           label={"Logout"} 
-          onPress={() => {
-            onLogout!()
-            router.replace("../..")
+          onPress={async () => {
+            if (await confirmActionAlert()) {
+              onLogout!()
+              router.replace("../..")
+            }
           }}/>
       </DrawerContentScrollView>
     </View>
