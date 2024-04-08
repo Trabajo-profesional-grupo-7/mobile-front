@@ -8,7 +8,6 @@ import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import axios from 'axios';
 import { ActivityIndicator } from 'react-native-paper';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;

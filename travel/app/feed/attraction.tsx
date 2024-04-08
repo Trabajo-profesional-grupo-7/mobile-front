@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
+import { Dimensions, StyleSheet, TextInput, TouchableOpacity, Image, Modal, Button } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
@@ -7,27 +7,86 @@ import Colors from '@/constants/Colors';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Chip } from 'react-native-paper';
+import { useAuth } from '../context/AuthContext';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+import {Calendar} from 'react-native-calendars';
 
 
-
-export default function Attraction() {
+export default function Attraction() { //recibir datos de atracción
 
   const [name, setName] = useState('Name');
   const [location, setLocation] = useState("Location");
   const [category, setCategory] = useState('Category');
   const [description, setDescription] = useState('Description');
+  const [id, setId] = useState(0);
 
+  const [isLiked, setIsLiked] = useState(false);
+  const [isDone, setIsDone] = useState(false);
+  const [isScheduled, setIsScheduled] = useState(false);
+  const [isRated, setIsRated] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selected, setSelected] = useState('');
+
+  const {onRefreshToken} = useAuth();
+
+  const like = async () => {
+    await onRefreshToken!();
+    try {
+
+    } catch (e) {
+
+    }
+  }
+
+  const done = async () => {
+    await onRefreshToken!();
+    try {
+
+    } catch (e) {
+
+    }
+  }
+
+  const schedule = async () => {
+    console.log(selected)
+    await onRefreshToken!();
+    try {
+
+    } catch (e) {
+
+    }
+    setModalVisible(false);
+  }
+
+  const rate = async () => {
+    await onRefreshToken!();
+    try {
+
+    } catch (e) {
+
+    }
+  }
+
+  const save = async () => {
+    await onRefreshToken!();
+    try {
+
+    } catch (e) {
+
+    }
+  }
 
   return (
     <>
     <View style={[{flexDirection:"row"},styles.floatingButton]}>
-      <Ionicons style={{paddingHorizontal:2}} name='heart-outline' size={40}/>
-      <Ionicons style={{paddingHorizontal:2}} name='checkmark-outline' size={40}/>
-      <Ionicons style={{paddingHorizontal:2}} name='time-outline' size={40}/>
-      <Ionicons style={{paddingHorizontal:2}} name='star-outline' size={40}/>
-      <Ionicons style={{paddingHorizontal:2}} name='bookmark-outline' size={40}/>
+      <Ionicons style={{paddingHorizontal:2}} name={isLiked? 'heart' : 'heart-outline'} size={40} onPress={like}/>
+      <Ionicons style={{paddingHorizontal:2}} name={isDone? 'checkmark-done-outline' : 'checkmark-outline'} size={40} onPress={done}/>
+      <Ionicons style={{paddingHorizontal:2}} name={isScheduled? 'time' : 'time-outline'} size={40} onPress={() => {setModalVisible(true)}}/>
+      <Ionicons style={{paddingHorizontal:2}} name={isRated? 'star' : 'star-outline'} size={40} onPress={rate}/>
+      <Ionicons style={{paddingHorizontal:2}} name={isSaved? 'bookmark' :'bookmark-outline'} size={40} onPress={save}/>
       <Ionicons style={{paddingHorizontal:2}} name='map-outline' size={40}/>
     </View>
     <View style={styles.container}>
@@ -46,6 +105,25 @@ export default function Attraction() {
             <Text numberOfLines={1} ellipsizeMode="tail" style={{fontSize:16}}>{location}</Text>
             <Text numberOfLines={16} ellipsizeMode="tail" style={{fontSize:16}}>{description}</Text>
         </View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+          <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+              <Calendar
+                onDayPress={day => {
+                  setSelected(day.dateString);
+                }}
+                markedDates={{
+                  [selected]: {selected: true, disableTouchEvent: true}
+                }}
+              />
+              <Button title="Select" onPress={schedule} />
+            </View>
+          </View>
+        </Modal>
       
     </View>
     </>
@@ -84,14 +162,15 @@ const styles = StyleSheet.create({
   floatingButton: {
     position: 'absolute',
     zIndex:1,
-    width: windowWidth*0.7,
+    width: windowWidth*0.8,
     height: 60,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     backgroundColor:Colors.light.secondary,
     borderRadius:50,
-    right:(windowWidth/2)-(windowWidth*0.7/2),
-    top:windowHeight-175
+    right:(windowWidth/2)-(windowWidth*0.8/2),
+    top:windowHeight-175,
+    paddingHorizontal:20,
   },
   gradient: {
     position: 'absolute',
