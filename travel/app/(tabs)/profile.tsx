@@ -10,6 +10,7 @@ import { useRouter } from 'expo-router';
 import { API_URL, useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import LoadingIndicator from '@/components/LoadingIndicator';
+import { dateParser } from '@/components/Parsers';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const colors = Colors.light;
@@ -86,7 +87,7 @@ export default function ProfileScreen() {
           <View style={styles.profileItem}>
             <Ionicons name='calendar-outline' size={25}/>
             <Text style={{fontSize:20, flex:1, marginLeft:5}}>Birthday</Text>
-            <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>{birth_date}</Text>
+            <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>{dateParser(birth_date)}</Text>
           </View>
 
           <View style={styles.travelPreferences}>

@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Dimensions, TextInput } from 'react-native';
+import { StyleSheet, Image, Dimensions, TextInput, Modal, Button } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
@@ -9,6 +9,8 @@ const windowHeight = Dimensions.get('window').height;
 import Colors from '@/constants/Colors';
 import { useAuth } from '../context/AuthContext';
 import LoadingIndicator from '@/components/LoadingIndicator';
+import { Calendar } from 'react-native-calendars';
+import { Ionicons } from '@expo/vector-icons';
 
 const colors = Colors.light;
 
@@ -21,12 +23,14 @@ export default function LoginScreen() {
     const [repeatPassword, setRepeatPassword] = useState('');
     const [username, setUsername] = useState('');
     
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selected, setSelected] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const validateFields = () => {
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       
-      if (!(password.length && username.length && email.length)) {
+      if (!(password.length && username.length && email.length && selected.length)) {
         alert("Cant have empty fields");
         return false;
       }
@@ -52,7 +56,7 @@ export default function LoginScreen() {
     const register = async () => {
       if (validateFields()) {
         setIsLoading(true);
-        const result = await onRegister!(email, password, username, "2024-01-01", ["asd", "hola"]);
+        const result = await onRegister!(email, password, username, selected, [""]);
         if (result && result.error) {
           console.log(result);
           alert("Error registering")
@@ -67,21 +71,24 @@ export default function LoginScreen() {
 
     return (
         <View style={styles.container}>
-            <View style={{marginTop:"40%"}}>
+            <View style={{marginTop:"30%"}}>
               <Text style={styles.title}>Sign up</Text>
               
+              <Text style={styles.subtitle}>Username</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={setUsername}
                 value={username}
                 placeholder="Username"
               />
+              <Text style={styles.subtitle}>Email</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={setEmail}
                 value={email}
-                placeholder="E-mail"
+                placeholder="Email"
               />
+              <Text style={styles.subtitle}>Password</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={setPassword}
@@ -89,6 +96,7 @@ export default function LoginScreen() {
                 placeholder="Password"
                 secureTextEntry
               />
+              <Text style={styles.subtitle}>Repeat password</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={setRepeatPassword}
@@ -96,10 +104,38 @@ export default function LoginScreen() {
                 placeholder="Repeat password"
                 secureTextEntry
               />
+              <View style={{width:windowWidth*0.6}}>
+                <Text style={styles.subtitle}>Birthday</Text>
+                <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
+                  <Text style={styles.subtitle}>{selected}</Text>
+                  <Ionicons name='calendar-outline' onPress={() => setModalVisible(true)} size={35} style={{backgroundColor:colors.secondary, padding:10, borderRadius:30}}/>
+                </View>
+              </View>
             </View>
             <View style={{marginBottom:"20%"}}>
               <AccountButton title="Sign Up" onPress={() => {register()}}/>
             </View>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+                    <Calendar
+                      onDayPress={day => {
+                        setSelected(day.dateString);
+                      }}
+                      markedDates={{
+                        [selected]: {selected: true, disableTouchEvent: true}
+                      }}
+                    />
+                    <Button title="Select" onPress={() => {
+                      setModalVisible(false)
+                    }} />
+                  </View>
+                </View>
+              </Modal>
             {isLoading && (
               <LoadingIndicator/>
             )}
@@ -117,6 +153,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 40,
     fontWeight: 'bold',
+  },
+  subtitle: {
+    fontSize: 20,
   },
   passwordRecoveryText: {
     fontWeight: 'bold',

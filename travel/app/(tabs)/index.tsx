@@ -31,7 +31,7 @@ export default function FeedScreen() {
 
   const renderAttraction = () => {
     return (
-      <Text >asd</Text>
+      <Text ></Text>
     )
   }
 

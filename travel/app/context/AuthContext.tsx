@@ -14,7 +14,7 @@ interface AuthProps {
 
 const TOKEN_KEY = "my-jwt";
 const REFRESH_TOKEN_KEY = "refresh-token";
-export const API_URL = "https://api-gateway-e26h.onrender.com";
+export const API_URL = "http://18.191.176.137:8001";
 const AuthContext = createContext<AuthProps>({});
 
 
@@ -46,6 +46,7 @@ export const AuthProvider = ({children}: any) => {
                     refresh_token: refresh_token, 
                     authenticated:true,
                 });
+                await refreshToken();
                 router.replace("/(tabs)")
             }
         }
@@ -95,16 +96,20 @@ export const AuthProvider = ({children}: any) => {
             await axios.get(`${API_URL}/users/verify_id_token`);
         } catch (e) {
             axios.defaults.headers.common['Authorization'] =  `Bearer ${authState.refresh_token}`;
-            const result = await axios.post(`${API_URL}/users/refresh_token`);
-            setAuthState({
-                token: result.data.token,
-                refresh_token: result.data.refresh_token,
-                authenticated:true,
-            });
-            axios.defaults.headers.common['Authorization'] =  `Bearer ${result.data.token}`;
-            await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
-            await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, result.data.refresh_token);
-            console.log("Refreshed token")
+            try {
+                const result = await axios.post(`${API_URL}/users/refresh_token`);
+                setAuthState({
+                    token: result.data.token,
+                    refresh_token: result.data.refresh_token,
+                    authenticated:true,
+                });
+                axios.defaults.headers.common['Authorization'] =  `Bearer ${result.data.token}`;
+                await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
+                await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, result.data.refresh_token);
+                console.log("Refreshed token")
+            } catch (e) {
+                console.log(e)
+            }
         }
         return
     }
