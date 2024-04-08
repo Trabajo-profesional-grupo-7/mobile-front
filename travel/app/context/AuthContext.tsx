@@ -38,6 +38,7 @@ export const AuthProvider = ({children}: any) => {
             const token = await SecureStore.getItemAsync(TOKEN_KEY);
             const refresh_token = await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
             console.log("stored:", token);
+            console.log("refresh:", refresh_token);
 
             if (token) { // TODO: CHECK refresh token
                 axios.defaults.headers.common['Authorization'] =  `Bearer ${token}`;
@@ -46,7 +47,6 @@ export const AuthProvider = ({children}: any) => {
                     refresh_token: refresh_token, 
                     authenticated:true,
                 });
-                await refreshToken();
                 router.replace("/(tabs)")
             }
         }

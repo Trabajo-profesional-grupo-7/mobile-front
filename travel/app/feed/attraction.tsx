@@ -47,7 +47,6 @@ export default function Attraction() { //recibir datos de atracción
         await axios.post(`${API_URL}/attractions/like?attraction_id=${id}`);
         setIsLiked(true);
       }
-        
     } catch (e) {
       alert(e)
     }
@@ -55,12 +54,20 @@ export default function Attraction() { //recibir datos de atracción
   }
 
   const done = async () => {
+    setIsLoading(true);
     await onRefreshToken!();
     try {
-
+      if (isDone) {
+        await axios.delete(`${API_URL}/attractions/undone?attraction_id=${id}`);
+        setIsDone(false);
+      } else {
+        await axios.post(`${API_URL}/attractions/done?attraction_id=${id}`);
+        setIsDone(true);
+      }
     } catch (e) {
-
+      alert(e)
     }
+    setIsLoading(false);
   }
 
   const schedule = async () => {
