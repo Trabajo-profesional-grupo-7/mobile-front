@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import { View, Image, Text } from 'react-native';
 import Colors from '../../constants/Colors';
-import { useRouter } from 'expo-router';
+import { router, useRouter } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
 import { confirmActionAlert } from '@/components/ConfirmActionAlert';
 
@@ -67,6 +67,9 @@ const DrawerLayout = () => {
           headerTintColor:"white",
           headerTitleAlign:"center",
           headerStyle:{backgroundColor:Colors.light.primary},
+          headerRight: () => (
+            <Ionicons name='search-outline' style={{paddingRight:25}} color={'white'} size={40} onPress={() => router.navigate("../feed/searchFilter")}/>
+          ),
           drawerIcon: ({size, color}) => (
             <Ionicons name='newspaper-outline' size={size} color={color}/>
           )

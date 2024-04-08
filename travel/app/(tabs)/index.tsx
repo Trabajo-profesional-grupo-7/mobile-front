@@ -9,41 +9,11 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator } from 'react-native-paper';
+import { AttractionCard } from '@/components/AttractionCard';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-interface AttractionCardProps {
-  title: String
-} // TODO: add other props
 
-export const AttractionCard: React.FC<AttractionCardProps> = (props: AttractionCardProps) => {
-
-  const [name, setName] = useState("Name");
-  const [category, setCategory] = useState("Category");
-  const [location, setLocation] = useState("Location");
-  const [description, setDescription] = useState("Description");
-  const [image, setImage] = useState("image"); // TODO: Use
-
-  return (
-    <View style={styles.attractionCard}>
-        <TouchableOpacity onPress={() => {router.navigate("../feed/attraction")}}>
-          <View style={{flexDirection:"row", backgroundColor:"transparent"}}>
-            <Image 
-              style={{width:150, height:150, borderTopLeftRadius:15, borderBottomLeftRadius:15, marginLeft:-1,marginTop:-1}}
-              source={{
-                uri:"https://cdn.mos.cms.futurecdn.net/BiNbcY5fXy9Lra47jqHKGK.jpg"}}
-            /> 
-            <View style={{padding:5, backgroundColor:"transparent", flex:1}}>
-              <Text numberOfLines={1} ellipsizeMode="tail" style={{fontSize:20, fontWeight:"bold"}}>{name}</Text>
-              <Text numberOfLines={1} ellipsizeMode="tail" style={{fontSize:14}}>{category}</Text>
-              <Text numberOfLines={1} ellipsizeMode="tail" style={{fontSize:14}}>{location}</Text>
-              <Text numberOfLines={4} ellipsizeMode="tail" style={{fontSize:14}}>{description}</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </View>
-  );
-}
 
 export default function FeedScreen() {
   const router = useRouter();
@@ -61,7 +31,7 @@ export default function FeedScreen() {
 
   const renderAttraction = () => {
     return (
-      <AttractionCard title="hola"></AttractionCard>
+      <Text >asd</Text>
     )
   }
 
@@ -83,18 +53,6 @@ export default function FeedScreen() {
 
   return (
     <View style={styles.container}>
-
-      <View style={{alignItems:"center", backgroundColor:Colors.light.primary}}>
-        <View style={{flexDirection:"row", backgroundColor:"transparent", alignItems:"center"}}>
-          <TextInput
-                style={styles.input}
-                onChangeText={setSearch}
-                value={search}
-                placeholder="Search..."
-          />
-          <Ionicons name='filter-outline' color="white" size={30} onPress={() => router.navigate("../feed/searchFilter")}/>
-        </View>
-      </View>
 
       <View style={{padding:10, flex:1}}>
         <View style={{alignItems:"flex-start"}}>

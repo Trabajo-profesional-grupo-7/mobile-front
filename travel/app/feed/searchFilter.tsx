@@ -15,9 +15,9 @@ const preferences = ["Cat1", "Cat2", "Cat3"]
 
 export default function SearchFilter() {
 
-  const [searchTerm, setSearchTerm] = useState('Search term');
+  const [searchTerm, setSearchTerm] = useState('');
   const [location, setLocation] = useState('');
-  const [selectedPreferences, setSelectedPreferences] = useState<string[]>(["Cat2"]); //get de prefs
+  const [selectedPreferences, setSelectedPreferences] = useState<string[]>([""]); //get de prefs
 
   const handleSelect = (val: string) => {
     setSelectedPreferences((prev: string[]) =>
@@ -29,7 +29,7 @@ export default function SearchFilter() {
 
   return (
     <>
-    <TouchableOpacity style={styles.floatingButton} onPress={() => router.back()}>
+    <TouchableOpacity style={styles.floatingButton} onPress={() => router.navigate({pathname:"../feed/searchResult",params:{searchTerm, location, selectedPreferences}})}>
         <Ionicons name='search-outline' size={35}/>
     </TouchableOpacity>
     <View style={styles.container}>

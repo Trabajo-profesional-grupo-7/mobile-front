@@ -4,7 +4,7 @@ import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Chip } from 'react-native-paper';
 import { useAuth } from '../context/AuthContext';
@@ -14,8 +14,9 @@ import {Calendar} from 'react-native-calendars';
 
 
 export default function Attraction() { //recibir datos de atracción
-
-  const [name, setName] = useState('Name');
+  const params = useLocalSearchParams();
+  
+  const [name, setName] = useState(params.displayName);
   const [location, setLocation] = useState("Location");
   const [category, setCategory] = useState('Category');
   const [description, setDescription] = useState('Description');
