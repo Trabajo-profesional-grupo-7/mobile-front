@@ -91,12 +91,20 @@ export default function Attraction() { //recibir datos de atracción
   }
 
   const save = async () => {
+    setIsLoading(true);
     await onRefreshToken!();
     try {
-
+      if (isSaved) {
+        await axios.delete(`${API_URL}/attractions/unsave?attraction_id=${id}`);
+        setIsSaved(false);
+      } else {
+        await axios.post(`${API_URL}/attractions/save?attraction_id=${id}`);
+        setIsSaved(true);
+      }
     } catch (e) {
-
+      alert(e)
     }
+    setIsLoading(false);
   }
 
   return (
