@@ -31,9 +31,9 @@ export default function Attraction() { //recibir datos de atracción
   const [isSaved, setIsSaved] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [calendarModalVisible, setCalendarModalVisible] = useState(false);
   const [selected, setSelected] = useState('');
-
+  const [starModalVisible, setStarModalVisible] = useState(false);
   const { onRefreshToken } = useAuth();
 
   const like = async () => {
@@ -78,16 +78,19 @@ export default function Attraction() { //recibir datos de atracción
     } catch (e) {
 
     }
-    setModalVisible(false);
+    setCalendarModalVisible(false);
   }
 
-  const rate = async () => {
+  const rate = async (rating: number) => {
+    setIsLoading(true);
     await onRefreshToken!();
     try {
-
+      await axios.post(`${API_URL}/attractions/rate?attraction_id=${id}&rating=${rating}`);
+      setIsRated(true);
     } catch (e) {
-
+      alert(e)
     }
+    setIsLoading(false);
   }
 
   const save = async () => {
@@ -107,13 +110,62 @@ export default function Attraction() { //recibir datos de atracción
     setIsLoading(false);
   }
 
+  const CalendarModal = () => {
+    return (
+      <Modal
+          animationType="slide"
+          transparent={true}
+          visible={calendarModalVisible}
+          onRequestClose={() => setCalendarModalVisible(false)}>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+            <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+              <Calendar
+                onDayPress={day => {
+                  setSelected(day.dateString);
+                }}
+                markedDates={{
+                  [selected]: { selected: true, disableTouchEvent: true }
+                }}
+              />
+              <Button title="Select" onPress={schedule} />
+            </View>
+          </View>
+      </Modal>
+    )
+  }
+
+  const StarModal = () => {
+    const [rating, setRating] = useState(1);
+
+    return (
+      <Modal
+          animationType="slide"
+          transparent={true}
+          visible={starModalVisible}
+          onRequestClose={() => setStarModalVisible(false)}>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+            <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+              <View style={{flexDirection:"row", paddingBottom:20, justifyContent:"center"}}>
+                <Ionicons style={{ paddingHorizontal: 2 }} name={'star'} size={40} onPress={() => {setRating(1)}} />
+                <Ionicons style={{ paddingHorizontal: 2 }} name={(rating >= 2) ? 'star' : 'star-outline'} size={40} onPress={() => {setRating(2)}} />
+                <Ionicons style={{ paddingHorizontal: 2 }} name={(rating >= 3) ? 'star' : 'star-outline'} size={40} onPress={() => {setRating(3)}} />
+                <Ionicons style={{ paddingHorizontal: 2 }} name={(rating >= 4) ? 'star' : 'star-outline'} size={40} onPress={() => {setRating(4)}} />
+                <Ionicons style={{ paddingHorizontal: 2 }} name={(rating == 5) ? 'star' : 'star-outline'} size={40} onPress={() => {setRating(5)}} />
+              </View>
+              <Button title="Rate" onPress={() => {rate(rating); setStarModalVisible(false)}}/>
+            </View>
+          </View>
+      </Modal>
+    )
+  }
+
   return (
     <>
       <View style={[{ flexDirection: "row" }, styles.floatingButton]}>
         <Ionicons style={{ paddingHorizontal: 2 }} name={isLiked ? 'heart' : 'heart-outline'} size={40} onPress={like} />
         <Ionicons style={{ paddingHorizontal: 2 }} name={isDone ? 'checkmark-done-outline' : 'checkmark-outline'} size={40} onPress={done} />
-        <Ionicons style={{ paddingHorizontal: 2 }} name={isScheduled ? 'time' : 'time-outline'} size={40} onPress={() => { setModalVisible(true) }} />
-        <Ionicons style={{ paddingHorizontal: 2 }} name={isRated ? 'star' : 'star-outline'} size={40} onPress={rate} />
+        <Ionicons style={{ paddingHorizontal: 2 }} name={isScheduled ? 'time' : 'time-outline'} size={40} onPress={() => { setCalendarModalVisible(true) }} />
+        <Ionicons style={{ paddingHorizontal: 2 }} name={isRated ? 'star' : 'star-outline'} size={40} onPress={() => { setStarModalVisible(true)}} />
         <Ionicons style={{ paddingHorizontal: 2 }} name={isSaved ? 'bookmark' : 'bookmark-outline'} size={40} onPress={save} />
         <Ionicons style={{ paddingHorizontal: 2 }} name='map-outline' size={40} />
       </View>
@@ -134,25 +186,8 @@ export default function Attraction() { //recibir datos de atracción
           <Text numberOfLines={1} ellipsizeMode="tail" style={{ fontSize: 16 }}>{location}</Text>
           <Text numberOfLines={16} ellipsizeMode="tail" style={{ fontSize: 16 }}>{description}</Text>
         </View>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}>
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-            <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
-              <Calendar
-                onDayPress={day => {
-                  setSelected(day.dateString);
-                }}
-                markedDates={{
-                  [selected]: { selected: true, disableTouchEvent: true }
-                }}
-              />
-              <Button title="Select" onPress={schedule} />
-            </View>
-          </View>
-        </Modal>
+        <CalendarModal/>
+        <StarModal/>
 
       </View>
       {isLoading && (
