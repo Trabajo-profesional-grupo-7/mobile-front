@@ -67,6 +67,18 @@ function RootLayoutNav() {
           headerTitleAlign: "center",
           headerTintColor: "white"
         }} />
+        <Stack.Screen name="profile/calendar" options={{
+          headerTitle: "Calendar",
+          headerStyle: { backgroundColor: Colors.light.primary },
+          headerTitleAlign: "center",
+          headerTintColor: "white"
+        }} />
+        <Stack.Screen name="profile/savedAttractions" options={{
+          headerTitle: "Saved attractions",
+          headerStyle: { backgroundColor: Colors.light.primary },
+          headerTitleAlign: "center",
+          headerTintColor: "white"
+        }} />
         <Stack.Screen name="feed/searchFilter" options={{
           headerTitle: "Search filters",
           headerStyle: { backgroundColor: Colors.light.primary },

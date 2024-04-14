@@ -5,7 +5,7 @@ import { Text, View } from '@/components/Themed';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Chip } from 'react-native-paper';
 import { API_URL, useAuth } from '../context/AuthContext';
 const windowWidth = Dimensions.get('window').width;
@@ -35,6 +35,17 @@ export default function Attraction() { //recibir datos de atracción
   const [selected, setSelected] = useState('');
   const [starModalVisible, setStarModalVisible] = useState(false);
   const { onRefreshToken } = useAuth();
+
+  const getAttractionDetails = async () =>  {
+    setIsLoading(true);
+    await onRefreshToken!();
+    try {
+      //await axios.delete(`${API_URL}/attractions/unlike?attraction_id=${id}`);
+    } catch (e) {
+      alert(e)
+    }
+    setIsLoading(false);
+  }
 
   const like = async () => {
     setIsLoading(true);
@@ -158,6 +169,10 @@ export default function Attraction() { //recibir datos de atracción
       </Modal>
     )
   }
+
+  useEffect(() => {
+    getAttractionDetails()
+}, []);
 
   return (
     <>

@@ -31,11 +31,10 @@ export default function SearchResult() {
     const {onRefreshToken} = useAuth();
 
     const getAttractions = async () => {
-        await onRefreshToken!;
+        await onRefreshToken!();
         try {
             const result = await axios.post(`${API_URL}/attractions/search?attraction=${params.searchTerm}`);
             if (result.data) {
-                console.log(result.data);
                 const parsedPlaces = result.data.map((place: AttractionParams) => ({
                     id: place.id,
                     attraction_name: place.attraction_name,

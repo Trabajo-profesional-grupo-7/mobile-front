@@ -4,13 +4,15 @@ import { Drawer } from 'expo-router/drawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
-import { View, Image, Text, TouchableOpacity } from 'react-native';
+import { View, Image, Text, TouchableOpacity, Modal } from 'react-native';
 import Colors from '../../constants/Colors';
 import { router, useRouter } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
 import { confirmActionAlert } from '@/components/ConfirmActionAlert';
+import { useState } from 'react';
 
 const colors = Colors.light;
+
 
 
 function CustomDrawerContent(props:any){
@@ -52,6 +54,32 @@ function CustomDrawerContent(props:any){
 }
 
 const DrawerLayout = () => { 
+  const [modalVisible, setmodalVisible] = useState(false);
+
+  const DetailsModal = () => {
+    return (
+      <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setmodalVisible(false)}>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+            <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, width:"60%" }}>
+              <TouchableOpacity onPress={() => {router.navigate("../profile/savedAttractions")}} style={{height:40, justifyContent:"center"}}>
+                  <Text style={{fontSize:18}}>Attractions saved</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {}} style={{height:40, justifyContent:"center"}}>
+                  <Text style={{fontSize:18}}>Attractions done</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {router.navigate("../profile/calendar")}} style={{height:40, justifyContent:"center"}}>
+                  <Text style={{fontSize:18}}>Calendar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+      </Modal>
+    )
+  }
+
   return <GestureHandlerRootView style={{flex:1}}>
     <Drawer 
       drawerContent={CustomDrawerContent}
@@ -90,7 +118,7 @@ const DrawerLayout = () => {
           headerRight: () => (
               <TouchableOpacity
                   onPress={() => {
-                      
+                    setmodalVisible(true);
                   }}
                   style={{ marginRight: 10, padding: 5 }}
               >
@@ -113,6 +141,7 @@ const DrawerLayout = () => {
         }}
       />
     </Drawer>
+    <DetailsModal/>
   </GestureHandlerRootView>
 };
 
