@@ -29,21 +29,21 @@ export default function ExchangeRates() {
   const {onRefreshToken} = useAuth();
   
   const getCurrencyExchange = async () => {
+    setIsLoading(true);
     await onRefreshToken!();
     if (!isNaN(parseFloat(sourceCurrencyAmt))) {
       try {
-        setIsLoading(true);
         const result = await axios.get(`${API_URL}/currency`,{params:{
           "currency": sourceCurrency,
           "interest_currency": destCurrency,
           "amount":sourceCurrencyAmt
         }});
         setDestCurrencyAmt(result.data.conversion as string)
-        setIsLoading(false);
       } catch (e) {
         alert("Error geting exchange rates")
       }
     } 
+    setIsLoading(false);
   }
 
   useEffect(() => {
@@ -125,11 +125,12 @@ export default function ExchangeRates() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding:20
+    padding:20,
   },
   title: {
     fontSize: 35,
     fontWeight: 'bold',
+    marginBottom:60
   },
   input: {
     height: windowHeight*0.08,

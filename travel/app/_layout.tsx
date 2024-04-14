@@ -110,6 +110,12 @@ function RootLayoutNav() {
           headerTitleAlign: "center",
           headerTintColor: "white"
         }} />
+        <Stack.Screen name="information/flightDetails" options={{
+          headerTitle: "Flight details",
+          headerStyle: { backgroundColor: Colors.light.primary },
+          headerTitleAlign: "center",
+          headerTintColor: "white"
+        }} />
         <Stack.Screen name="information/weather" options={{
           headerTitle: "Weather",
           headerStyle: { backgroundColor: Colors.light.primary },

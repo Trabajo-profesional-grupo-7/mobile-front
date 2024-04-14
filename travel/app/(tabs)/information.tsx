@@ -16,15 +16,7 @@ export default function Information() {
 
     return(
         <View style={styles.container}>
-            <Text style={styles.title}>
-                Location
-            </Text>
-            <TextInput
-                style={styles.input}
-                onChangeText={setLocation}
-                value={location}
-                placeholder="Location"
-            />
+
             <TouchableOpacity style={styles.serviceCard} onPress={() => router.navigate("../information/exchangeRates")}>
                 <Ionicons name='cash-outline' size={80}/>
                 <Text style={styles.title}>
@@ -52,7 +44,7 @@ export default function Information() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop:20,
+    paddingTop:100,
   },
   title: {
     fontSize: 35,

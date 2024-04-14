@@ -97,7 +97,7 @@ const DrawerLayout = () => {
           headerTitleAlign:"center",
           headerStyle:{backgroundColor:Colors.light.primary},
           headerRight: () => (
-            <Ionicons name='search-outline' style={{paddingRight:25}} color={'white'} size={40} onPress={() => router.navigate("../feed/searchFilter")}/>
+            <Ionicons name='search-outline' style={{paddingRight:25}} color={'white'} size={30} onPress={() => router.navigate("../feed/searchFilter")}/>
           ),
           drawerIcon: ({size, color}) => (
             <Ionicons name='newspaper-outline' size={size} color={color}/>
@@ -130,8 +130,8 @@ const DrawerLayout = () => {
       <Drawer.Screen
         name="information"
         options={{
-          drawerLabel:'Info',
-          headerTitle:'Info',
+          drawerLabel:'Informations',
+          headerTitle:'Information',
           headerTintColor:"white",
           headerTitleAlign:"center",
           headerStyle:{backgroundColor:Colors.light.primary},
