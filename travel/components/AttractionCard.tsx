@@ -11,22 +11,23 @@ import { ActivityIndicator } from 'react-native-paper';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-interface AttractionCardProps {
+export interface AttractionCardProps {
     data: {
-        displayName: string,
+        attraction_name: string,
         id:string,
         likes_count:number,
         done_count:number,
-        avg_rating:number
+        avg_rating:number,
+        city: string,
+        country: string,
+        photos: [],
     }
 } // TODO: add other props
   
 export const AttractionCard: React.FC<AttractionCardProps> = (props: AttractionCardProps) => {
     
-    const [name, setName] = useState(props.data.displayName);
-    const [category, setCategory] = useState("Category");
-    const [location, setLocation] = useState("Location");
-    const [description, setDescription] = useState("Description");
+    const [name, setName] = useState(props.data.attraction_name);
+    const [location, setLocation] = useState(`${props.data.city}, ${props.data.country}`);
     const [image, setImage] = useState("image"); // TODO: Use
 
     return (
@@ -40,9 +41,7 @@ export const AttractionCard: React.FC<AttractionCardProps> = (props: AttractionC
                 /> 
                 <View style={{padding:5, backgroundColor:"transparent", flex:1}}>
                 <Text numberOfLines={2} ellipsizeMode="tail" style={{fontSize:20, fontWeight:"bold"}}>{name}</Text>
-                <Text numberOfLines={1} ellipsizeMode="tail" style={{fontSize:14}}>{category}</Text>
                 <Text numberOfLines={1} ellipsizeMode="tail" style={{fontSize:14}}>{location}</Text>
-                <Text numberOfLines={4} ellipsizeMode="tail" style={{fontSize:14}}>{description}</Text>
                 </View>
             </View>
             </TouchableOpacity>

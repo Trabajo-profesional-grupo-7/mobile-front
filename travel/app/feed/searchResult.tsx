@@ -7,7 +7,7 @@ import Colors from '@/constants/Colors';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Chip } from 'react-native-paper';
-import { AttractionCard } from '@/components/AttractionCard';
+import { AttractionCard, AttractionCardProps } from '@/components/AttractionCard';
 import { API_URL, useAuth } from '../context/AuthContext';
 import axios from 'axios';
 const windowWidth = Dimensions.get('window').width;
@@ -15,10 +15,13 @@ const windowHeight = Dimensions.get('window').height;
 
 interface AttractionParams {
     id: string; 
-    displayName: { text: string; }; 
+    attraction_name: string; 
     likes_count: string; 
     done_count: string; 
-    avg_rating: string; 
+    avg_rating: string;
+    city: string,
+    country: string,
+    photos: [],
 }
 
 export default function SearchResult() {
@@ -32,12 +35,16 @@ export default function SearchResult() {
         try {
             const result = await axios.post(`${API_URL}/attractions/search?attraction=${params.searchTerm}`);
             if (result.data) {
-                const parsedPlaces = result.data.places.map((place: AttractionParams) => ({
+                console.log(result.data);
+                const parsedPlaces = result.data.map((place: AttractionParams) => ({
                     id: place.id,
-                    displayName: place.displayName.text,
+                    attraction_name: place.attraction_name,
                     likes_count: place.likes_count,
                     done_count: place.done_count,
-                    avg_rating: place.avg_rating
+                    avg_rating: place.avg_rating,
+                    city: place.city,
+                    country: place.country,
+                    photos: place.photos
                   }));
                 setAttractions(parsedPlaces)
             }
@@ -47,7 +54,7 @@ export default function SearchResult() {
         }
     }
     
-    const renderAttraction = ({item}:{item:{displayName:string, id:string,likes_count:number,done_count:number,avg_rating:number}}) => {
+    const renderAttraction = ({item}:{item:{attraction_name:string, id:string,likes_count:number,done_count:number,avg_rating:number, city:string, country: string, photos:[]}}) => {
         return (
             <AttractionCard data={item}></AttractionCard>
         )
