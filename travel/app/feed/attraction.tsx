@@ -4,25 +4,23 @@ import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Chip } from 'react-native-paper';
 import { API_URL, useAuth } from '../context/AuthContext';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import { Calendar } from 'react-native-calendars';
 import axios from 'axios';
 import LoadingIndicator from '@/components/LoadingIndicator';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 
 
 export default function Attraction() { //recibir datos de atracción
   const params = useLocalSearchParams();
-
-  const [name, setName] = useState(params.displayName);
-  const [location, setLocation] = useState("Location");
-  const [category, setCategory] = useState('Category');
+  const [name, setName] = useState(params.attraction_name);
+  const [location, setLocation] = useState(`${params.city}, ${params.country}`);
   const [description, setDescription] = useState('Description');
-  const [id, setId] = useState(params.id);
+  const [id, setId] = useState(params.attraction_id);
 
   const [isLiked, setIsLiked] = useState(false);
   const [isDone, setIsDone] = useState(false);
@@ -31,16 +29,24 @@ export default function Attraction() { //recibir datos de atracción
   const [isSaved, setIsSaved] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [calendarModalVisible, setCalendarModalVisible] = useState(false);
-  const [selected, setSelected] = useState('');
   const [starModalVisible, setStarModalVisible] = useState(false);
   const { onRefreshToken } = useAuth();
+
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const onChangeDate = (event:any , selectedDate: any) => {
+    const currentDate = selectedDate;
+    setShowDatePicker(false);
+    setDate(currentDate);
+    schedule();
+  }
 
   const getAttractionDetails = async () =>  {
     setIsLoading(true);
     await onRefreshToken!();
     try {
-      //await axios.delete(`${API_URL}/attractions/unlike?attraction_id=${id}`);
+      //const result = await axios.delete(`${API_URL}/attractions/unlike?attraction_id=${id}`);
     } catch (e) {
       alert(e)
     }
@@ -82,14 +88,14 @@ export default function Attraction() { //recibir datos de atracción
   }
 
   const schedule = async () => {
-    console.log(selected)
+    console.log("Make schedule for")
+    console.log(date)
     await onRefreshToken!();
     try {
 
     } catch (e) {
 
     }
-    setCalendarModalVisible(false);
   }
 
   const rate = async (rating: number) => {
@@ -121,30 +127,7 @@ export default function Attraction() { //recibir datos de atracción
     setIsLoading(false);
   }
 
-  const CalendarModal = () => {
-    return (
-      <Modal
-          animationType="slide"
-          transparent={true}
-          visible={calendarModalVisible}
-          onRequestClose={() => setCalendarModalVisible(false)}>
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-            <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
-              <Calendar
-                onDayPress={day => {
-                  setSelected(day.dateString);
-                }}
-                markedDates={{
-                  [selected]: { selected: true, disableTouchEvent: true }
-                }}
-              />
-              <Button title="Select" onPress={schedule} />
-            </View>
-          </View>
-      </Modal>
-    )
-  }
-
+  
   const StarModal = () => {
     const [rating, setRating] = useState(1);
 
@@ -179,7 +162,7 @@ export default function Attraction() { //recibir datos de atracción
       <View style={[{ flexDirection: "row" }, styles.floatingButton]}>
         <Ionicons style={{ paddingHorizontal: 2 }} name={isLiked ? 'heart' : 'heart-outline'} size={40} onPress={like} />
         <Ionicons style={{ paddingHorizontal: 2 }} name={isDone ? 'checkmark-done-outline' : 'checkmark-outline'} size={40} onPress={done} />
-        <Ionicons style={{ paddingHorizontal: 2 }} name={isScheduled ? 'time' : 'time-outline'} size={40} onPress={() => { setCalendarModalVisible(true) }} />
+        <Ionicons style={{ paddingHorizontal: 2 }} name={isScheduled ? 'time' : 'time-outline'} size={40} onPress={() => { setShowDatePicker(true) }} />
         <Ionicons style={{ paddingHorizontal: 2 }} name={isRated ? 'star' : 'star-outline'} size={40} onPress={() => { setStarModalVisible(true)}} />
         <Ionicons style={{ paddingHorizontal: 2 }} name={isSaved ? 'bookmark' : 'bookmark-outline'} size={40} onPress={save} />
         <Ionicons style={{ paddingHorizontal: 2 }} name='map-outline' size={40} />
@@ -197,14 +180,20 @@ export default function Attraction() { //recibir datos de atracción
         />
         <View style={{ marginHorizontal: 20 }}>
           <Text style={styles.title}>{name}</Text>
-          <Text numberOfLines={1} ellipsizeMode="tail" style={{ fontSize: 16 }}>{category}</Text>
           <Text numberOfLines={1} ellipsizeMode="tail" style={{ fontSize: 16 }}>{location}</Text>
           <Text numberOfLines={16} ellipsizeMode="tail" style={{ fontSize: 16 }}>{description}</Text>
         </View>
-        <CalendarModal/>
+        
         <StarModal/>
 
       </View>
+      {showDatePicker && (
+        <RNDateTimePicker
+          value={date}
+          onChange={onChangeDate}
+          minimumDate={new Date()}
+        />
+      )}
       {isLoading && (
               <LoadingIndicator/>
       )}

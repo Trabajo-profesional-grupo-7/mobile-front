@@ -14,7 +14,7 @@ const windowHeight = Dimensions.get('window').height;
 export interface AttractionCardProps {
     data: {
         attraction_name: string,
-        id:string,
+        attraction_id:string,
         likes_count:number,
         done_count:number,
         avg_rating:number,

@@ -14,7 +14,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 interface AttractionParams {
-    id: string; 
+    attraction_id: string; 
     attraction_name: string; 
     likes_count: string; 
     done_count: string; 
@@ -36,7 +36,7 @@ export default function SearchResult() {
             const result = await axios.post(`${API_URL}/attractions/search?attraction=${params.searchTerm}`);
             if (result.data) {
                 const parsedPlaces = result.data.map((place: AttractionParams) => ({
-                    id: place.id,
+                    attraction_id: place.attraction_id,
                     attraction_name: place.attraction_name,
                     likes_count: place.likes_count,
                     done_count: place.done_count,
@@ -53,7 +53,7 @@ export default function SearchResult() {
         }
     }
     
-    const renderAttraction = ({item}:{item:{attraction_name:string, id:string,likes_count:number,done_count:number,avg_rating:number, city:string, country: string, photos:[]}}) => {
+    const renderAttraction = ({item}:{item:{attraction_name:string, attraction_id:string,likes_count:number,done_count:number,avg_rating:number, city:string, country: string, photos:[]}}) => {
         return (
             <AttractionCard data={item}></AttractionCard>
         )
