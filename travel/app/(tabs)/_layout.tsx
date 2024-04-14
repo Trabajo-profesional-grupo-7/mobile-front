@@ -65,13 +65,13 @@ const DrawerLayout = () => {
           onRequestClose={() => setmodalVisible(false)}>
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
             <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, width:"60%" }}>
-              <TouchableOpacity onPress={() => {router.navigate("../profile/savedAttractions")}} style={{height:40, justifyContent:"center"}}>
+              <TouchableOpacity onPress={() => {router.navigate("../profile/savedAttractions");setmodalVisible(false)}} style={{height:40, justifyContent:"center"}}>
                   <Text style={{fontSize:18}}>Attractions saved</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {}} style={{height:40, justifyContent:"center"}}>
+              <TouchableOpacity onPress={() => {setmodalVisible(false)}} style={{height:40, justifyContent:"center"}}>
                   <Text style={{fontSize:18}}>Attractions done</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {router.navigate("../profile/calendar")}} style={{height:40, justifyContent:"center"}}>
+              <TouchableOpacity onPress={() => {router.navigate("../profile/calendar");setmodalVisible(false)}} style={{height:40, justifyContent:"center"}}>
                   <Text style={{fontSize:18}}>Calendar</Text>
               </TouchableOpacity>
             </View>

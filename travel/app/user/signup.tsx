@@ -11,6 +11,7 @@ import { useAuth } from '../context/AuthContext';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { Calendar } from 'react-native-calendars';
 import { Ionicons } from '@expo/vector-icons';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 
 const colors = Colors.light;
 
@@ -23,14 +24,14 @@ export default function LoginScreen() {
     const [repeatPassword, setRepeatPassword] = useState('');
     const [username, setUsername] = useState('');
     
-    const [modalVisible, setModalVisible] = useState(false);
-    const [selected, setSelected] = useState('');
+    const [date, setDate] = useState(new Date());
+    const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const validateFields = () => {
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       
-      if (!(password.length && username.length && email.length && selected.length)) {
+      if (!(password.length && username.length && email.length && date.toISOString().split("T")[0].length)) {
         alert("Cant have empty fields");
         return false;
       }
@@ -56,7 +57,7 @@ export default function LoginScreen() {
     const register = async () => {
       if (validateFields()) {
         setIsLoading(true);
-        const result = await onRegister!(email, password, username, selected, [""]);
+        const result = await onRegister!(email, password, username, date.toISOString().split("T")[0], [""]);
         if (result && result.error) {
           console.log(result);
           alert("Error registering")
@@ -69,11 +70,16 @@ export default function LoginScreen() {
       }
     };
 
+    const onChange = (event:any , selectedDate: any) => {
+      const currentDate = selectedDate;
+      setShow(false);
+      setDate(currentDate);
+    }
+
     return (
         <View style={styles.container}>
             <View style={{marginTop:"30%"}}>
               <Text style={styles.title}>Sign up</Text>
-              
               <Text style={styles.subtitle}>Username</Text>
               <TextInput
                 style={styles.input}
@@ -107,35 +113,23 @@ export default function LoginScreen() {
               <View style={{width:windowWidth*0.6}}>
                 <Text style={styles.subtitle}>Birthday</Text>
                 <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
-                  <Text style={styles.subtitle}>{selected}</Text>
-                  <Ionicons name='calendar-outline' onPress={() => setModalVisible(true)} size={35} style={{backgroundColor:colors.secondary, padding:10, borderRadius:30}}/>
+                  <Text style={styles.subtitle}>{date.toISOString().split("T")[0]}</Text>
+                  <Ionicons name='calendar-outline' onPress={() => setShow(true)} size={35} style={{backgroundColor:colors.secondary, padding:10, borderRadius:30}}/>
                 </View>
               </View>
             </View>
             <View style={{marginBottom:"20%"}}>
               <AccountButton title="Sign Up" onPress={() => {register()}}/>
             </View>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => setModalVisible(false)}>
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
-                    <Calendar
-                      onDayPress={day => {
-                        setSelected(day.dateString);
-                      }}
-                      markedDates={{
-                        [selected]: {selected: true, disableTouchEvent: true}
-                      }}
-                    />
-                    <Button title="Select" onPress={() => {
-                      setModalVisible(false)
-                    }} />
-                  </View>
-                </View>
-              </Modal>
+            {show && (
+              <RNDateTimePicker
+                testID="dateTimePicker"
+                value={date}
+                is24Hour={true}
+                display={"spinner"}
+                onChange={onChange}
+              />
+            )}
             {isLoading && (
               <LoadingIndicator/>
             )}
