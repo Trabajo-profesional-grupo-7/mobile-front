@@ -9,6 +9,7 @@ import { router, useRouter } from 'expo-router';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { API_URL, useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const colors = Colors.light;
@@ -17,16 +18,24 @@ export default function FlightTracker() {
 
   const [carrierCode, setCarrierCode] = React.useState(``);
   const [flightNumber, setFlightNumber] = useState(``);
-  const [departureDate, setDepartureDate] = useState(``);
 
   const [isLoading, setIsLoading] = useState(false);
   const {onRefreshToken} = useAuth();
+
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const onChangeDate = (event:any , selectedDate: any) => {
+    const currentDate = selectedDate;
+    setShowDatePicker(false);
+    setDate(currentDate);
+  }
 
   const getFlightDetails = async () => {
     setIsLoading(true);
     await onRefreshToken!();
     try {
-      const result = await axios.get(`${API_URL}/flights/status?carrier_code=${carrierCode}&flight_number=${flightNumber}&departure_date=${departureDate}`);
+      const result = await axios.get(`${API_URL}/flights/status?carrier_code=${carrierCode}&flight_number=${flightNumber}&departure_date=${date.toISOString().split("T")[0]}`);
       console.log(result.data)
       if (result.data) {
         router.navigate({
@@ -69,14 +78,19 @@ export default function FlightTracker() {
       />
 
       <Text style={styles.title}>Departure date</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={setDepartureDate}
-        value={departureDate}
-        placeholder=""
-      />
+      <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center", marginHorizontal:20}}>
+        <Text style={{fontSize:20}}>{date.toISOString().split("T")[0]}</Text>
+        <Ionicons name='calendar-outline' onPress={() => setShowDatePicker(true)} size={35} style={{backgroundColor:colors.secondary, padding:10, borderRadius:30}}/>
+      </View>
 
     </View>
+    {showDatePicker && (
+      <RNDateTimePicker
+        value={date}
+        display={"spinner"}
+        onChange={onChangeDate}
+      />
+    )}
     {isLoading && (
           <LoadingIndicator/>
       )}

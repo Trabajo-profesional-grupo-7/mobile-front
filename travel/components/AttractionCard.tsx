@@ -40,8 +40,8 @@ export const AttractionCard: React.FC<AttractionCardProps> = (props: AttractionC
                     uri:"https://cdn.mos.cms.futurecdn.net/BiNbcY5fXy9Lra47jqHKGK.jpg"}}
                 /> 
                 <View style={{padding:5, backgroundColor:"transparent", flex:1}}>
-                <Text numberOfLines={2} ellipsizeMode="tail" style={{fontSize:20, fontWeight:"bold"}}>{name}</Text>
-                <Text numberOfLines={1} ellipsizeMode="tail" style={{fontSize:14}}>{location}</Text>
+                    <Text numberOfLines={2} ellipsizeMode="tail" style={{fontSize:20, fontWeight:"bold"}}>{name}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={{fontSize:14}}>{location}</Text>
                 </View>
             </View>
             </TouchableOpacity>

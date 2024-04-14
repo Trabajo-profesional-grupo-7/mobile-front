@@ -130,7 +130,7 @@ const DrawerLayout = () => {
       <Drawer.Screen
         name="information"
         options={{
-          drawerLabel:'Informations',
+          drawerLabel:'Information',
           headerTitle:'Information',
           headerTintColor:"white",
           headerTitleAlign:"center",

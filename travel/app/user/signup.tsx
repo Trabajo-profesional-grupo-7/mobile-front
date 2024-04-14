@@ -24,9 +24,16 @@ export default function LoginScreen() {
     const [repeatPassword, setRepeatPassword] = useState('');
     const [username, setUsername] = useState('');
     
-    const [date, setDate] = useState(new Date());
-    const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    
+    const [date, setDate] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
+
+    const onChangeDate = (event:any , selectedDate: any) => {
+      const currentDate = selectedDate;
+      setShowDatePicker(false);
+      setDate(currentDate);
+    }
 
     const validateFields = () => {
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -70,12 +77,6 @@ export default function LoginScreen() {
       }
     };
 
-    const onChange = (event:any , selectedDate: any) => {
-      const currentDate = selectedDate;
-      setShow(false);
-      setDate(currentDate);
-    }
-
     return (
         <View style={styles.container}>
             <View style={{marginTop:"30%"}}>
@@ -114,20 +115,18 @@ export default function LoginScreen() {
                 <Text style={styles.subtitle}>Birthday</Text>
                 <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
                   <Text style={styles.subtitle}>{date.toISOString().split("T")[0]}</Text>
-                  <Ionicons name='calendar-outline' onPress={() => setShow(true)} size={35} style={{backgroundColor:colors.secondary, padding:10, borderRadius:30}}/>
+                  <Ionicons name='calendar-outline' onPress={() => setShowDatePicker(true)} size={35} style={{backgroundColor:colors.secondary, padding:10, borderRadius:30}}/>
                 </View>
               </View>
             </View>
             <View style={{marginBottom:"20%"}}>
               <AccountButton title="Sign Up" onPress={() => {register()}}/>
             </View>
-            {show && (
+            {showDatePicker && (
               <RNDateTimePicker
-                testID="dateTimePicker"
                 value={date}
-                is24Hour={true}
                 display={"spinner"}
-                onChange={onChange}
+                onChange={onChangeDate}
               />
             )}
             {isLoading && (

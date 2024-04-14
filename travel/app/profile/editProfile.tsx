@@ -49,14 +49,6 @@ export default function EditProfile() {
         placeholder="Location"
       />
 
-      <Text style={styles.title}>Birthday</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={setBirthday}
-        value={birthday}
-        placeholder="Birthday"
-      />
-
       <Text style={styles.title}>Travel preferences</Text>
 
       <View style={styles.chipsContainer}>

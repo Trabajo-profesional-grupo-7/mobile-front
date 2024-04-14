@@ -8,7 +8,6 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Colors from '@/constants/Colors';
 import { useAuth } from '../context/AuthContext';
-import axios, { AxiosError } from 'axios';
 import LoadingIndicator from '@/components/LoadingIndicator';
 const colors = Colors.light;
 
