@@ -56,7 +56,7 @@ export default function FeedScreen() {
 
       <View style={{padding:10, flex:1}}>
         <View style={{alignItems:"flex-start"}}>
-          <Text style={{fontSize: 25, fontWeight: 'bold', marginBottom:10}}>Recommended attracions</Text>
+          <Text style={{fontSize: 25, fontWeight: 'bold', marginBottom:10}}>Recommended attractions</Text>
         </View>
         <View style={{paddingBottom:30}}>
           <FlatList 

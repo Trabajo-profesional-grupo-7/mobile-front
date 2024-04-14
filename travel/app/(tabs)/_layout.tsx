@@ -4,13 +4,14 @@ import { Drawer } from 'expo-router/drawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
-import { View, Image, Text } from 'react-native';
+import { View, Image, Text, TouchableOpacity } from 'react-native';
 import Colors from '../../constants/Colors';
 import { router, useRouter } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
 import { confirmActionAlert } from '@/components/ConfirmActionAlert';
 
 const colors = Colors.light;
+
 
 function CustomDrawerContent(props:any){
   const router = useRouter();
@@ -85,6 +86,16 @@ const DrawerLayout = () => {
           headerStyle:{backgroundColor:Colors.light.primary},
           drawerIcon: ({size, color}) => (
             <Ionicons name='person-outline' size={size} color={color}/>
+          ),
+          headerRight: () => (
+              <TouchableOpacity
+                  onPress={() => {
+                      
+                  }}
+                  style={{ marginRight: 10, padding: 5 }}
+              >
+                  <Ionicons name="ellipsis-vertical" size={24} color="white" />
+              </TouchableOpacity>
           )
         }}
       />
