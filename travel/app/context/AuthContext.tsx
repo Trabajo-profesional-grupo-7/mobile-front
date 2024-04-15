@@ -14,7 +14,7 @@ interface AuthProps {
 
 const TOKEN_KEY = "my-jwt";
 const REFRESH_TOKEN_KEY = "refresh-token";
-export const API_URL = "http://18.191.176.137:8001";
+export const API_URL = "https://api-gateway-e26h.onrender.com";
 const AuthContext = createContext<AuthProps>({});
 
 
