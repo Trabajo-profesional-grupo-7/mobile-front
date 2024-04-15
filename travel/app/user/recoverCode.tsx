@@ -22,7 +22,7 @@ export default function RecoverCode() {
     const codeLen = 6;
 
     const confirmCode = () => {
-      if (code.length == codeLen) { //check len
+      if (code.length == codeLen) { 
         router.navigate({pathname:"../user/newPassword",params:{email,code}})
       } else {
         alert(`Confirmation code must be ${codeLen} characters long`)
