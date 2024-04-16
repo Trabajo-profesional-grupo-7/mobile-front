@@ -74,6 +74,9 @@ const DrawerLayout = () => {
               <TouchableOpacity onPress={() => {router.navigate("../profile/calendar");setmodalVisible(false)}} style={{height:40, justifyContent:"center"}}>
                   <Text style={{fontSize:18}}>Calendar</Text>
               </TouchableOpacity>
+              <TouchableOpacity onPress={() => {setmodalVisible(false)}} style={{height:40, justifyContent:"center"}}>
+                  <Text style={{fontSize:18}}>Account settings</Text>
+              </TouchableOpacity>
             </View>
           </View>
       </Modal>
