@@ -143,6 +143,19 @@ const DrawerLayout = () => {
           )
         }}
       />
+      <Drawer.Screen
+        name="chatBot"
+        options={{
+          drawerLabel:'ChatBot',
+          headerTitle:'ChatBot',
+          headerTintColor:"white",
+          headerTitleAlign:"center",
+          headerStyle:{backgroundColor:Colors.light.primary},
+          drawerIcon: ({size, color}) => (
+            <Ionicons name='chatbubble-ellipses-outline' size={size} color={color}/>
+          )
+        }}
+      />
     </Drawer>
     <DetailsModal/>
   </GestureHandlerRootView>
