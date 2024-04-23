@@ -3,7 +3,7 @@ import { StyleSheet, Image, Dimensions, TextInput, Modal, Button } from 'react-n
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
 import AccountButton from '@/components/AccountButton';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Colors from '@/constants/Colors';
@@ -15,7 +15,7 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 
 const colors = Colors.light;
 
-export default function LoginScreen() {
+export default function SignupScreen() {
     const router = useRouter();
     const {onRegister} = useAuth();
     
@@ -24,6 +24,7 @@ export default function LoginScreen() {
     const [repeatPassword, setRepeatPassword] = useState('');
     const [username, setUsername] = useState('');
     
+
     const [isLoading, setIsLoading] = useState(false);
     
     const [date, setDate] = useState(new Date());
@@ -34,6 +35,7 @@ export default function LoginScreen() {
       setShowDatePicker(false);
       setDate(currentDate);
     }
+
 
     const validateFields = () => {
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -63,19 +65,11 @@ export default function LoginScreen() {
 
     const register = async () => {
       if (validateFields()) {
-        setIsLoading(true);
-        const result = await onRegister!(email, password, username, date.toISOString().split("T")[0], [""]);
-        if (result && result.error) {
-          console.log(result);
-          alert("Error registering")
-        } else {
-          console.log(result);
-          alert("Account succesfully registered")
-          router.back();
-        }
-        setIsLoading(false);
+        router.navigate({pathname:"../user/selectCategories", params:{email,password,username,date:date.toISOString().split("T")[0]}})
       }
     };
+
+    
 
     return (
         <View style={styles.container}>
@@ -120,7 +114,7 @@ export default function LoginScreen() {
               </View>
             </View>
             <View style={{marginBottom:"20%"}}>
-              <AccountButton title="Sign Up" onPress={() => {register()}}/>
+              <AccountButton title="Continue" onPress={() => {register()}}/>
             </View>
             {showDatePicker && (
               <RNDateTimePicker

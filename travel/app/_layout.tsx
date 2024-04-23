@@ -132,6 +132,7 @@ function RootLayoutNav() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="user/login" options={{ headerShown: false }} />
         <Stack.Screen name="user/signup" options={{ headerShown: false }} />
+        <Stack.Screen name="user/selectCategories" options={{ headerShown: false }} />
         <Stack.Screen name="user/recoverPassword" options={{ headerShown: false }} />
         <Stack.Screen name="user/recoverCode" options={{ headerShown: false }} />
         <Stack.Screen name="user/newPassword" options={{ headerShown: false }} />

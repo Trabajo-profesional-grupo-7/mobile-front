@@ -21,6 +21,7 @@ export default function Attraction() { //recibir datos de atracción
   const [location, setLocation] = useState(`${params.city}, ${params.country}`);
   const [description, setDescription] = useState('Description');
   const [id, setId] = useState(params.attraction_id);
+  const [photo, setPhoto] = useState<string>(params.photo as string)
 
   const [isLiked, setIsLiked] = useState(false);
   const [isDone, setIsDone] = useState(false);
@@ -175,7 +176,7 @@ export default function Attraction() { //recibir datos de atracción
         <Image
           style={{ width: "100%", height: 250 }}
           source={{
-            uri: "https://cdn.mos.cms.futurecdn.net/BiNbcY5fXy9Lra47jqHKGK.jpg"
+            uri: photo
           }}
         />
         <View style={{ marginHorizontal: 20 }}>

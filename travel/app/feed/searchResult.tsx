@@ -21,7 +21,7 @@ interface AttractionParams {
     avg_rating: string;
     city: string,
     country: string,
-    photos: [],
+    photo: string,
 }
 
 export default function SearchResult() {
@@ -33,17 +33,15 @@ export default function SearchResult() {
     const getAttractions = async () => {
         await onRefreshToken!();
         try {
-            const result = await axios.post(`${API_URL}/attractions/search?attraction=${params.searchTerm}`);
+            const result = await axios.post(`${API_URL}/attractions/search`,{attraction_name: params.searchTerm});
             if (result.data) {
+                console.log(result.data)
                 const parsedPlaces = result.data.map((place: AttractionParams) => ({
                     attraction_id: place.attraction_id,
                     attraction_name: place.attraction_name,
-                    likes_count: place.likes_count,
-                    done_count: place.done_count,
-                    avg_rating: place.avg_rating,
                     city: place.city,
                     country: place.country,
-                    photos: place.photos
+                    photo: place.photo
                   }));
                 setAttractions(parsedPlaces)
             }
@@ -53,7 +51,7 @@ export default function SearchResult() {
         }
     }
     
-    const renderAttraction = ({item}:{item:{attraction_name:string, attraction_id:string,likes_count:number,done_count:number,avg_rating:number, city:string, country: string, photos:[]}}) => {
+    const renderAttraction = ({item}:{item:{attraction_name:string, attraction_id:string,likes_count:number,done_count:number,avg_rating:number, city:string, country: string, photo:string}}) => {
         return (
             <AttractionCard data={item}></AttractionCard>
         )

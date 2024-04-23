@@ -20,7 +20,7 @@ export interface AttractionCardProps {
         avg_rating:number,
         city: string,
         country: string,
-        photos: [],
+        photo: string,
     }
 } // TODO: add other props
   
@@ -28,7 +28,7 @@ export const AttractionCard: React.FC<AttractionCardProps> = (props: AttractionC
     
     const [name, setName] = useState(props.data.attraction_name);
     const [location, setLocation] = useState(`${props.data.city}, ${props.data.country}`);
-    const [image, setImage] = useState("image"); // TODO: Use
+    const [image, setImage] = useState(props.data.photo); // TODO: Use
 
     return (
         <View style={styles.attractionCard}>
@@ -37,7 +37,7 @@ export const AttractionCard: React.FC<AttractionCardProps> = (props: AttractionC
                 <Image 
                 style={{width:150, height:150, borderTopLeftRadius:15, borderBottomLeftRadius:15, marginLeft:-1,marginTop:-1}}
                 source={{
-                    uri:"https://cdn.mos.cms.futurecdn.net/BiNbcY5fXy9Lra47jqHKGK.jpg"}}
+                    uri:image}}
                 /> 
                 <View style={{padding:5, backgroundColor:"transparent", flex:1}}>
                     <Text numberOfLines={2} ellipsizeMode="tail" style={{fontSize:20, fontWeight:"bold"}}>{name}</Text>

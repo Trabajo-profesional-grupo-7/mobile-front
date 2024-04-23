@@ -3,7 +3,7 @@ import { StyleSheet, Image, Dimensions, TextInput, ActivityIndicator } from 'rea
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
 import AccountButton from '@/components/AccountButton';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Colors from '@/constants/Colors';
@@ -19,6 +19,7 @@ export default function LoginScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [categories, setCategories] = useState<string[]>([]);
 
     const login = async () => {
       console.log("Logging in")
@@ -31,6 +32,13 @@ export default function LoginScreen() {
       }
       setIsLoading(false)
     }
+
+    useEffect(() => {
+      const loadCategories = async () => {
+          setCategories(["A", "sd"])
+      }
+      loadCategories();
+    }, []);
 
     return (
         <View style={styles.container}>
