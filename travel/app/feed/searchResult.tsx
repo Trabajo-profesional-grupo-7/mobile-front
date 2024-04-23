@@ -35,7 +35,6 @@ export default function SearchResult() {
         try {
             const result = await axios.post(`${API_URL}/attractions/search`,{attraction_name: params.searchTerm});
             if (result.data) {
-                console.log(result.data)
                 const parsedPlaces = result.data.map((place: AttractionParams) => ({
                     attraction_id: place.attraction_id,
                     attraction_name: place.attraction_name,

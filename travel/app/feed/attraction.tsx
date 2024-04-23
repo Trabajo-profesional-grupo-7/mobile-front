@@ -28,6 +28,9 @@ export default function Attraction() { //recibir datos de atracción
   const [isScheduled, setIsScheduled] = useState(false);
   const [isRated, setIsRated] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [userRating, setUserRating] = useState(null)
+  const [likedCount, setLikedCount] = useState(0)
+  const [comments, setComments] = useState([])
 
   const [isLoading, setIsLoading] = useState(false);
   const [starModalVisible, setStarModalVisible] = useState(false);
@@ -47,7 +50,13 @@ export default function Attraction() { //recibir datos de atracción
     setIsLoading(true);
     await onRefreshToken!();
     try {
-      //const result = await axios.delete(`${API_URL}/attractions/unlike?attraction_id=${id}`);
+      const result = await axios.get(`${API_URL}/attractions/byid/${id}`);
+      setIsDone(result.data.is_done)
+      setIsLiked(result.data.is_liked)
+      setIsSaved(result.data.is_saved)
+      setUserRating(result.data.user_rating)
+      setLikedCount(result.data.liked_count)
+      setComments(result.data.comments)
     } catch (e) {
       alert(e)
     }
