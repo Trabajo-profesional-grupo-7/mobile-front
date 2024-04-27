@@ -25,9 +25,8 @@ export default function FeedScreen() {
 
   const getAttractions = async () => {
     try {
-      const result = await axios.get(`${API_URL}/attractions/recommendations?page=${current_page}`)
-      console.log("A")
-      console.log(result.data)
+      //const result = await axios.get(`${API_URL}/attractions/recommendations?page=${current_page}`)
+      //console.log(result.data)
     } catch (e) {
       alert(e);
     }

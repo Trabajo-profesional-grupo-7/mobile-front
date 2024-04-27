@@ -52,13 +52,14 @@ export default function Attraction() {
     setIsLoading(true);
     await onRefreshToken!();
     try {
-      const result = await axios.get(`${API_URL}/attractions/byid/${id}`);
-      setIsDone(result.data.is_done)
-      setIsLiked(result.data.is_liked)
-      setIsSaved(result.data.is_saved)
-      setUserRating(result.data.user_rating)
-      setLikedCount(result.data.liked_count)
-      setComments(result.data.comments)
+      const result = (await axios.get(`${API_URL}/attractions/byid/${id}`)).data.detail;
+      
+      setIsDone(result.is_done)
+      setIsLiked(result.is_liked)
+      setIsSaved(result.is_saved)
+      setUserRating(result.user_rating)
+      setLikedCount(result.liked_count)
+      setComments(result.comments)
     } catch (e) {
       alert(e)
     }

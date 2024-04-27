@@ -15,6 +15,7 @@ const windowHeight = Dimensions.get('window').height;
 const colors = Colors.light;
 
 const DateWeatherCard = ({date, weather}:{date:string, weather:{temperature:string, humidity:string, precipitation_probability:string,uv_index:string,visibility:string}}) => {
+    let temperature = weather.temperature.toString().split(".")[0]
     return (
         <View style={styles.weatherCard}>
           <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
@@ -37,7 +38,7 @@ const DateWeatherCard = ({date, weather}:{date:string, weather:{temperature:stri
                 <Text>Visibility: {weather.visibility}</Text>
               </View>
             </View>
-            <Text style={{fontSize:45, fontWeight:"bold"}}>{weather.temperature}°C</Text>
+            <Text style={{fontSize:45, fontWeight:"bold"}}>{temperature}°C</Text>
           </View>
         </View>
     )
