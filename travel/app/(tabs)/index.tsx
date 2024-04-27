@@ -10,6 +10,8 @@ import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator } from 'react-native-paper';
 import { AttractionCard } from '@/components/AttractionCard';
+import { API_URL } from '../context/AuthContext';
+import axios from 'axios';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -18,12 +20,14 @@ const windowHeight = Dimensions.get('window').height;
 export default function FeedScreen() {
   const router = useRouter();
   const [search, setSearch] = useState('');
-  const [attractions, setAttractions] = useState(["","","","","","",""]);
+  const [attractions, setAttractions] = useState([]);
+  const current_page = 0
 
   const getAttractions = async () => {
     try {
-      const result = ["","","","","","",""]
-      setAttractions([...attractions, ...result])
+      const result = await axios.get(`${API_URL}/attractions/recommendations?page=${current_page}`)
+      console.log("A")
+      console.log(result.data)
     } catch (e) {
       alert(e);
     }

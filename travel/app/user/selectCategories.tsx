@@ -6,12 +6,10 @@ import Colors from '@/constants/Colors';
 const colors = Colors.light;
 import { API_URL, useAuth } from '../context/AuthContext';
 import AccountButton from "@/components/AccountButton";
-import { MultipleSelectList } from 'react-native-dropdown-select-list'
 import axios from "axios";
-
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-
+import { MultiSelect } from 'react-native-element-dropdown';
 
 
 export default function SelectCategories() {
@@ -21,11 +19,13 @@ export default function SelectCategories() {
     const username = params.username as string;
     const password = params.password as string;
 
-    const [categories, setCategories] = useState<string[]>([]);
+    const [categories, setCategories] = useState([]);
     const [selected, setSelected] = useState<string[]>([]);
 
     const [isLoading, setIsLoading] = useState(false);
     const {onRegister} = useAuth();
+
+
 
     useEffect(() => {
 
@@ -33,10 +33,11 @@ export default function SelectCategories() {
             setIsLoading(true)
             try {
                 const result = await axios.get(`${API_URL}/metadata`)
-                const formattedCategories = result.data.detail.attraction_types.map((category: string) => {
-                    return category.charAt(0).toUpperCase() + category.slice(1).replace(/_/g, ' ');
-                });
-                setCategories(formattedCategories)
+                const data = result.data.detail.attraction_types.map((category: string) => ({
+                  label: category.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+                  value: category
+                }));
+                setCategories(data)
             } catch (e) {
                 alert(e)
             }
@@ -47,33 +48,47 @@ export default function SelectCategories() {
 
     const register = async () => {
         setIsLoading(true);
-        try {
-            const result = await onRegister!(email, password, username, date, [""]);
-            if (result && result.error) {
-              console.log(result);
-              alert("Error registering")
-            } else {
-              console.log(result);
-              alert("Account succesfully registered")
-              router.back();
-            }
-        } catch (e) {
-            alert(e)
+        if (selected.length < 1) {
+          alert("You must select at least one category")
+        } else {
+          try {
+              const result = await onRegister!(email, password, username, date, selected);
+              if (result && result.error) {
+                console.log(result);
+                alert("Error registering")
+              } else {
+                console.log(result);
+                alert("Account succesfully registered")
+                router.back();
+                router.back();
+              }
+          } catch (e) {
+              alert(e)
+          }
         }
         setIsLoading(false);
     }
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Select categories</Text>
-            <View style={{width:"75%"}}>
-                <MultipleSelectList 
-                    setSelected={(val: SetStateAction<string[]>) => setSelected(val)} 
-                    data={categories} 
-                    save="value"
-                    onSelect={() => console.log(selected)} 
-                    label="Categories"
-                />
+            <View style={{marginLeft:40, alignSelf:"flex-start"}}>
+              <Text style={styles.title}>Tell us about yourself</Text>
+              <Text style={{fontStyle:"italic", fontWeight:"bold", color:colors.primary, alignSelf:"flex-start", marginBottom:30}}>You can select up to 5 categories</Text>
+            </View>
+            <View style={{width:"70%", height:"40%"}}>
+              <MultiSelect
+                data={categories}
+                labelField="label"
+                valueField="value"
+                placeholder="Categories"
+                searchPlaceholder="Search..."
+                maxSelect={5}
+                search
+                value={selected}
+                onChange={item => {
+                  setSelected(item);
+                }}
+              />
             </View>
 
             <View style={{marginBottom:"20%"}}>
@@ -96,6 +111,9 @@ const styles = StyleSheet.create({
     title: {
       fontSize: 40,
       fontWeight: 'bold',
+      paddingTop:60,
+      paddingBottom:20,
+      alignSelf:"flex-start"
     },
     separator: {
       marginVertical: 30,

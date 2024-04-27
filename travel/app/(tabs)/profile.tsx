@@ -21,7 +21,7 @@ export default function ProfileScreen() {
   const [country, setCountry] = useState('Argentina');
   const [birth_date, setBirthdate] = useState('Birthday');
   const [username, setUsername] = useState("Name")
-  const [preferences, setPreferences] = useState(["Item 1", "Item 2"]);
+  const [preferences, setPreferences] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const {onRefreshToken} = useAuth();
 
@@ -32,6 +32,7 @@ export default function ProfileScreen() {
       setEmail(result.data.email);
       setBirthdate(result.data.birth_date);
       setUsername(result.data.username);
+      setPreferences(result.data.preferences)
       setIsLoading(false);
     } catch (e) {
       alert("Error getting profile info");
@@ -71,13 +72,6 @@ export default function ProfileScreen() {
         </View>
         <View style={styles.bottomView}>
             
-
-          <View style={styles.profileItem}>
-            <Ionicons name='location-outline' size={25}/>
-            <Text style={{fontSize:20, flex:1, marginLeft:5}}>Location</Text>
-            <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>{country}</Text>
-          </View>
-
           <View style={styles.profileItem}>
             <Ionicons name='mail-outline' size={25}/>
             <Text style={{fontSize:20, flex:1, marginLeft:5}}>Email</Text>
@@ -89,13 +83,14 @@ export default function ProfileScreen() {
             <Text style={{fontSize:20, flex:1, marginLeft:5}}>Birthday</Text>
             <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>{dateParser(birth_date)}</Text>
           </View>
-
-          <View style={styles.travelPreferences}>
-            <Text style={{fontSize:20, marginLeft:5, fontWeight:'bold'}}>Travel preferences</Text>
-            {preferences.map((item, index) => (
-              <Text key={index} style={{marginLeft:10, fontSize:20}}>• {item}</Text>
-            ))}
-          </View>
+          {preferences.length > 0 && 
+            <View style={styles.travelPreferences}>
+              <Text style={{fontSize:20, marginLeft:5, fontWeight:'bold'}}>Travel preferences</Text>
+              {preferences.map((item, index) => (
+                <Text key={index} style={{marginLeft:10, fontSize:20}}>• {item}</Text>
+              ))}
+            </View>
+          }
         </View>
       </View>
       </>

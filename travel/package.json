@@ -37,6 +37,7 @@
     "react-native-confirmation-code-field": "^7.3.2",
     "react-native-confirmation-code-input": "^1.0.4",
     "react-native-dropdown-select-list": "^2.0.5",
+    "react-native-element-dropdown": "^2.10.4",
     "react-native-format-currency": "^0.0.5",
     "react-native-gesture-handler": "~2.14.0",
     "react-native-ico-flags": "^5.1.2",

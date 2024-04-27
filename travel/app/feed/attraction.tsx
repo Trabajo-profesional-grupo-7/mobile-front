@@ -15,8 +15,10 @@ import LoadingIndicator from '@/components/LoadingIndicator';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 
 
-export default function Attraction() { //recibir datos de atracción
+export default function Attraction() {
   const params = useLocalSearchParams();
+
+
   const [name, setName] = useState(params.attraction_name);
   const [location, setLocation] = useState(`${params.city}, ${params.country}`);
   const [description, setDescription] = useState('Description');

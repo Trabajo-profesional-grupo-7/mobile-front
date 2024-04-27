@@ -19,7 +19,6 @@ export default function LoginScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [categories, setCategories] = useState<string[]>([]);
 
     const login = async () => {
       console.log("Logging in")
@@ -33,12 +32,6 @@ export default function LoginScreen() {
       setIsLoading(false)
     }
 
-    useEffect(() => {
-      const loadCategories = async () => {
-          setCategories(["A", "sd"])
-      }
-      loadCategories();
-    }, []);
 
     return (
         <View style={styles.container}>
