@@ -22,13 +22,13 @@ export interface AttractionCardProps {
         country: string,
         photo: string,
     }
-} // TODO: add other props
+}
   
 export const AttractionCard: React.FC<AttractionCardProps> = (props: AttractionCardProps) => {
     
     const [name, setName] = useState(props.data.attraction_name);
     const [location, setLocation] = useState(`${props.data.city}, ${props.data.country}`);
-    const [image, setImage] = useState(props.data.photo); // TODO: Use
+    const [image, setImage] = useState(props.data.photo);
 
     return (
         <View style={styles.attractionCard}>
@@ -36,8 +36,7 @@ export const AttractionCard: React.FC<AttractionCardProps> = (props: AttractionC
             <View style={{flexDirection:"row", backgroundColor:"transparent"}}>
                 <Image 
                 style={{width:150, height:150, borderTopLeftRadius:15, borderBottomLeftRadius:15, marginLeft:-1,marginTop:-1}}
-                source={{
-                    uri:image}}
+                source={image ? { uri: image } : { uri: 'https://i.imgur.com/qc0GM7G.png' }}
                 /> 
                 <View style={{padding:5, backgroundColor:"transparent", flex:1}}>
                     <Text numberOfLines={2} ellipsizeMode="tail" style={{fontSize:20, fontWeight:"bold"}}>{name}</Text>

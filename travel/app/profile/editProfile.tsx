@@ -9,6 +9,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import axios from 'axios';
 import { API_URL } from '../context/AuthContext';
 import { MultiSelect } from 'react-native-element-dropdown';
+import LoadingIndicator from '@/components/LoadingIndicator';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -83,6 +84,9 @@ export default function EditProfile() {
               />
             </View>
     </View>
+    {isLoading && (
+      <LoadingIndicator/>
+    )}
     </>
   );
 }

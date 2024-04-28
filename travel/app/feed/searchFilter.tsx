@@ -5,31 +5,53 @@ import { Text, View } from '@/components/Themed';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Chip } from 'react-native-paper';
+import axios from 'axios';
+import { API_URL, useAuth } from '../context/AuthContext';
+import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
+import { Picker } from '@react-native-picker/picker';
+import LoadingIndicator from '@/components/LoadingIndicator';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-
-const preferences = ["Cat1", "Cat2", "Cat3"]
 
 
 export default function SearchFilter() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [location, setLocation] = useState('');
-  const [selectedPreferences, setSelectedPreferences] = useState<string[]>([""]); //get de prefs
+  const [isLoading, setIsLoading] = useState(false)
+  const [categories, setCategories] = useState<{label:string,value:string}[]>([])
+  const [selected, setSelected] = useState<string>()
+  const {onRefreshToken} = useAuth();
 
-  const handleSelect = (val: string) => {
-    setSelectedPreferences((prev: string[]) =>
-      prev.find((p) => p === val)
-        ? prev.filter((cat) => cat !== val)
-        : [...prev, val]
-    );
-  };
+
+  useEffect(() => {
+
+    const getCategories = async () => {
+        setIsLoading(true)
+        await onRefreshToken!();
+        try {
+            const result = await axios.get(`${API_URL}/metadata`)
+            const data = result.data.detail.attraction_types.map((category: string) => ({
+              label: category.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+              value: category
+            }));
+            setCategories([
+              { label: "No category", value: "None" },
+              ...data
+            ])
+        } catch (e) {
+            alert(e)
+        }
+        setIsLoading(false)
+    }
+    getCategories()
+}, []);
 
   return (
     <>
-    <TouchableOpacity style={styles.floatingButton} onPress={() => router.navigate({pathname:"../feed/searchResult",params:{searchTerm, location, selectedPreferences}})}>
+    <TouchableOpacity style={styles.floatingButton} onPress={() => router.navigate({pathname:"../feed/searchResult",params:{searchTerm, selected}})}>
         <Ionicons name='search-outline' size={35}/>
     </TouchableOpacity>
     <View style={styles.container}>
@@ -41,38 +63,31 @@ export default function SearchFilter() {
         placeholder="Search term"
       />
 
-      <Text style={styles.title}>Location</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={setLocation}
-        value={location}
-        placeholder="Location"
-      />
 
+      <Text style={styles.title}>Category</Text>
 
-      <Text style={styles.title}>Tags</Text>
-
-      <View style={styles.chipsContainer}>
-        {preferences.map((pref) => (
-          <Chip
-            key={pref}
-            mode="outlined"
-            style={[styles.chip,[selectedPreferences.find((c) => pref === c)  ?  {backgroundColor:Colors.light.secondary} : {}]]}
-            textStyle={{ fontWeight: "400", padding: 1 }}
-            selected={
-              selectedPreferences.find((c) => pref === c) ? true : false
-            }
-            onPress={() => handleSelect(pref)}
-            rippleColor={Colors.light.primary}
-            showSelectedOverlay
-            showSelectedCheck={false}
-          >
-            {pref}
-          </Chip>
-        ))}
-
+      <View style={{width:"70%", height:"40%", marginLeft:20}}>
+        <Picker
+          enabled={true}
+          selectedValue={selected}
+          onValueChange={value => {setSelected(value)}}
+        >
+          {categories.map((cat:{label:string,value:string}, index) => (
+            <Picker.Item
+              key={index}
+              label={cat.label}
+              value={cat.value}
+              style={{fontSize:25}}
+            />
+          ))}
+      </Picker>
       </View>
-    </View>
+      </View>
+
+      {isLoading && (
+        <LoadingIndicator/>
+      )}
+    
     </>
   );
 }

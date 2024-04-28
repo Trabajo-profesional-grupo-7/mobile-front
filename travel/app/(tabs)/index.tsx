@@ -14,27 +14,53 @@ import { API_URL } from '../context/AuthContext';
 import axios from 'axios';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+const attractionsPerPage = 10
 
-
+export interface AttractionParams {
+  attraction_id: string; 
+  attraction_name: string; 
+  likes_count: string; 
+  done_count: string; 
+  avg_rating: string;
+  city: string,
+  country: string,
+  photo: string,
+}
 
 export default function FeedScreen() {
   const router = useRouter();
-  const [search, setSearch] = useState('');
   const [attractions, setAttractions] = useState([]);
-  const current_page = 0
+  const [noMoreAttractions, setNoMoreAttractions] = useState(false)
+  const [currentPage, setCurrentPage] = useState(0)
 
   const getAttractions = async () => {
     try {
-      //const result = await axios.get(`${API_URL}/attractions/recommendations?page=${current_page}`)
-      //console.log(result.data)
+      const result = await axios.get(`${API_URL}/attractions/recommendations?page=${currentPage}`)
+      if (result.data) {
+        const parsedPlaces: [] = result.data.detail.map((place: AttractionParams) => ({
+            attraction_id: place.attraction_id,
+            attraction_name: place.attraction_name,
+            city: place.city,
+            country: place.country,
+            photo: place.photo
+        }));
+        if (parsedPlaces.length < 10) {
+          setNoMoreAttractions(true)
+        }
+        setAttractions([
+          ...attractions,
+          ...parsedPlaces
+        ])
+
+      }
     } catch (e) {
       alert(e);
     }
   }
 
-  const renderAttraction = () => {
+  const renderAttraction = ({item}:{item:{attraction_name:string, attraction_id:string,likes_count:number,done_count:number,avg_rating:number, city:string, country: string, photo:string}}) => {
     return (
-      <Text ></Text>
+        <AttractionCard data={item}></AttractionCard>
     )
   }
 
@@ -46,7 +72,10 @@ export default function FeedScreen() {
     )
   }
 
+
+
   const loadMoreAttractions = () => {
+    setCurrentPage(currentPage+1)
     getAttractions()
   }
 
@@ -66,8 +95,8 @@ export default function FeedScreen() {
             data={attractions} 
             renderItem={renderAttraction}
             style={{width:"100%"}}
-            ListFooterComponent={renderLoader}
-            onEndReached={loadMoreAttractions}
+            ListFooterComponent={noMoreAttractions? null : renderLoader}
+            onEndReached={noMoreAttractions? null : loadMoreAttractions}
             onEndReachedThreshold={0}
           >
           </FlatList>

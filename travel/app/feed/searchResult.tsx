@@ -10,19 +10,10 @@ import { Chip } from 'react-native-paper';
 import { AttractionCard, AttractionCardProps } from '@/components/AttractionCard';
 import { API_URL, useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { AttractionParams } from '../(tabs)';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-interface AttractionParams {
-    attraction_id: string; 
-    attraction_name: string; 
-    likes_count: string; 
-    done_count: string; 
-    avg_rating: string;
-    city: string,
-    country: string,
-    photo: string,
-}
 
 export default function SearchResult() {
     const params = useLocalSearchParams();
@@ -33,7 +24,12 @@ export default function SearchResult() {
     const getAttractions = async () => {
         await onRefreshToken!();
         try {
-            const result = await axios.post(`${API_URL}/attractions/search`,{attraction_name: params.searchTerm});
+            let result
+            if (params.selected != "None"){
+                result = await axios.post(`${API_URL}/attractions/search?type=${params.selected}`,{attraction_name: params.searchTerm});
+            } else {
+                result = await axios.post(`${API_URL}/attractions/search`,{attraction_name: params.searchTerm});
+            }
             if (result.data) {
                 const parsedPlaces = result.data.map((place: AttractionParams) => ({
                     attraction_id: place.attraction_id,
