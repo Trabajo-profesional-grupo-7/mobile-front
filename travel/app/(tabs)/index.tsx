@@ -10,7 +10,7 @@ import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator } from 'react-native-paper';
 import { AttractionCard } from '@/components/AttractionCard';
-import { API_URL } from '../context/AuthContext';
+import { API_URL, useAuth } from '../context/AuthContext';
 import axios from 'axios';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -32,11 +32,15 @@ export default function FeedScreen() {
   const [attractions, setAttractions] = useState([]);
   const [noMoreAttractions, setNoMoreAttractions] = useState(false)
   const [currentPage, setCurrentPage] = useState(0)
+  const [cantGetAttractions, setCantGetAttractions] = useState(false)
+  const {onRefreshToken} = useAuth();
 
   const getAttractions = async () => {
     try {
+      await onRefreshToken!();
       const result = await axios.get(`${API_URL}/attractions/recommendations?page=${currentPage}`)
       if (result.data) {
+        setCantGetAttractions(false)
         const parsedPlaces: [] = result.data.detail.map((place: AttractionParams) => ({
             attraction_id: place.attraction_id,
             attraction_name: place.attraction_name,
@@ -44,7 +48,7 @@ export default function FeedScreen() {
             country: place.country,
             photo: place.photo
         }));
-        if (parsedPlaces.length < 10) {
+        if (parsedPlaces.length < attractionsPerPage) {
           setNoMoreAttractions(true)
         }
         setAttractions([
@@ -53,8 +57,17 @@ export default function FeedScreen() {
         ])
 
       }
-    } catch (e) {
-      alert(e);
+    } catch (error:any) {
+      if (error.response){
+        if (error.response.status === 404) {
+          setCantGetAttractions(true)
+          setNoMoreAttractions(true)
+        } else {
+          alert(error.message)
+        }
+      } else {
+        alert("Unknown error")
+      }
     }
   }
 
@@ -83,6 +96,20 @@ export default function FeedScreen() {
     getAttractions()
   }, []);
 
+  const reloadFeed = async () => {
+    setAttractions([])
+    setNoMoreAttractions(false)
+    setCantGetAttractions(false)
+    setCurrentPage(0)
+    try {
+      await onRefreshToken!();
+      await axios.post(`${API_URL}/attractions/run-recommendation-system`)
+    } catch (e) {
+      alert(e)
+    }
+    await getAttractions()
+  }
+
   return (
     <View style={styles.container}>
 
@@ -91,6 +118,13 @@ export default function FeedScreen() {
           <Text style={{fontSize: 25, fontWeight: 'bold', marginBottom:10}}>Recommended attractions</Text>
         </View>
         <View style={{paddingBottom:30}}>
+          {cantGetAttractions && (
+            <>
+              <Text style={{fontSize:40, paddingTop:30, paddingHorizontal:25}}>Looks like we can't recommend attractions to you yet</Text>
+              <Text style={{fontSize:20, paddingHorizontal:25, fontStyle:"italic", fontWeight:"bold",color:Colors.light.secondary}}>Try searching for and interacting with some attractions first</Text>
+              <Text onPress={reloadFeed} style={{fontSize:25, paddingHorizontal:25, fontStyle:"italic",fontWeight:"bold",color:Colors.light.primary}}>Reload</Text>
+            </>
+          )}
           <FlatList 
             data={attractions} 
             renderItem={renderAttraction}

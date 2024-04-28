@@ -187,9 +187,7 @@ export default function Attraction() {
         />
         <Image
           style={{ width: "100%", height: 250 }}
-          source={{
-            uri: photo
-          }}
+          source={photo ? { uri: photo } : { uri: 'https://i.imgur.com/qc0GM7G.png' }}
         />
         <View style={{ marginHorizontal: 20 }}>
           <Text style={styles.title}>{name}</Text>
