@@ -1,9 +1,15 @@
 import { View, Text, StyleSheet, TextInput, ScrollView } from "react-native";
 import Colors from '../../constants/Colors';
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import { API_URL, useAuth } from "../context/AuthContext";
 const colors = Colors.light;
 
+interface Message {
+    message: string;
+    isSender: boolean;
+}
 
 const ChatMessage = ({ message, isSender }:{message:string,isSender:boolean}) => {
     return (
@@ -15,22 +21,53 @@ const ChatMessage = ({ message, isSender }:{message:string,isSender:boolean}) =>
 
 export default function ChatBot() {
     const [text, setText] = useState("");
-    const [messages, setMessages] = useState([
-        { message: 'Hi there!', isSender: false },
-        { message: 'Hello!', isSender: true },
-        { message: 'How are you?', isSender: false },
-        { message: 'I am good, thanks!', isSender: true },
-    ])
+    const [messages, setMessages] = useState<Message[]>([])
+    const {onRefreshToken} = useAuth();
+    const scrollViewRef = useRef(null);
 
-
-    const sendMessage = () => {
-        setMessages(messages.concat({message:text,isSender:true}))
+    const sendMessage = async () => {
+        let textAux = text
         setText("")
+        await onRefreshToken!();
+        try {
+            setMessages(prevMessages => [
+                ...prevMessages,
+                { message: textAux, isSender: true }
+            ]);
+            if (scrollViewRef.current) {
+                (scrollViewRef.current as ScrollView).scrollToEnd({ animated: true });
+            }
+            let result = await axios.post(`${API_URL}/chatbot/send_message`,{text:textAux} )
+            if (result.data) {
+                setMessages(prevMessages => [
+                    ...prevMessages,
+                    { message: result.data.message, isSender: false }
+                ]);
+            }
+            if (scrollViewRef.current) {
+                (scrollViewRef.current as ScrollView).scrollToEnd({ animated: true });
+            }
+        } catch (e) {
+            alert(e)
+        }
     }
+
+    useEffect(() => {
+        
+        const initCoversation = async () => {
+            await onRefreshToken!();
+            try {
+                await axios.post(`${API_URL}/chatbot/init`)
+            } catch (e) {
+                alert(e)
+            }
+        }
+        initCoversation()
+    }, []);
 
     return (
         <View style={styles.container}>
-            <ScrollView style={{ flex: 1 }}>
+            <ScrollView ref={scrollViewRef} style={{ flex: 1 }}>
                 <View style={{paddingHorizontal:15, paddingVertical:5}}>
                     {messages.map(({ message, isSender }, index) => (
                         <ChatMessage key={index} message={message} isSender={isSender} />

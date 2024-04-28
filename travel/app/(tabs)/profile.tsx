@@ -29,7 +29,6 @@ export default function ProfileScreen() {
     await onRefreshToken!();
     try {
       const result = await axios.get(`${API_URL}/users`);
-      console.log(result.data)
       setEmail(result.data.email);
       setBirthdate(result.data.birth_date);
       setUsername(result.data.username);
