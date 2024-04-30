@@ -39,7 +39,7 @@ export default function EditProfile() {
         setIsLoading(true)
         try {
             const result = await axios.get(`${API_URL}/metadata`)
-            const data = result.data.detail.attraction_types.map((category: string) => ({
+            const data = result.data.attraction_types.map((category: string) => ({
               label: category.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
               value: category
             }));
@@ -50,11 +50,25 @@ export default function EditProfile() {
         setIsLoading(false)
     }
     getCategories()
-}, []);
+  }, []);
+
+  const editProfile = async () => {
+    setIsLoading(true)
+    try {
+      const result = await axios.patch(`${API_URL}/users`, {
+        "username": name,
+        "preferences": selected
+      })
+      router.back();
+    } catch (e) {
+      alert(e)
+    }
+    setIsLoading(false)
+  }
 
   return (
     <>
-    <TouchableOpacity style={styles.floatingButton} onPress={() => router.back()}>
+    <TouchableOpacity style={styles.floatingButton} onPress={editProfile}>
         <Ionicons name='save-outline' size={35}/>
     </TouchableOpacity>
     <View style={styles.container}>

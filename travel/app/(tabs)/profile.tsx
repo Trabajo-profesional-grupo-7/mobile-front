@@ -6,7 +6,7 @@ import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { API_URL, useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import LoadingIndicator from '@/components/LoadingIndicator';
@@ -16,6 +16,7 @@ const windowHeight = Dimensions.get('window').height;
 const colors = Colors.light;
 
 export default function ProfileScreen() {
+  const [lastUpdatedTime, setLastUpdatedTime] = useState(0);
   const router = useRouter();
   const [email, setEmail] = useState('Email');
   const [country, setCountry] = useState('Argentina');
@@ -25,7 +26,9 @@ export default function ProfileScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const {onRefreshToken} = useAuth();
 
+ 
   const getProfileData = async () => {
+    setLastUpdatedTime(Date.now());
     await onRefreshToken!();
     try {
       const result = await axios.get(`${API_URL}/users`);
@@ -38,6 +41,13 @@ export default function ProfileScreen() {
       alert("Error getting profile info");
     }
   }
+
+  useFocusEffect(() => {
+    if (Date.now() - lastUpdatedTime >= 30000) {
+      getProfileData();
+    }
+  });
+
 
   useEffect(() => {
     getProfileData();
