@@ -38,6 +38,7 @@ export default function FeedScreen() {
   const getAttractions = async () => {
     try {
       await onRefreshToken!();
+      console.log(`${API_URL}/attractions/recommendations?page=${currentPage}`)
       const result = await axios.get(`${API_URL}/attractions/recommendations?page=${currentPage}`)
       if (result.data) {
         const parsedPlaces: [] = result.data.map((place: AttractionParams) => ({
@@ -83,8 +84,6 @@ export default function FeedScreen() {
       </View>
     )
   }
-
-
 
   const loadMoreAttractions = () => {
     setCurrentPage(currentPage+1)

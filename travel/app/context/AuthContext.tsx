@@ -124,6 +124,7 @@ export const AuthProvider = ({children}: any) => {
                 await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, result.data.refresh_token);
                 console.log("Refreshed token")
             } catch (e) {
+                console.log("a")
                 console.log(e)
             }
         }

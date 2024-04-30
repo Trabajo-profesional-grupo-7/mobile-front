@@ -80,7 +80,13 @@ function RootLayoutNav() {
           headerTintColor: "white"
         }} />
         <Stack.Screen name="profile/savedAttractions" options={{
-          headerTitle: "Saved attractions",
+          headerTitle: "Attractions saved",
+          headerStyle: { backgroundColor: Colors.light.primary },
+          headerTitleAlign: "center",
+          headerTintColor: "white"
+        }} />
+        <Stack.Screen name="profile/doneAttractions" options={{
+          headerTitle: "Attractions done",
           headerStyle: { backgroundColor: Colors.light.primary },
           headerTitleAlign: "center",
           headerTintColor: "white"

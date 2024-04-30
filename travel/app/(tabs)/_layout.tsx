@@ -68,7 +68,7 @@ const DrawerLayout = () => {
               <TouchableOpacity onPress={() => {router.navigate("../profile/savedAttractions");setmodalVisible(false)}} style={{height:40, justifyContent:"center"}}>
                   <Text style={{fontSize:18}}>Attractions saved</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {setmodalVisible(false)}} style={{height:40, justifyContent:"center"}}>
+              <TouchableOpacity onPress={() => {router.navigate("../profile/doneAttractions");setmodalVisible(false)}} style={{height:40, justifyContent:"center"}}>
                   <Text style={{fontSize:18}}>Attractions done</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => {router.navigate("../profile/calendar");setmodalVisible(false)}} style={{height:40, justifyContent:"center"}}>

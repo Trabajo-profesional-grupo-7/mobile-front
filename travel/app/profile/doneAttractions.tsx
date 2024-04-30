@@ -7,15 +7,15 @@ import { AttractionCard } from "@/components/AttractionCard";
 import Colors from "@/constants/Colors";
 const attractionsPerPage = 10
 
-export default function SavedAttractions() {
+export default function DoneAttractions() {
     const [attractions, setAttractions] = useState([]);
     const [noMoreAttractions, setNoMoreAttractions] = useState(false)
     const {onRefreshToken} = useAuth();
 
-    const getSavedAttractions = async () => {
+    const getDoneAttractions = async () => {
         await onRefreshToken!();
         try {
-            const result = await axios.get(`${API_URL}/attractions/save-list`)
+            const result = await axios.get(`${API_URL}/attractions/done-list`)
             if (result.data) {
                 const parsedPlaces: [] = result.data.map((place: AttractionParams) => ({
                     attraction_id: place.attraction_id,
@@ -56,7 +56,7 @@ export default function SavedAttractions() {
     }
 
     useEffect(() => {
-        getSavedAttractions();
+        getDoneAttractions();
       }, []);
 
     return (
