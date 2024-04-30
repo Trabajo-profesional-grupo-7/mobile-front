@@ -25,19 +25,17 @@ export default function ChatBot() {
     const {onRefreshToken} = useAuth();
     const scrollViewRef = useRef(null);
 
-    const sendMessage = async () => {
-        let textAux = text
-        setText("")
+    const sendMessage = async (sentText:string) => {
         await onRefreshToken!();
         try {
             setMessages(prevMessages => [
                 ...prevMessages,
-                { message: textAux, isSender: true }
+                { message: sentText, isSender: true }
             ]);
             if (scrollViewRef.current) {
                 (scrollViewRef.current as ScrollView).scrollToEnd({ animated: true });
             }
-            let result = await axios.post(`${API_URL}/chatbot/send_message`,{text:textAux} )
+            let result = await axios.post(`${API_URL}/chatbot/send_message`,{text:sentText} )
             if (result.data) {
                 setMessages(prevMessages => [
                     ...prevMessages,
@@ -82,7 +80,7 @@ export default function ChatBot() {
                     style={styles.input}
                     multiline
                 />
-                <Ionicons name='send-outline' onPress={sendMessage} size={30} style={{ borderRadius: 50, backgroundColor: colors.background, padding: 10, margin: 10 }} />
+                <Ionicons name='send-outline' onPress={() => {sendMessage(text);setText("")}} size={30} style={{ borderRadius: 50, backgroundColor: colors.background, padding: 10, margin: 10 }} />
             </View>
         </View>
     )

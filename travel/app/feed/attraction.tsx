@@ -30,7 +30,7 @@ export default function Attraction() {
   const [isScheduled, setIsScheduled] = useState(false);
   const [isRated, setIsRated] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const [userRating, setUserRating] = useState(null)
+  const [userRating, setUserRating] = useState(1)
   const [likedCount, setLikedCount] = useState(0)
   const [comments, setComments] = useState([])
 
@@ -52,7 +52,7 @@ export default function Attraction() {
     setIsLoading(true);
     await onRefreshToken!();
     try {
-      const result = (await axios.get(`${API_URL}/attractions/byid/${id}`)).data.detail;
+      const result = (await axios.get(`${API_URL}/attractions/byid/${id}`)).data;
       
       setIsDone(result.is_done)
       setIsLiked(result.is_liked)
@@ -60,6 +60,11 @@ export default function Attraction() {
       setUserRating(result.user_rating)
       setLikedCount(result.liked_count)
       setComments(result.comments)
+      setUserRating(result.user_rating)
+      if (result.user_rating != null) {
+        setIsRated(true)
+      }
+      
     } catch (e) {
       alert(e)
     }
@@ -117,6 +122,7 @@ export default function Attraction() {
     try {
       await axios.post(`${API_URL}/attractions/rate?attraction_id=${id}&rating=${rating}`);
       setIsRated(true);
+      setUserRating(rating)
     } catch (e) {
       alert(e)
     }
@@ -142,8 +148,8 @@ export default function Attraction() {
 
   
   const StarModal = () => {
-    const [rating, setRating] = useState(1);
-
+    const [rating, setRating] = useState(userRating);
+    
     return (
       <Modal
           animationType="slide"

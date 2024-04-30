@@ -41,7 +41,7 @@ export default function FeedScreen() {
       const result = await axios.get(`${API_URL}/attractions/recommendations?page=${currentPage}`)
       if (result.data) {
         setCantGetAttractions(false)
-        const parsedPlaces: [] = result.data.detail.map((place: AttractionParams) => ({
+        const parsedPlaces: [] = result.data.map((place: AttractionParams) => ({
             attraction_id: place.attraction_id,
             attraction_name: place.attraction_name,
             city: place.city,
@@ -66,7 +66,7 @@ export default function FeedScreen() {
           alert(error.message)
         }
       } else {
-        alert("Unknown error")
+        alert(error)
       }
     }
   }

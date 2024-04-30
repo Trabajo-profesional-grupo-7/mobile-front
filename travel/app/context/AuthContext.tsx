@@ -14,7 +14,7 @@ interface AuthProps {
 
 const TOKEN_KEY = "my-jwt";
 const REFRESH_TOKEN_KEY = "refresh-token";
-export const API_URL = "https://api-gateway-e26h.onrender.com";
+export const API_URL = "http://18.191.176.137:8001";
 const AuthContext = createContext<AuthProps>({});
 
 
@@ -40,14 +40,30 @@ export const AuthProvider = ({children}: any) => {
             console.log("stored:", token);
             console.log("refresh:", refresh_token);
 
-            if (token) { // TODO: CHECK refresh token
+            if (token != null && refresh_token != null) {
                 axios.defaults.headers.common['Authorization'] =  `Bearer ${token}`;
-                setAuthState({
-                    token: token,
-                    refresh_token: refresh_token, 
-                    authenticated:true,
-                });
-                router.replace("/(tabs)")
+                try {
+                    await axios.get(`${API_URL}/users/verify_id_token`);
+                    router.replace("/(tabs)")
+                } catch (e) {
+                    axios.defaults.headers.common['Authorization'] =  `Bearer ${refresh_token}`;
+                    console.log(axios.defaults.headers.common['Authorization'])
+                    try {
+                        const result = await axios.post(`${API_URL}/users/refresh_token`);
+                        setAuthState({
+                            token: result.data.token,
+                            refresh_token: result.data.refresh_token,
+                            authenticated:true,
+                        });
+                        axios.defaults.headers.common['Authorization'] =  `Bearer ${result.data.token}`;
+                        await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
+                        await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, result.data.refresh_token);
+                        console.log("Refreshed token")
+                        router.replace("/(tabs)")
+                    } catch (e) {
+                        console.log(e)
+                    }
+                }
             }
         }
         loadToken();

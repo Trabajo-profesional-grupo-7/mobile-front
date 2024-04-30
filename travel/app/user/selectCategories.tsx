@@ -33,7 +33,7 @@ export default function SelectCategories() {
             setIsLoading(true)
             try {
                 const result = await axios.get(`${API_URL}/metadata`)
-                const data = result.data.detail.attraction_types.map((category: string) => ({
+                const data = result.data.attraction_types.map((category: string) => ({
                   label: category.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
                   value: category
                 }));
@@ -57,7 +57,6 @@ export default function SelectCategories() {
                 console.log(result);
                 alert("Error registering")
               } else {
-                console.log(result);
                 alert("Account succesfully registered")
                 router.back();
                 router.back();

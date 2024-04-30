@@ -86,8 +86,8 @@ export default function ProfileScreen() {
           {preferences.length > 0 && 
             <View style={styles.travelPreferences}>
               <Text style={{fontSize:20, marginLeft:5, fontWeight:'bold'}}>Travel preferences</Text>
-              {preferences.map((item, index) => (
-                <Text key={index} style={{marginLeft:10, fontSize:20}}>• {item}</Text>
+              {preferences.map((item:string, index) => (
+                <Text key={index} style={{marginLeft:10, fontSize:20}}>• {item.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</Text>
               ))}
             </View>
           }
