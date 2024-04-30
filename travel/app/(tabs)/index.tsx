@@ -40,7 +40,6 @@ export default function FeedScreen() {
       await onRefreshToken!();
       const result = await axios.get(`${API_URL}/attractions/recommendations?page=${currentPage}`)
       if (result.data) {
-        setCantGetAttractions(false)
         const parsedPlaces: [] = result.data.map((place: AttractionParams) => ({
             attraction_id: place.attraction_id,
             attraction_name: place.attraction_name,
@@ -118,7 +117,7 @@ export default function FeedScreen() {
           <Text style={{fontSize: 25, fontWeight: 'bold', marginBottom:10}}>Recommended attractions</Text>
         </View>
         <View style={{paddingBottom:30}}>
-          {cantGetAttractions && (
+          {attractions.length == 0 && (
             <>
               <Text style={{fontSize:40, paddingTop:30, paddingHorizontal:25}}>Looks like we can't recommend attractions to you yet</Text>
               <Text style={{fontSize:20, paddingHorizontal:25, fontStyle:"italic", fontWeight:"bold",color:Colors.light.secondary}}>Try searching for and interacting with some attractions first</Text>

@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { API_URL, useAuth } from "../context/AuthContext";
+import LoadingDots from "react-native-loading-dots";
 const colors = Colors.light;
 
 interface Message {
@@ -24,8 +25,10 @@ export default function ChatBot() {
     const [messages, setMessages] = useState<Message[]>([])
     const {onRefreshToken} = useAuth();
     const scrollViewRef = useRef(null);
+    const [loading, setLoading] = useState(false)
 
     const sendMessage = async (sentText:string) => {
+        setLoading(true)
         await onRefreshToken!();
         try {
             setMessages(prevMessages => [
@@ -48,6 +51,7 @@ export default function ChatBot() {
         } catch (e) {
             alert(e)
         }
+        setLoading(false)
     }
 
     useEffect(() => {
@@ -72,6 +76,15 @@ export default function ChatBot() {
                     ))}
                 </View>
             </ScrollView>
+            {loading && (
+                <View style={styles.dotsWrapper}>
+                    <LoadingDots 
+                        size={10}
+                        bounceHeight={5}
+                        colors={[colors.primary,"#E09032","#DF9E51","#DDAC72"]}
+                    />
+                </View>
+            )}
             <View style={styles.inputContainer}>
                 <TextInput
                     value={text}
@@ -115,18 +128,27 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         padding: 12,
         borderRadius: 8,
-      },
-      senderMessage: {
-        alignSelf: 'flex-end',
-        backgroundColor: colors.primary,
-      },
-      receiverMessage: {
-        alignSelf: 'flex-start',
-        backgroundColor: '#9ec3ff', 
-      },
-      messageText: {
-        fontSize: 16,
-        color: '#333333',
-      },
+    },
+    senderMessage: {
+    alignSelf: 'flex-end',
+    backgroundColor: colors.primary,
+    },
+    receiverMessage: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#9ec3ff', 
+    },
+    messageText: {
+    fontSize: 16,
+    color: '#333333',
+    },
+    dotsWrapper: {
+        width: "20%",
+        paddingLeft:20,
+        paddingBottom:5,
+        marginBottom:20,
+        backgroundColor:"transparent",
+        position:"absolute",
+        bottom:100
+    },
 
 })
