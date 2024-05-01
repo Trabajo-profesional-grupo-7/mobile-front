@@ -1,0 +1,86 @@
+import { StyleSheet, Image, Text, Dimensions, TextInput, TouchableOpacity } from 'react-native';
+
+import EditScreenInfo from '@/components/EditScreenInfo';
+import { View } from '@/components/Themed';
+import Colors from '@/constants/Colors';
+import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { router, useLocalSearchParams, useRouter } from 'expo-router';
+import LoadingIndicator from '@/components/LoadingIndicator';
+import { API_URL, useAuth } from '../context/AuthContext';
+import axios from 'axios';
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+const colors = Colors.light;
+
+export default function FlightDetails() {
+    const params = useLocalSearchParams();
+    return (
+        <>
+        <View style={styles.container}>
+            <Text style={styles.title}>Departure airport</Text>
+            <Text style={styles.subtitle}>{params.departureAirport}</Text>
+            <Text style={styles.title}>Departure date</Text>
+            <Text style={styles.subtitle}>{params.departureDate}</Text>
+            <Text style={styles.title}>Departure time</Text>
+            <Text style={styles.subtitle}>{params.departureTime}</Text>
+
+            <Text style={styles.title}>Arrival airport</Text>
+            <Text style={styles.subtitle}>{params.arrivalAirport}</Text>
+            <Text style={styles.title}>Arrival date</Text>
+            <Text style={styles.subtitle}>{params.arrivalDate}</Text>
+            <Text style={styles.title}>Arrival time</Text>
+            <Text style={styles.subtitle}>{params.arrivalTime}</Text>
+        </View>
+        </>
+    )
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop:20
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginLeft:20
+  },
+  subtitle: {
+    fontSize: 25,
+    marginLeft:20
+  },
+  chip: {
+    marginLeft:15,
+    marginTop:10,
+  },
+  chipsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginVertical: 10,
+    marginBottom: windowWidth * 0.05,
+  },
+  input: {
+    height: windowHeight*0.05,
+    width: windowWidth*0.9,
+    margin: 12,
+    marginTop:0,
+    borderWidth: 0,
+    borderBottomWidth:1,
+    padding: 10,
+    borderRadius:10,
+    borderBottomColor:Colors.light.primary,
+  },
+  floatingButton: {
+    position: 'absolute',
+    zIndex:1,
+    width: 70,
+    height: 70,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor:Colors.light.secondary,
+    borderRadius:50,
+    right:30,
+    top:windowHeight-200
+  }
+});

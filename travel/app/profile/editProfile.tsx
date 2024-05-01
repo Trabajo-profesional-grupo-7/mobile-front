@@ -2,21 +2,28 @@ import { Dimensions, StyleSheet, TextInput, TouchableOpacity } from 'react-nativ
 import { Chip } from 'react-native-paper';
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
+import axios from 'axios';
+import { API_URL } from '../context/AuthContext';
+import { MultiSelect } from 'react-native-element-dropdown';
+import LoadingIndicator from '@/components/LoadingIndicator';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const preferences = ["Cat1", "Cat2", "Cat3"]
 
 export default function EditProfile() {
-
-  const [name, setName] = React.useState('Name');
-  const [location, setLocation] = useState('Location');
-  const [birthday, setBirthday] = useState('Birthday');
+  const params = useLocalSearchParams();
+  const [name, setName] = React.useState(`${params.username}`);
+  const [location, setLocation] = useState(`${params.country}`);
+  const [birthday, setBirthday] = useState(`${params.birth_date}`);
+  const [selected, setSelected] = useState<string[]>((params.preferences as string).split(","))
   const [selectedPreferences, setSelectedPreferences] = useState<string[]>(["Cat2"]); //get de prefs
+  const [isLoading, setIsLoading] = useState(false)
+  const [categories, setCategories] = useState([])
 
   const handleSelect = (val: string) => {
     setSelectedPreferences((prev: string[]) =>
@@ -26,9 +33,42 @@ export default function EditProfile() {
     );
   };
 
+  useEffect(() => {
+
+    const getCategories = async () => {
+        setIsLoading(true)
+        try {
+            const result = await axios.get(`${API_URL}/metadata`)
+            const data = result.data.attraction_types.map((category: string) => ({
+              label: category.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+              value: category
+            }));
+            setCategories(data)
+        } catch (e) {
+            alert(e)
+        }
+        setIsLoading(false)
+    }
+    getCategories()
+  }, []);
+
+  const editProfile = async () => {
+    setIsLoading(true)
+    try {
+      const result = await axios.patch(`${API_URL}/users`, {
+        "username": name,
+        "preferences": selected
+      })
+      router.back();
+    } catch (e) {
+      alert(e)
+    }
+    setIsLoading(false)
+  }
+
   return (
     <>
-    <TouchableOpacity style={styles.floatingButton} onPress={() => router.back()}>
+    <TouchableOpacity style={styles.floatingButton} onPress={editProfile}>
         <Ionicons name='save-outline' size={35}/>
     </TouchableOpacity>
     <View style={styles.container}>
@@ -40,45 +80,27 @@ export default function EditProfile() {
         placeholder="Name"
       />
 
-      <Text style={styles.title}>Location</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={setLocation}
-        value={location}
-        placeholder="Location"
-      />
-
-      <Text style={styles.title}>Birthday</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={setBirthday}
-        value={birthday}
-        placeholder="Birthday"
-      />
-
       <Text style={styles.title}>Travel preferences</Text>
 
-      <View style={styles.chipsContainer}>
-        {preferences.map((pref) => (
-          <Chip
-            key={pref}
-            mode="outlined"
-            style={[styles.chip,[selectedPreferences.find((c) => pref === c)  ?  {backgroundColor:Colors.light.secondary} : {}]]}
-            textStyle={{ fontWeight: "400", padding: 1 }}
-            selected={
-              selectedPreferences.find((c) => pref === c) ? true : false
-            }
-            onPress={() => handleSelect(pref)}
-            rippleColor={Colors.light.primary}
-            showSelectedOverlay
-            showSelectedCheck={false}
-          >
-            {pref}
-          </Chip>
-        ))}
-
-      </View>
+      <View style={{width:"70%", height:"40%", marginLeft:20}}>
+              <MultiSelect
+                data={categories}
+                labelField="label"
+                valueField="value"
+                placeholder="Categories"
+                searchPlaceholder="Search..."
+                maxSelect={5}
+                search
+                value={selected}
+                onChange={item => {
+                  setSelected(item);
+                }}
+              />
+            </View>
     </View>
+    {isLoading && (
+      <LoadingIndicator/>
+    )}
     </>
   );
 }

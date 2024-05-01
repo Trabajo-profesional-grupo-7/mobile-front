@@ -4,12 +4,16 @@ import { Drawer } from 'expo-router/drawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
-import { View, Image, Text } from 'react-native';
+import { View, Image, Text, TouchableOpacity, Modal } from 'react-native';
 import Colors from '../../constants/Colors';
-import { useRouter } from 'expo-router';
+import { router, useRouter } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
+import { confirmActionAlert } from '@/components/ConfirmActionAlert';
+import { useState } from 'react';
 
 const colors = Colors.light;
+
+
 
 function CustomDrawerContent(props:any){
   const router = useRouter();
@@ -38,9 +42,11 @@ function CustomDrawerContent(props:any){
             <Ionicons name='exit-outline' size={size} color={color}/>
           )}
           label={"Logout"} 
-          onPress={() => {
-            onLogout!()
-            router.replace("../..")
+          onPress={async () => {
+            if (await confirmActionAlert()) {
+              onLogout!()
+              router.replace("../..")
+            }
           }}/>
       </DrawerContentScrollView>
     </View>
@@ -48,6 +54,35 @@ function CustomDrawerContent(props:any){
 }
 
 const DrawerLayout = () => { 
+  const [modalVisible, setmodalVisible] = useState(false);
+
+  const DetailsModal = () => {
+    return (
+      <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setmodalVisible(false)}>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+            <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, width:"60%" }}>
+              <TouchableOpacity onPress={() => {router.navigate("../profile/savedAttractions");setmodalVisible(false)}} style={{height:40, justifyContent:"center"}}>
+                  <Text style={{fontSize:18}}>Attractions saved</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {router.navigate("../profile/doneAttractions");setmodalVisible(false)}} style={{height:40, justifyContent:"center"}}>
+                  <Text style={{fontSize:18}}>Attractions done</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {router.navigate("../profile/calendar");setmodalVisible(false)}} style={{height:40, justifyContent:"center"}}>
+                  <Text style={{fontSize:18}}>Calendar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {setmodalVisible(false)}} style={{height:40, justifyContent:"center"}}>
+                  <Text style={{fontSize:18}}>Account settings</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+      </Modal>
+    )
+  }
+
   return <GestureHandlerRootView style={{flex:1}}>
     <Drawer 
       drawerContent={CustomDrawerContent}
@@ -64,6 +99,9 @@ const DrawerLayout = () => {
           headerTintColor:"white",
           headerTitleAlign:"center",
           headerStyle:{backgroundColor:Colors.light.primary},
+          headerRight: () => (
+            <Ionicons name='search-outline' style={{paddingRight:25}} color={'white'} size={30} onPress={() => router.navigate("../feed/searchFilter")}/>
+          ),
           drawerIcon: ({size, color}) => (
             <Ionicons name='newspaper-outline' size={size} color={color}/>
           )
@@ -79,14 +117,24 @@ const DrawerLayout = () => {
           headerStyle:{backgroundColor:Colors.light.primary},
           drawerIcon: ({size, color}) => (
             <Ionicons name='person-outline' size={size} color={color}/>
+          ),
+          headerRight: () => (
+              <TouchableOpacity
+                  onPress={() => {
+                    setmodalVisible(true);
+                  }}
+                  style={{ marginRight: 10, padding: 5 }}
+              >
+                  <Ionicons name="ellipsis-vertical" size={24} color="white" />
+              </TouchableOpacity>
           )
         }}
       />
       <Drawer.Screen
         name="information"
         options={{
-          drawerLabel:'Info',
-          headerTitle:'Info',
+          drawerLabel:'Information',
+          headerTitle:'Information',
           headerTintColor:"white",
           headerTitleAlign:"center",
           headerStyle:{backgroundColor:Colors.light.primary},
@@ -95,7 +143,21 @@ const DrawerLayout = () => {
           )
         }}
       />
+      <Drawer.Screen
+        name="chatBot"
+        options={{
+          drawerLabel:'ChatBot',
+          headerTitle:'ChatBot',
+          headerTintColor:"white",
+          headerTitleAlign:"center",
+          headerStyle:{backgroundColor:Colors.light.primary},
+          drawerIcon: ({size, color}) => (
+            <Ionicons name='chatbubble-ellipses-outline' size={size} color={color}/>
+          )
+        }}
+      />
     </Drawer>
+    <DetailsModal/>
   </GestureHandlerRootView>
 };
 

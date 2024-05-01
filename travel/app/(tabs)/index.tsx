@@ -4,72 +4,134 @@ import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import { router, useRouter } from 'expo-router';
 import Colors from '@/constants/Colors';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useState } from 'react';
+import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import { useEffect, useState } from 'react';
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import { ActivityIndicator } from 'react-native-paper';
+import { AttractionCard } from '@/components/AttractionCard';
+import { API_URL, useAuth } from '../context/AuthContext';
+import axios from 'axios';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+const attractionsPerPage = 10
 
-interface AttractionCardProps {
-  title: String
-} // TODO: add other props
-
-export const AttractionCard: React.FC<AttractionCardProps> = (props: AttractionCardProps) => {
-
-  const [name, setName] = useState("Name");
-  const [category, setCategory] = useState("Category");
-  const [location, setLocation] = useState("Location");
-  const [description, setDescription] = useState("Description");
-  const [image, setImage] = useState("image"); // TODO: Use
-
-  return (
-    <View style={styles.attractionCard}>
-        <TouchableOpacity onPress={() => {router.navigate("../feed/attraction")}}>
-          <View style={{flexDirection:"row", backgroundColor:"transparent"}}>
-            <Image 
-              style={{width:150, height:150, borderTopLeftRadius:15, borderBottomLeftRadius:15, marginLeft:-1,marginTop:-1}}
-              source={{
-                uri:"https://cdn.mos.cms.futurecdn.net/BiNbcY5fXy9Lra47jqHKGK.jpg"}}
-            /> 
-            <View style={{padding:5, backgroundColor:"transparent", flex:1}}>
-              <Text numberOfLines={1} ellipsizeMode="tail" style={{fontSize:20, fontWeight:"bold"}}>{name}</Text>
-              <Text numberOfLines={1} ellipsizeMode="tail" style={{fontSize:14}}>{category}</Text>
-              <Text numberOfLines={1} ellipsizeMode="tail" style={{fontSize:14}}>{location}</Text>
-              <Text numberOfLines={4} ellipsizeMode="tail" style={{fontSize:14}}>{description}</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </View>
-  );
+export interface AttractionParams {
+  attraction_id: string; 
+  attraction_name: string; 
+  likes_count: string; 
+  done_count: string; 
+  avg_rating: string;
+  city: string,
+  country: string,
+  photo: string,
 }
 
 export default function FeedScreen() {
   const router = useRouter();
-  const [search, setSearch] = useState('');
+  const [attractions, setAttractions] = useState([]);
+  const [noMoreAttractions, setNoMoreAttractions] = useState(false)
+  const [currentPage, setCurrentPage] = useState(0)
+  const [cantGetAttractions, setCantGetAttractions] = useState(false)
+  const {onRefreshToken} = useAuth();
+
+  const getAttractions = async () => {
+    try {
+      await onRefreshToken!();
+      console.log(`${API_URL}/attractions/recommendations?page=${currentPage}`)
+      const result = await axios.get(`${API_URL}/attractions/recommendations?page=${currentPage}`)
+      if (result.data) {
+        const parsedPlaces: [] = result.data.map((place: AttractionParams) => ({
+            attraction_id: place.attraction_id,
+            attraction_name: place.attraction_name,
+            city: place.city,
+            country: place.country,
+            photo: place.photo
+        }));
+        if (parsedPlaces.length < attractionsPerPage) {
+          setNoMoreAttractions(true)
+        }
+        setAttractions([
+          ...attractions,
+          ...parsedPlaces
+        ])
+
+      }
+    } catch (error:any) {
+      if (error.response){
+        if (error.response.status === 404) {
+          setCantGetAttractions(true)
+          setNoMoreAttractions(true)
+        } else {
+          alert(error.message)
+        }
+      } else {
+        alert(error)
+      }
+    }
+  }
+
+  const renderAttraction = ({item}:{item:{attraction_name:string, attraction_id:string,likes_count:number,done_count:number,avg_rating:number, city:string, country: string, photo:string}}) => {
+    return (
+        <AttractionCard data={item}></AttractionCard>
+    )
+  }
+
+  const renderLoader = () => {
+    return (
+      <View style={{margin:15}}>
+        <ActivityIndicator size="large" color={Colors.light.primary}/>
+      </View>
+    )
+  }
+
+  const loadMoreAttractions = () => {
+    setCurrentPage(currentPage+1)
+    getAttractions()
+  }
+
+  useEffect(() => {
+    getAttractions()
+  }, []);
+
+  const reloadFeed = async () => {
+    setAttractions([])
+    setNoMoreAttractions(false)
+    setCantGetAttractions(false)
+    setCurrentPage(0)
+    try {
+      await onRefreshToken!();
+      await axios.post(`${API_URL}/attractions/run-recommendation-system`)
+    } catch (e) {
+      alert(e)
+    }
+    await getAttractions()
+  }
 
   return (
     <View style={styles.container}>
 
-      <View style={{alignItems:"center", backgroundColor:Colors.light.primary}}>
-        <View style={{flexDirection:"row", backgroundColor:"transparent", alignItems:"center"}}>
-          <TextInput
-                style={styles.input}
-                onChangeText={setSearch}
-                value={search}
-                placeholder="Search..."
-          />
-          <Ionicons name='filter-outline' color="white" size={30} onPress={() => router.navigate("../feed/searchFilter")}/>
-        </View>
-      </View>
-
-      <View style={{paddingHorizontal:10}}>
+      <View style={{padding:10, flex:1}}>
         <View style={{alignItems:"flex-start"}}>
-          <Text style={{fontSize: 25, fontWeight: 'bold', marginBottom:10}}>Recommended attracions</Text>
+          <Text style={{fontSize: 25, fontWeight: 'bold', marginBottom:10}}>Recommended attractions</Text>
         </View>
-        <View style={{alignItems:"center"}}>
-          <AttractionCard title="hola"></AttractionCard>
-          <AttractionCard title="hola"></AttractionCard>
+        <View style={{paddingBottom:30}}>
+          {attractions.length == 0 && (
+            <>
+              <Text style={{fontSize:40, paddingTop:30, paddingHorizontal:25}}>Looks like we can't recommend attractions to you yet</Text>
+              <Text style={{fontSize:20, paddingHorizontal:25, fontStyle:"italic", fontWeight:"bold",color:Colors.light.secondary}}>Try searching for and interacting with some attractions first</Text>
+              <Text onPress={reloadFeed} style={{fontSize:25, paddingHorizontal:25, fontStyle:"italic",fontWeight:"bold",color:Colors.light.primary}}>Reload</Text>
+            </>
+          )}
+          <FlatList 
+            data={attractions} 
+            renderItem={renderAttraction}
+            style={{width:"100%"}}
+            ListFooterComponent={noMoreAttractions? null : renderLoader}
+            onEndReached={noMoreAttractions? null : loadMoreAttractions}
+            onEndReachedThreshold={0}
+          >
+          </FlatList>
         </View>
       </View>
     </View>
@@ -96,6 +158,7 @@ const styles = StyleSheet.create({
     borderWidth:1,
     borderRadius:15,
     marginBottom:10,
+    alignSelf:"center"
   },
   input: {
     height: windowHeight*0.05,

@@ -4,23 +4,66 @@ import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { API_URL, useAuth } from '../context/AuthContext';
+import axios from 'axios';
+import LoadingIndicator from '@/components/LoadingIndicator';
+import { dateParser } from '@/components/Parsers';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const colors = Colors.light;
 
 export default function ProfileScreen() {
+  const [lastUpdatedTime, setLastUpdatedTime] = useState(0);
   const router = useRouter();
-  const [email, setEmail] = React.useState('Email');
-  const [country, setCountry] = React.useState('Country');
-  const [birthday, setBirthday] = React.useState('Birthday');
-  const [preferences, setPreferences] = React.useState(["Item 1", "Item 2"]);
+  const [email, setEmail] = useState('Email');
+  const [country, setCountry] = useState('Argentina');
+  const [birth_date, setBirthdate] = useState('Birthday');
+  const [username, setUsername] = useState("Name")
+  const [preferences, setPreferences] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const {onRefreshToken} = useAuth();
+
+ 
+  const getProfileData = async () => {
+    setLastUpdatedTime(Date.now());
+    await onRefreshToken!();
+    try {
+      const result = await axios.get(`${API_URL}/users`);
+      setEmail(result.data.email);
+      setBirthdate(result.data.birth_date);
+      setUsername(result.data.username);
+      setPreferences(result.data.preferences)
+      setIsLoading(false);
+    } catch (e) {
+      alert("Error getting profile info");
+    }
+  }
+
+  useFocusEffect(() => {
+    if (Date.now() - lastUpdatedTime >= 30000) {
+      getProfileData();
+    }
+  });
+
+
+  useEffect(() => {
+    getProfileData();
+  }, []);
+
+  const navigateToEditProfile = () => {
+    router.navigate({pathname:"../profile/editProfile",params:{username, country, preferences, birth_date}});
+  }
 
   return (
     <>
-      <TouchableOpacity style={styles.floatingButton} onPress={() => router.navigate("../profile/editProfile")}>
+      {isLoading ? (
+              <LoadingIndicator/>
+      ):(
+      <>
+      <TouchableOpacity style={styles.floatingButton} onPress={navigateToEditProfile}>
         <Ionicons name='pencil' size={35}/>
       </TouchableOpacity>
       <View style={styles.container}>
@@ -34,38 +77,34 @@ export default function ProfileScreen() {
               fontWeight: '700',
               fontSize: 25,
             }}>
-              Name
+              {username}
             </Text>
         </View>
         <View style={styles.bottomView}>
             
-
-          <View style={styles.profileItem}>
-            <Ionicons name='location-outline' size={25}/>
-            <Text style={{fontSize:20, flex:1, marginLeft:5}}>Location</Text>
-            <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>{country}</Text>
-          </View>
-
           <View style={styles.profileItem}>
             <Ionicons name='mail-outline' size={25}/>
             <Text style={{fontSize:20, flex:1, marginLeft:5}}>Email</Text>
-            <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>{email}</Text>
+            <Text style={{fontSize:15, fontWeight:'bold', alignSelf:'flex-end'}}>{email}</Text>
           </View>
 
           <View style={styles.profileItem}>
             <Ionicons name='calendar-outline' size={25}/>
             <Text style={{fontSize:20, flex:1, marginLeft:5}}>Birthday</Text>
-            <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>{birthday}</Text>
+            <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>{dateParser(birth_date)}</Text>
           </View>
-
-          <View style={styles.travelPreferences}>
-            <Text style={{fontSize:20, marginLeft:5, fontWeight:'bold'}}>Travel preferences</Text>
-            {preferences.map((item, index) => (
-              <Text key={index} style={{marginLeft:10, fontSize:20}}>• {item}</Text>
-            ))}
-          </View>
+          {preferences.length > 0 && 
+            <View style={styles.travelPreferences}>
+              <Text style={{fontSize:20, marginLeft:5, fontWeight:'bold'}}>Travel preferences</Text>
+              {preferences.map((item:string, index) => (
+                <Text key={index} style={{marginLeft:10, fontSize:20}}>• {item.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</Text>
+              ))}
+            </View>
+          }
         </View>
       </View>
+      </>
+      )}
     </>
   );
 }

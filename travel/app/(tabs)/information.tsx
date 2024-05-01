@@ -16,15 +16,7 @@ export default function Information() {
 
     return(
         <View style={styles.container}>
-            <Text style={styles.title}>
-                Hola
-            </Text>
-            <TextInput
-                style={styles.input}
-                onChangeText={setLocation}
-                value={location}
-                placeholder="Location"
-            />
+            <Text style={{fontSize:25, paddingHorizontal:20}}>Find the conversion rate between different currencies</Text>
             <TouchableOpacity style={styles.serviceCard} onPress={() => router.navigate("../information/exchangeRates")}>
                 <Ionicons name='cash-outline' size={80}/>
                 <Text style={styles.title}>
@@ -32,6 +24,7 @@ export default function Information() {
                 </Text>
             </TouchableOpacity>
 
+            <Text style={{fontSize:25, paddingHorizontal:20}}>Get weather information for your destination</Text>
             <TouchableOpacity style={styles.serviceCard} onPress={() => router.navigate("../information/weather")}>
                 <Ionicons name='cloud-outline' size={80}/>
                 <Text style={styles.title}>
@@ -39,6 +32,7 @@ export default function Information() {
                 </Text>
             </TouchableOpacity>
 
+            <Text style={{fontSize:25, paddingHorizontal:20}}>Access details of your upcoming flights</Text>
             <TouchableOpacity style={styles.serviceCard} onPress={() => router.navigate("../information/flightTracker")}>
                 <Ionicons name='airplane-outline' size={80}/>
                 <Text style={styles.title}>
@@ -52,7 +46,7 @@ export default function Information() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop:20,
+    paddingTop:15,
   },
   title: {
     fontSize: 35,

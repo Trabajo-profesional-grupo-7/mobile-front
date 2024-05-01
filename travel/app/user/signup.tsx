@@ -1,53 +1,95 @@
-import { StyleSheet, Image, Dimensions, TextInput } from 'react-native';
+import { StyleSheet, Image, Dimensions, TextInput, Modal, Button } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
 import AccountButton from '@/components/AccountButton';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Colors from '@/constants/Colors';
 import { useAuth } from '../context/AuthContext';
+import LoadingIndicator from '@/components/LoadingIndicator';
+import { Calendar } from 'react-native-calendars';
+import { Ionicons } from '@expo/vector-icons';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 
 const colors = Colors.light;
 
-export default function LoginScreen() {
+export default function SignupScreen() {
     const router = useRouter();
     const {onRegister} = useAuth();
     
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
-    const [repeatPassword, setRepeatPassword] = React.useState('');
-    const [username, setUsername] = React.useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [repeatPassword, setRepeatPassword] = useState('');
+    const [username, setUsername] = useState('');
+    
+
+    const [isLoading, setIsLoading] = useState(false);
+    
+    const [date, setDate] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
+
+    const onChangeDate = (event:any , selectedDate: any) => {
+      const currentDate = selectedDate;
+      setShowDatePicker(false);
+      setDate(currentDate);
+    }
+
+
+    const validateFields = () => {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      
+      if (!(password.length && username.length && email.length && date.toISOString().split("T")[0].length)) {
+        alert("Cant have empty fields");
+        return false;
+      }
+
+      if (!regex.test(email)) {
+        alert("Please enter a valid email address");
+        return false;
+      }
+
+      if (password.length < 8) {
+        alert("Passwords must be at least 8 characters long");
+        return false;
+      }
+
+      if (password != repeatPassword) {
+        alert("Passwords don't match");
+        return false;
+      }
+
+      return true;
+    }
 
     const register = async () => {
-      const result = await onRegister!(email, password, username, "2024-01-01", ["asd", "hola"]);
-      if (result && result.error) {
-        console.log(result);
-        alert("Error registering")
-      } else {
-        console.log(result);
-        router.navigate("./confirmSignup");
+      if (validateFields()) {
+        router.navigate({pathname:"../user/selectCategories", params:{email,password,username,date:date.toISOString().split("T")[0]}})
       }
     };
 
+    
+
     return (
         <View style={styles.container}>
-            <View style={{marginTop:"40%"}}>
+            <View style={{marginTop:"30%"}}>
               <Text style={styles.title}>Sign up</Text>
-              
+              <Text style={styles.subtitle}>Username</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={setUsername}
                 value={username}
                 placeholder="Username"
               />
+              <Text style={styles.subtitle}>Email</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={setEmail}
                 value={email}
-                placeholder="E-mail"
+                placeholder="Email"
               />
+              <Text style={styles.subtitle}>Password</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={setPassword}
@@ -55,6 +97,7 @@ export default function LoginScreen() {
                 placeholder="Password"
                 secureTextEntry
               />
+              <Text style={styles.subtitle}>Repeat password</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={setRepeatPassword}
@@ -62,10 +105,27 @@ export default function LoginScreen() {
                 placeholder="Repeat password"
                 secureTextEntry
               />
+              <View style={{width:windowWidth*0.6}}>
+                <Text style={styles.subtitle}>Birthday</Text>
+                <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
+                  <Text style={styles.subtitle}>{date.toISOString().split("T")[0]}</Text>
+                  <Ionicons name='calendar-outline' onPress={() => setShowDatePicker(true)} size={35} style={{backgroundColor:colors.secondary, padding:10, borderRadius:30}}/>
+                </View>
+              </View>
             </View>
             <View style={{marginBottom:"20%"}}>
-              <AccountButton title="Sign Up" onPress={() => {register()}}/>
+              <AccountButton title="Continue" onPress={() => {register()}}/>
             </View>
+            {showDatePicker && (
+              <RNDateTimePicker
+                value={date}
+                display={"spinner"}
+                onChange={onChangeDate}
+              />
+            )}
+            {isLoading && (
+              <LoadingIndicator/>
+            )}
         </View>
     );
 }
@@ -80,6 +140,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 40,
     fontWeight: 'bold',
+  },
+  subtitle: {
+    fontSize: 20,
   },
   passwordRecoveryText: {
     fontWeight: 'bold',
