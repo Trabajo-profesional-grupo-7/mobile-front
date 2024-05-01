@@ -25,7 +25,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.pablo6032.travel"
     },
     "web": {
       "bundler": "metro",
@@ -38,6 +39,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "76340ac0-cdd2-4f9c-8933-f2c947a8ea61"
+      }
     }
   }
 }

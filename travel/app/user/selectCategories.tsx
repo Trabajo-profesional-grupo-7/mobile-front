@@ -39,7 +39,7 @@ export default function SelectCategories() {
                 }));
                 setCategories(data)
             } catch (e) {
-                alert(e)
+              alert(e)
             }
             setIsLoading(false)
         }
