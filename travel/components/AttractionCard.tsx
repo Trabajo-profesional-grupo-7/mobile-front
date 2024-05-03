@@ -40,7 +40,7 @@ export const AttractionCard: React.FC<AttractionCardProps> = (props: AttractionC
                 /> 
                 <View style={{padding:5, backgroundColor:"transparent", flex:1}}>
                     <Text numberOfLines={2} ellipsizeMode="tail" style={{fontSize:20, fontWeight:"bold"}}>{name}</Text>
-                    <Text numberOfLines={1} ellipsizeMode="tail" style={{fontSize:14}}>{location}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={{fontSize:14}}>{props.data.city ? location : props.data.country}</Text>
                 </View>
             </View>
             </TouchableOpacity>
