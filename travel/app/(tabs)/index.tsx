@@ -34,7 +34,7 @@ export default function FeedScreen() {
   const [currentPage, setCurrentPage] = useState(0)
   const [cantGetAttractions, setCantGetAttractions] = useState(false)
   const {onRefreshToken} = useAuth();
-
+  
   const getAttractions = async () => {
     await onRefreshToken!();
     try {
@@ -90,6 +90,7 @@ export default function FeedScreen() {
     setCurrentPage(currentPage+1)
     getAttractions()
   }
+
 
   useEffect(() => {
     getAttractions()

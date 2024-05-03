@@ -27,9 +27,9 @@ export default function SearchResult() {
         try {
             let result
             if (params.selected != "None"){
-                result = await axios.post(`${API_URL}/attractions/search?type=${params.selected}`,{attraction_name: params.searchTerm});
+                result = await axios.post(`${API_URL}/attractions/search?type=${params.selected}&latitude=${params.latitude}&longitude=${params.longitude}`,{attraction_name: params.searchTerm});
             } else {
-                result = await axios.post(`${API_URL}/attractions/search`,{attraction_name: params.searchTerm});
+                result = await axios.post(`${API_URL}/attractions/search?latitude=${params.latitude}&longitude=${params.longitude}`,{attraction_name: params.searchTerm});
             }
             if (result.data) {
                 const parsedPlaces = result.data.map((place: AttractionParams) => ({

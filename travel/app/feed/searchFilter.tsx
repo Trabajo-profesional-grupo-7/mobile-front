@@ -14,19 +14,35 @@ import { Picker } from '@react-native-picker/picker';
 import LoadingIndicator from '@/components/LoadingIndicator';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-
+import * as Location from 'expo-location';
+import { LocationObjectCoords } from 'expo-location';
 
 export default function SearchFilter() {
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [location, setLocation] = useState('');
   const [isLoading, setIsLoading] = useState(false)
   const [categories, setCategories] = useState<{label:string,value:string}[]>([])
   const [selected, setSelected] = useState<string>("None")
   const {onRefreshToken} = useAuth();
 
+  const [location, setLocation] = useState<LocationObjectCoords>();
+
+ 
 
   useEffect(() => {
+
+    const getLocation = async () => {
+      
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Allow location access to search attractions');
+        router.back();
+        return
+      }
+      let userLocation = await Location.getCurrentPositionAsync({});
+      setLocation(userLocation.coords);
+        
+    }
 
     const getCategories = async () => {
         setIsLoading(true)
@@ -46,12 +62,13 @@ export default function SearchFilter() {
         }
         setIsLoading(false)
     }
+    getLocation()
     getCategories()
 }, []);
 
   return (
     <>
-    <TouchableOpacity style={styles.floatingButton} onPress={() => router.navigate({pathname:"../feed/searchResult",params:{searchTerm, selected}})}>
+    <TouchableOpacity style={styles.floatingButton} onPress={() => router.navigate({pathname:"../feed/searchResult",params:{searchTerm, selected, latitude:(location as LocationObjectCoords).latitude,longitude:(location as LocationObjectCoords).longitude}})}>
         <Ionicons name='search-outline' size={35}/>
     </TouchableOpacity>
     <View style={styles.container}>
