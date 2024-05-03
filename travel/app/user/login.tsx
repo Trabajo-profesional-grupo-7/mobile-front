@@ -9,6 +9,7 @@ const windowHeight = Dimensions.get('window').height;
 import Colors from '@/constants/Colors';
 import { useAuth } from '../context/AuthContext';
 import LoadingIndicator from '@/components/LoadingIndicator';
+import { Ionicons } from '@expo/vector-icons';
 const colors = Colors.light;
 
 
@@ -19,6 +20,7 @@ export default function LoginScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false)
 
     const login = async () => {
       console.log("Logging in")
@@ -42,18 +44,22 @@ export default function LoginScreen() {
               uri:"https://i.imgur.com/qc0GM7G.png"}}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input,{marginLeft:-14}]}
               onChangeText={setEmail}
               value={email}
               placeholder="E-mail"
             />
-            <TextInput
-              style={styles.input}
-              onChangeText={setPassword}
-              value={password}
-              placeholder="Password"
-              secureTextEntry
-            />
+            <View style={{flexDirection:"row", alignItems:"center"}}>
+              <TextInput
+                style={styles.input}
+                onChangeText={setPassword}
+                value={password}
+                placeholder="Password"
+                secureTextEntry={!showPassword}
+                autoCapitalize="none"
+              />
+              <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={24} onPress={() => {setShowPassword(!showPassword)}}/>
+            </View>
             <Text style={styles.passwordRecoveryText} onPress={()=> router.navigate("./recoverPassword")}>Forgot your password?</Text>
             <View style={styles.separator} />
             <AccountButton title="Log In" onPress={() => {login()}}/>

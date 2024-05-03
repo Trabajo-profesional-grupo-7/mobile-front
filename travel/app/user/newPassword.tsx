@@ -3,7 +3,7 @@ import { StyleSheet, Image, Dimensions, TextInput } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import AccountButton from '@/components/AccountButton';
-import React from 'react';
+import React, { useState } from 'react';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Colors from '@/constants/Colors';
@@ -11,6 +11,8 @@ import CodeField from 'react-native-confirmation-code-field';
 import { OtpInput } from 'react-native-otp-entry';
 import { API_URL } from '../context/AuthContext';
 import axios from 'axios';
+import LoadingIndicator from '@/components/LoadingIndicator';
+import { Ionicons } from '@expo/vector-icons';
 
 
 const colors = Colors.light;
@@ -18,30 +20,42 @@ const colors = Colors.light;
 export default function NewPassword() {
     const params = useLocalSearchParams();
     const router = useRouter();
-    const [email, setEmail] = React.useState(params.email);
-    const [code, setCode] = React.useState(params.code);
-    const [password, setPassword] = React.useState('');
+    const [email, setEmail] = useState(params.email);
+    const [code, setCode] = useState(params.code);
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
 
     const recoverPassword = async () => {
+      setLoading(true)
       try {
         await axios.put(`${API_URL}/users/password/recover`,{email,code,"new_password":password})
         router.replace("../..")
       } catch (e) {
         alert(e)
       }
+      setLoading(false)
     }
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Insert new password</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={setPassword}
-              value={password}
-              placeholder="New password"
-            />
+            <View style={{flexDirection:"row", alignItems:"center"}}>
+              <TextInput
+                style={styles.input}
+                onChangeText={setPassword}
+                value={password}
+                placeholder="New password"
+                secureTextEntry={!showPassword}
+                autoCapitalize="none"
+              />
+              <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={24} onPress={() => {setShowPassword(!showPassword)}}/>
+            </View>
             <View style={styles.separator} />
             <AccountButton title="Confirm" onPress={recoverPassword}/>
+            {loading && (
+              <LoadingIndicator/>
+            )}
         </View>
     );
 }
@@ -71,8 +85,9 @@ const styles = StyleSheet.create({
     height: windowHeight*0.05,
     width: windowWidth*0.6,
     margin: 12,
-    borderWidth: 1,
     padding: 10,
-    borderRadius:10,    
+    borderRadius:10,
+    backgroundColor:"white",
+    elevation:3
   },
 });

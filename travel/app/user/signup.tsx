@@ -23,7 +23,8 @@ export default function SignupScreen() {
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState('');
     const [username, setUsername] = useState('');
-    
+    const [showPassword, setShowPassword] = useState(false)
+    const [showRepeatPassword, setShowRepeatPassword] = useState(false)
 
     const [isLoading, setIsLoading] = useState(false);
     
@@ -90,21 +91,29 @@ export default function SignupScreen() {
                 placeholder="Email"
               />
               <Text style={styles.subtitle}>Password</Text>
-              <TextInput
-                style={styles.input}
-                onChangeText={setPassword}
-                value={password}
-                placeholder="Password"
-                secureTextEntry
-              />
+              <View style={{flexDirection:"row", alignItems:"center"}}>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setPassword}
+                  value={password}
+                  placeholder="Password"
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                />
+                <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={24} onPress={() => {setShowPassword(!showPassword)}}/>
+              </View>
               <Text style={styles.subtitle}>Repeat password</Text>
-              <TextInput
-                style={styles.input}
-                onChangeText={setRepeatPassword}
-                value={repeatPassword}
-                placeholder="Repeat password"
-                secureTextEntry
-              />
+              <View style={{flexDirection:"row", alignItems:"center"}}>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setRepeatPassword}
+                  value={repeatPassword}
+                  placeholder="Repeat password"
+                  secureTextEntry={!showRepeatPassword}
+                  autoCapitalize="none"
+                />
+                <Ionicons name={showRepeatPassword ? 'eye-off-outline' : 'eye-outline'} size={24} onPress={() => {setShowRepeatPassword(!showRepeatPassword)}}/>
+              </View>
               <View style={{width:windowWidth*0.6}}>
                 <Text style={styles.subtitle}>Birthday</Text>
                 <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
