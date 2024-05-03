@@ -74,7 +74,7 @@ export default function WeatherDetails() {
     return (
         <View style={styles.container}>
           
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <Text style={styles.title}>Weather results for:</Text>
             <Text style={{fontStyle:"italic", fontSize:30, alignSelf:"center", marginBottom:20}}>{location}</Text>
             {weatherData.map((item:any, index) => (

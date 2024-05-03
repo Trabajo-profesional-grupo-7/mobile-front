@@ -36,9 +36,8 @@ export default function FeedScreen() {
   const {onRefreshToken} = useAuth();
 
   const getAttractions = async () => {
+    await onRefreshToken!();
     try {
-      await onRefreshToken!();
-      console.log(`${API_URL}/attractions/recommendations?page=${currentPage}`)
       const result = await axios.get(`${API_URL}/attractions/recommendations?page=${currentPage}`)
       if (result.data) {
         const parsedPlaces: [] = result.data.map((place: AttractionParams) => ({
@@ -50,12 +49,14 @@ export default function FeedScreen() {
         }));
         if (parsedPlaces.length < attractionsPerPage) {
           setNoMoreAttractions(true)
+          if (currentPage == 0 && parsedPlaces.length == 0){
+            setCantGetAttractions(true)
+          }
         }
         setAttractions([
           ...attractions,
           ...parsedPlaces
         ])
-
       }
     } catch (error:any) {
       if (error.response){
@@ -116,7 +117,7 @@ export default function FeedScreen() {
           <Text style={{fontSize: 25, fontWeight: 'bold', marginBottom:10}}>Recommended attractions</Text>
         </View>
         <View style={{paddingBottom:30}}>
-          {attractions.length == 0 && (
+          {(attractions.length == 0 && cantGetAttractions) && (
             <>
               <Text style={{fontSize:40, paddingTop:30, paddingHorizontal:25}}>Looks like we can't recommend attractions to you yet</Text>
               <Text style={{fontSize:20, paddingHorizontal:25, fontStyle:"italic", fontWeight:"bold",color:Colors.light.secondary}}>Try searching for and interacting with some attractions first</Text>
@@ -127,7 +128,7 @@ export default function FeedScreen() {
             data={attractions} 
             renderItem={renderAttraction}
             style={{width:"100%"}}
-            ListFooterComponent={noMoreAttractions? null : renderLoader}
+            ListFooterComponent={noMoreAttractions || cantGetAttractions ? null : renderLoader}
             onEndReached={noMoreAttractions? null : loadMoreAttractions}
             onEndReachedThreshold={0}
           >

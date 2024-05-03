@@ -17,8 +17,9 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function SearchResult() {
     const params = useLocalSearchParams();
-
+    const [loading, setLoading] = useState(true)
     const [attractions, setAttractions] = useState([]);
+    const [noResults, setNoResults] = useState(false)
     const {onRefreshToken} = useAuth();
 
     const getAttractions = async () => {
@@ -39,11 +40,16 @@ export default function SearchResult() {
                     photo: place.photo
                   }));
                 setAttractions(parsedPlaces)
+                if (parsedPlaces.length == 0) {
+                    setNoResults(true)
+                }
             }
+                
               
         } catch (e) {
             alert(e);
         }
+        setLoading(false)
     }
     
     const renderAttraction = ({item}:{item:{attraction_name:string, attraction_id:string,likes_count:number,done_count:number,avg_rating:number, city:string, country: string, photo:string}}) => {
@@ -71,16 +77,24 @@ export default function SearchResult() {
     return (
         <>
             <View style={styles.container}>
-                <Text style={{fontSize: 25, fontWeight: 'bold', marginBottom:10, marginLeft:10}}>Search results</Text>
-                <FlatList 
-                    data={attractions} 
-                    renderItem={renderAttraction}
-                    style={{width:"100%"}}
-                    ListFooterComponent={renderLoader}
-                    onEndReached={loadMoreAttractions}
-                    onEndReachedThreshold={0}
-                >
-                </FlatList>
+                {noResults ? (
+                    <Text style={{fontSize: 25, fontWeight: 'bold', marginBottom:10, marginLeft:10}}>
+                        No results for your search
+                    </Text>
+                ) : (
+                    <>
+                        <Text style={{fontSize: 25, fontWeight: 'bold', marginBottom:10, marginLeft:10}}>Search results</Text>
+                        <FlatList 
+                            data={attractions} 
+                            renderItem={renderAttraction}
+                            style={{width:"100%"}}
+                            ListFooterComponent={loading ? renderLoader : null}
+                            onEndReached={loadMoreAttractions}
+                            onEndReachedThreshold={0}
+                            >
+                        </FlatList>
+                    </>
+                )}
             </View>
         </>
     );

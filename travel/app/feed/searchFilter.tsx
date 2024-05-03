@@ -22,7 +22,7 @@ export default function SearchFilter() {
   const [location, setLocation] = useState('');
   const [isLoading, setIsLoading] = useState(false)
   const [categories, setCategories] = useState<{label:string,value:string}[]>([])
-  const [selected, setSelected] = useState<string>()
+  const [selected, setSelected] = useState<string>("None")
   const {onRefreshToken} = useAuth();
 
 
