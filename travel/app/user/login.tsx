@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color:colors.primary,
     fontStyle: 'italic',
+    fontSize:16,
   },
   separator: {
     marginVertical: 30,
@@ -90,8 +91,9 @@ const styles = StyleSheet.create({
     height: windowHeight*0.05,
     width: windowWidth*0.6,
     margin: 12,
-    borderWidth: 1,
     padding: 10,
-    borderRadius:10,    
+    borderRadius:10,
+    backgroundColor:"white",
+    elevation:3
   },
 });

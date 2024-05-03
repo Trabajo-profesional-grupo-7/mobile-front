@@ -179,16 +179,16 @@ export default function Attraction() {
   return (
     <>
       <View style={[{ flexDirection: "row" }, styles.floatingButton]}>
-        <Ionicons style={{ paddingHorizontal: 2 }} name={isLiked ? 'heart' : 'heart-outline'} size={40} onPress={like} />
-        <Ionicons style={{ paddingHorizontal: 2 }} name={isDone ? 'checkmark-done-outline' : 'checkmark-outline'} size={40} onPress={done} />
-        <Ionicons style={{ paddingHorizontal: 2 }} name={isScheduled ? 'time' : 'time-outline'} size={40} onPress={() => { setShowDatePicker(true) }} />
-        <Ionicons style={{ paddingHorizontal: 2 }} name={isRated ? 'star' : 'star-outline'} size={40} onPress={() => { setStarModalVisible(true)}} />
-        <Ionicons style={{ paddingHorizontal: 2 }} name={isSaved ? 'bookmark' : 'bookmark-outline'} size={40} onPress={save} />
-        <Ionicons style={{ paddingHorizontal: 2 }} name='map-outline' size={40} />
+        <Ionicons style={styles.icon} name={isLiked ? 'heart' : 'heart-outline'} size={40} onPress={like} />
+        <Ionicons style={styles.icon} name={isDone ? 'checkmark-done-outline' : 'checkmark-outline'} size={40} onPress={done} />
+        <Ionicons style={styles.icon} name={isScheduled ? 'time' : 'time-outline'} size={40} onPress={() => { setShowDatePicker(true) }} />
+        <Ionicons style={styles.icon} name={isRated ? 'star' : 'star-outline'} size={40} onPress={() => { setStarModalVisible(true)}} />
+        <Ionicons style={styles.icon} name={isSaved ? 'bookmark' : 'bookmark-outline'} size={40} onPress={save} />
+        <Ionicons style={styles.icon} name='map-outline' size={40} />
       </View>
       <View style={styles.container}>
         <LinearGradient
-          colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 1)']}
+          colors={['rgba(255, 255, 255, 0)', Colors.light.background]}
           style={styles.gradient}
         />
         <Image
@@ -226,9 +226,8 @@ const styles = StyleSheet.create({
     fontSize: 35,
     fontWeight: 'bold',
   },
-  chip: {
-    marginLeft: 15,
-    marginTop: 10,
+  icon: {
+    paddingHorizontal: 2,
   },
   chipsContainer: {
     flexDirection: "row",
@@ -254,11 +253,12 @@ const styles = StyleSheet.create({
     height: 60,
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: Colors.light.secondary,
+    backgroundColor: "white",
     borderRadius: 50,
     right: (windowWidth / 2) - (windowWidth * 0.8 / 2),
     top: windowHeight - 175,
     paddingHorizontal: 20,
+    elevation:5
   },
   gradient: {
     position: 'absolute',
@@ -267,6 +267,6 @@ const styles = StyleSheet.create({
     right: 0,
     top: 150,
     height: 100,
-    zIndex: 1
+    zIndex: 1,
   },
 });

@@ -35,7 +35,7 @@ export const AttractionCard: React.FC<AttractionCardProps> = (props: AttractionC
             <TouchableOpacity onPress={() => {router.navigate({pathname:"../feed/attraction", params:props.data})}}>
             <View style={{flexDirection:"row", backgroundColor:"transparent"}}>
                 <Image 
-                style={{width:150, height:150, borderTopLeftRadius:15, borderBottomLeftRadius:15, marginLeft:-1,marginTop:-1}}
+                style={{width:150, height:150, borderTopLeftRadius:10, borderBottomLeftRadius:10}}
                 source={image ? { uri: image } : { uri: 'https://i.imgur.com/qc0GM7G.png' }}
                 /> 
                 <View style={{padding:5, backgroundColor:"transparent", flex:1}}>
@@ -52,10 +52,10 @@ const styles = StyleSheet.create({
     attractionCard: {
       width:"95%",
       height:150,
-      borderColor:Colors.light.primary,
-      borderWidth:1,
-      borderRadius:15,
+      borderRadius:10,
       marginBottom:10,
-      alignSelf:"center"
+      alignSelf:"center",
+      backgroundColor:"white",
+      elevation:5
     }
   });

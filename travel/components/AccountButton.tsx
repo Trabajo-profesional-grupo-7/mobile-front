@@ -18,16 +18,17 @@ const AccountButton = (props: ButtonProps) => {
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: colors.secondary,
+        backgroundColor: colors.primary,
         paddingVertical: 10,
-        borderRadius:20,
-        width:windowWidth*0.5,
+        borderRadius:10,
+        width:windowWidth*0.6,
         marginVertical: 5,
         alignItems:"center",
     },
     buttonText: {
       fontSize: 20,
-      color:colors.text
+      color:"white",
+      fontWeight:"bold"
     },
   });
 

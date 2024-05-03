@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Dimensions, TextInput, Modal, Button } from 'react-native';
+import { StyleSheet, Image, Dimensions, TextInput, Modal, Button, ScrollView } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
@@ -72,7 +72,7 @@ export default function SignupScreen() {
     
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <View style={{marginTop:"30%"}}>
               <Text style={styles.title}>Sign up</Text>
               <Text style={styles.subtitle}>Username</Text>
@@ -121,12 +121,13 @@ export default function SignupScreen() {
                 value={date}
                 display={"spinner"}
                 onChange={onChangeDate}
+                maximumDate={new Date.now()}
               />
             )}
             {isLoading && (
               <LoadingIndicator/>
             )}
-        </View>
+        </ScrollView>
     );
 }
 
@@ -158,8 +159,9 @@ const styles = StyleSheet.create({
     height: windowHeight*0.05,
     width: windowWidth*0.6,
     margin: 12,
-    borderWidth: 1,
     padding: 10,
-    borderRadius:10,    
+    borderRadius:10,
+    backgroundColor:"white",
+    elevation:3 
   },
 });
