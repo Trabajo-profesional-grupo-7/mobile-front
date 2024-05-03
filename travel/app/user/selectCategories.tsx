@@ -53,9 +53,8 @@ export default function SelectCategories() {
         } else {
           try {
               const result = await onRegister!(email, password, username, date, selected);
-              if (result && result.error) {
-                console.log(result);
-                alert("Error registering")
+              if (result && result.code == 409) {
+                alert("Email already in use")
               } else {
                 alert("Account succesfully registered")
                 router.back();

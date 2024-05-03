@@ -121,7 +121,7 @@ export default function SignupScreen() {
                 value={date}
                 display={"spinner"}
                 onChange={onChangeDate}
-                maximumDate={new Date.now()}
+                maximumDate={new Date()}
               />
             )}
             {isLoading && (

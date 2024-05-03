@@ -81,7 +81,7 @@ export const AuthProvider = ({children}: any) => {
                 "birth_date": birth_date, 
             });
         } catch (e) {
-            return {error:true, msg: (e as any).response.data.msg};
+            return {error:true, code: (e as any).response.status};
         }
     }
 
