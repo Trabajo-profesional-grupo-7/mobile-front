@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, TextInput, TouchableOpacity, Image, Modal, Button } from 'react-native';
+import { Dimensions, StyleSheet, TextInput, TouchableOpacity, Image, Modal, Button, TouchableWithoutFeedback, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
@@ -57,14 +57,12 @@ export default function Attraction() {
       setIsDone(result.is_done)
       setIsLiked(result.is_liked)
       setIsSaved(result.is_saved)
-      setUserRating(result.user_rating)
       setLikedCount(result.liked_count)
       setComments(result.comments)
-      setUserRating(result.user_rating)
       if (result.user_rating != null) {
+        setUserRating(result.user_rating)
         setIsRated(true)
       }
-      
     } catch (e) {
       alert(e)
     }
@@ -152,22 +150,28 @@ export default function Attraction() {
     
     return (
       <Modal
-          animationType="slide"
+          animationType="fade"
           transparent={true}
           visible={starModalVisible}
           onRequestClose={() => setStarModalVisible(false)}>
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-            <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
-              <View style={{flexDirection:"row", paddingBottom:20, justifyContent:"center"}}>
-                <Ionicons style={{ paddingHorizontal: 2 }} name={'star'} size={40} onPress={() => {setRating(1)}} />
-                <Ionicons style={{ paddingHorizontal: 2 }} name={(rating >= 2) ? 'star' : 'star-outline'} size={40} onPress={() => {setRating(2)}} />
-                <Ionicons style={{ paddingHorizontal: 2 }} name={(rating >= 3) ? 'star' : 'star-outline'} size={40} onPress={() => {setRating(3)}} />
-                <Ionicons style={{ paddingHorizontal: 2 }} name={(rating >= 4) ? 'star' : 'star-outline'} size={40} onPress={() => {setRating(4)}} />
-                <Ionicons style={{ paddingHorizontal: 2 }} name={(rating == 5) ? 'star' : 'star-outline'} size={40} onPress={() => {setRating(5)}} />
-              </View>
-              <Button title="Rate" onPress={() => {rate(rating); setStarModalVisible(false)}}/>
+          <TouchableWithoutFeedback onPress={() => setStarModalVisible(false)}>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+              <TouchableWithoutFeedback>
+                <View style={{padding: 20, borderRadius: 10}}>
+                  <View style={{flexDirection:"row", paddingBottom:20, justifyContent:"center", backgroundColor:"transparent"}}>
+                    <Ionicons style={{ paddingHorizontal: 2 }} name={'star'} size={40} onPress={() => {setRating(1)}} />
+                    <Ionicons style={{ paddingHorizontal: 2 }} name={(rating >= 2) ? 'star' : 'star-outline'} size={40} onPress={() => {setRating(2)}} />
+                    <Ionicons style={{ paddingHorizontal: 2 }} name={(rating >= 3) ? 'star' : 'star-outline'} size={40} onPress={() => {setRating(3)}} />
+                    <Ionicons style={{ paddingHorizontal: 2 }} name={(rating >= 4) ? 'star' : 'star-outline'} size={40} onPress={() => {setRating(4)}} />
+                    <Ionicons style={{ paddingHorizontal: 2 }} name={(rating == 5) ? 'star' : 'star-outline'} size={40} onPress={() => {setRating(5)}} />
+                  </View>
+                  <Pressable style={{alignItems:"center"}} onPress={() => {rate(rating); setStarModalVisible(false)}}>
+                    <Text style={{fontSize:25, color:Colors.light.primary, fontWeight:"bold"}}>Rate</Text>
+                  </Pressable>                  
+                </View>
+              </TouchableWithoutFeedback>
             </View>
-          </View>
+          </TouchableWithoutFeedback>
       </Modal>
     )
   }
