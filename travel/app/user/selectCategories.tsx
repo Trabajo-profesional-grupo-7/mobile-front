@@ -1,7 +1,7 @@
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { router, useLocalSearchParams } from "expo-router";
 import { SetStateAction, useEffect, useState } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Dimensions, TextInput } from "react-native";
 import Colors from '@/constants/Colors';
 const colors = Colors.light;
 import { API_URL, useAuth } from '../context/AuthContext';
@@ -10,6 +10,7 @@ import axios from "axios";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import { MultiSelect } from 'react-native-element-dropdown';
+import { Picker } from "@react-native-picker/picker";
 
 
 export default function SelectCategories() {
@@ -18,13 +19,16 @@ export default function SelectCategories() {
     const date = params.date as string;
     const username = params.username as string;
     const password = params.password as string;
+    const city = params.city as string;
 
     const [categories, setCategories] = useState([]);
     const [selected, setSelected] = useState<string[]>([]);
+    const [location, setLocation] = useState<string[]>([])
 
     const [isLoading, setIsLoading] = useState(false);
     const {onRegister} = useAuth();
-
+    
+    const [locationAutocomplete, setLocationAutocomplete] = useState([]);
 
 
     useEffect(() => {
@@ -52,8 +56,8 @@ export default function SelectCategories() {
           alert("You must select at least one category")
         } else {
           try {
-              const result = await onRegister!(email, password, username, date, selected);
-              if (result && result.code == 409) {
+              const result = await onRegister!(email, password, username, date, selected, city);
+              if (result && result.code == 409) { 
                 alert("Email already in use")
               } else {
                 alert("Account succesfully registered")
@@ -73,7 +77,7 @@ export default function SelectCategories() {
               <Text style={styles.title}>Tell us about yourself</Text>
               <Text style={{fontStyle:"italic", fontWeight:"bold", color:colors.primary, alignSelf:"flex-start", marginBottom:30}}>You can select up to 5 categories</Text>
             </View>
-            <View style={{width:"70%", height:"40%"}}>
+            <View style={{width:"70%", height:"20%"}}>
               <MultiSelect
                 data={categories}
                 labelField="label"
@@ -89,7 +93,7 @@ export default function SelectCategories() {
               />
             </View>
 
-            <View style={{marginBottom:"20%"}}>
+            <View style={{marginBottom:"20%", marginTop:"10%"}}>
               <AccountButton title="Sign up" onPress={register}/>
             </View>
             {isLoading && (

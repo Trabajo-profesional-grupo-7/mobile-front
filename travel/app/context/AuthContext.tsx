@@ -6,7 +6,7 @@ import LoadingIndicator from '@/components/LoadingIndicator';
 
 interface AuthProps {
     authState?: { token: string | null; authenticated: boolean | null };
-    onRegister?: (email: string, password: string, username:string, birth_date:string, preferences:string[]) => Promise<any>;
+    onRegister?: (email: string, password: string, username:string, birth_date:string, preferences:string[], city:string) => Promise<any>;
     onLogin?: (email: string, password: string) => Promise<any>;
     onRefreshToken?: () => Promise<any>;
     onLogout?: () => Promise<any>;
@@ -74,7 +74,7 @@ export const AuthProvider = ({children}: any) => {
         loadToken();
     }, []);
 
-    const register = async (email:string, password:string, username:string, birth_date:string, preferences:string[]) => {
+    const register = async (email:string, password:string, username:string, birth_date:string, preferences:string[], city:string) => {
         console.log(`${API_URL}/users/signup`)
         console.log(`${username},${email},${password},${preferences},${birth_date}`)
         try {
@@ -83,7 +83,8 @@ export const AuthProvider = ({children}: any) => {
                 "email": email, 
                 "password": password, 
                 "preferences": preferences,
-                "birth_date": birth_date, 
+                "birth_date": birth_date,
+                "city": city 
             });
         } catch (e) {
             return {error:true, code: (e as any).response.status};

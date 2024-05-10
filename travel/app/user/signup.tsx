@@ -7,11 +7,13 @@ import React, { useEffect, useState } from 'react';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Colors from '@/constants/Colors';
-import { useAuth } from '../context/AuthContext';
+import { API_URL, useAuth } from '../context/AuthContext';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { Calendar } from 'react-native-calendars';
 import { Ionicons } from '@expo/vector-icons';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
+import { Dropdown } from 'react-native-element-dropdown';
+import axios from 'axios';
 
 const colors = Colors.light;
 
@@ -41,7 +43,7 @@ export default function SignupScreen() {
     const validateFields = () => {
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       
-      if (!(password.length && username.length && email.length && date.toISOString().split("T")[0].length)) {
+      if (!(password.length && city.length && username.length && email.length && date.toISOString().split("T")[0].length)) {
         alert("Cant have empty fields");
         return false;
       }
@@ -66,16 +68,65 @@ export default function SignupScreen() {
 
     const register = async () => {
       if (validateFields()) {
-        router.navigate({pathname:"../user/selectCategories", params:{email,password,username,date:date.toISOString().split("T")[0]}})
+        router.navigate({pathname:"../user/selectCategories", params:{email,password,username,date:date.toISOString().split("T")[0], city}})
       }
     };
 
-    
+    const [value, setValue] = useState<{ label: string; value: string; }>();
+    const [data, setData] = useState([])
+
+    const updateData = async (query:string) => {
+      try {
+        const result = await axios.get(`${API_URL}/cities?keyword=${query}`)
+        const formattedCities = result.data.cities.map((city: { name: any; country: any; }) => ({
+          label: `${city.name}, ${city.country}`,
+          value: `${city.name}, ${city.country}`
+        }));
+        setData(formattedCities)
+      } catch (e) {
+
+      }
+    }
+
+    const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
+    const [city, setCity] = useState("")
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={{marginTop:"30%"}}>
               <Text style={styles.title}>Sign up</Text>
+
+              <Dropdown
+                data={data}
+                search
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder="Location"
+                searchPlaceholder="Search..."
+                value={value}
+                onChangeText={query => {
+                  if (query.length > 3) {
+                    if (timer) {
+                      clearTimeout(timer);
+                    }
+                    setTimer(
+                      setTimeout(() => {
+                        updateData(query);
+                        setTimer(null);
+                      }, 1000)
+                    );
+                  } else if (query.length == 0){
+                    setData([])
+                  }
+                }}
+                onChange={item => {
+                  setCity(item.value);
+                }}
+              />
+              <Text style={[styles.subtitle,{marginLeft:20, fontSize:25}]}>{city}</Text>
+
+              
               <Text style={styles.subtitle}>Username</Text>
               <TextInput
                 style={styles.input}
@@ -122,7 +173,7 @@ export default function SignupScreen() {
                 </View>
               </View>
             </View>
-            <View style={{marginBottom:"20%"}}>
+            <View style={{marginBottom:"15%"}}>
               <AccountButton title="Continue" onPress={() => {register()}}/>
             </View>
             {showDatePicker && (
