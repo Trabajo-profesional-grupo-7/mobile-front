@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'; import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import { router } from 'expo-router';
+import LoadingIndicator from '@/components/LoadingIndicator';
 
 
 interface AuthProps {
@@ -23,6 +24,8 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({children}: any) => {
+    const [loading, setLoading] = useState(false)
+
     const [authState, setAuthState] = useState<{
         token: string | null;
         refresh_token: string | null;
@@ -35,6 +38,7 @@ export const AuthProvider = ({children}: any) => {
 
     useEffect(() => {
         const loadToken = async () => {
+            setLoading(true)
             const token = await SecureStore.getItemAsync(TOKEN_KEY);
             const refresh_token = await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
             console.log("stored:", token);
@@ -65,6 +69,7 @@ export const AuthProvider = ({children}: any) => {
                     }
                 }
             }
+            setLoading(false)
         }
         loadToken();
     }, []);
@@ -151,7 +156,16 @@ export const AuthProvider = ({children}: any) => {
         authState
     };
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return (
+        <>
+        <AuthContext.Provider value={value}>
+            {children}
+        </AuthContext.Provider>
+        {loading && (
+            <LoadingIndicator/>
+        )}
+        </>
+    );
 };
 
 
