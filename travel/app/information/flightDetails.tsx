@@ -1,17 +1,11 @@
-import { StyleSheet, Image, Text, Dimensions, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, Dimensions } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
-import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
-import { router, useLocalSearchParams, useRouter } from 'expo-router';
-import LoadingIndicator from '@/components/LoadingIndicator';
-import { API_URL, useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import React from 'react';
+import { useLocalSearchParams } from 'expo-router';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const colors = Colors.light;
 
 export default function FlightDetails() {
     const params = useLocalSearchParams();

@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Dimensions, TextInput } from 'react-native';
+import { StyleSheet, Dimensions, TextInput } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Colors from '@/constants/Colors';
-import { API_URL, useAuth } from '../context/AuthContext';
+import { API_URL } from '../context/AuthContext';
 import axios from 'axios';
 import LoadingIndicator from '@/components/LoadingIndicator';
 

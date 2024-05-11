@@ -1,15 +1,12 @@
 import { Dimensions, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Chip } from 'react-native-paper';
 import axios from 'axios';
 import { API_URL, useAuth } from '../context/AuthContext';
-import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 import { Picker } from '@react-native-picker/picker';
 import LoadingIndicator from '@/components/LoadingIndicator';
 const windowWidth = Dimensions.get('window').width;
@@ -33,13 +30,13 @@ export default function SearchFilter() {
 
     const getLocation = async () => {
       
-      let { status } = await Location.requestForegroundPermissionsAsync();
+      const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         alert('Allow location access to search attractions');
         router.back();
         return
       }
-      let userLocation = await Location.getCurrentPositionAsync({});
+      const userLocation = await Location.getCurrentPositionAsync({});
       setLocation(userLocation.coords);
         
     }

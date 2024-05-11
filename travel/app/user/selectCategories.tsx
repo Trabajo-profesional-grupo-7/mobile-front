@@ -1,7 +1,7 @@
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { router, useLocalSearchParams } from "expo-router";
-import { SetStateAction, useEffect, useState } from "react";
-import { View, Text, StyleSheet, Dimensions, TextInput } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 import Colors from '@/constants/Colors';
 const colors = Colors.light;
 import { API_URL, useAuth } from '../context/AuthContext';
@@ -10,7 +10,6 @@ import axios from "axios";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import { MultiSelect } from 'react-native-element-dropdown';
-import { Picker } from "@react-native-picker/picker";
 
 
 export default function SelectCategories() {
@@ -23,13 +22,9 @@ export default function SelectCategories() {
 
     const [categories, setCategories] = useState([]);
     const [selected, setSelected] = useState<string[]>([]);
-    const [location, setLocation] = useState<string[]>([])
 
     const [isLoading, setIsLoading] = useState(false);
     const {onRegister} = useAuth();
-    
-    const [locationAutocomplete, setLocationAutocomplete] = useState([]);
-
 
     useEffect(() => {
 

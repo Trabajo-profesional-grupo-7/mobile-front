@@ -1,15 +1,14 @@
-import { StyleSheet, Image, Text, Dimensions, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, Dimensions, TextInput, TouchableOpacity } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { router, useRouter } from 'expo-router';
+import { router } from 'expo-router';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { API_URL, useAuth } from '../context/AuthContext';
 import axios from 'axios';
-import RNDateTimePicker from '@react-native-community/datetimepicker';
+import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const colors = Colors.light;
@@ -25,10 +24,11 @@ export default function FlightTracker() {
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const onChangeDate = (event:any , selectedDate: any) => {
-    const currentDate = selectedDate;
+  const onChangeDate = (event:DateTimePickerEvent , selectedDate: Date | undefined) => {
     setShowDatePicker(false);
-    setDate(currentDate);
+    if (selectedDate != undefined) {
+      setDate(selectedDate);
+    }
   }
 
   const getFlightDetails = async () => {

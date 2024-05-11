@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Dimensions, TextInput } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -7,7 +7,6 @@ import React from 'react';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Colors from '@/constants/Colors';
-import CodeField from 'react-native-confirmation-code-field';
 import { OtpInput } from 'react-native-otp-entry';
 
 
@@ -17,7 +16,7 @@ export default function RecoverCode() {
     const params = useLocalSearchParams();
     const router = useRouter();
 
-    const [email, setEmail] = React.useState(params.email);
+    const email = params.email;
     const [code, setCode] = React.useState('');
     const codeLen = 6;
 

@@ -1,9 +1,9 @@
-import { StyleSheet, Image, Dimensions, TextInput, ActivityIndicator } from 'react-native';
+import { StyleSheet, Image, Dimensions, TextInput } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
 import AccountButton from '@/components/AccountButton';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Colors from '@/constants/Colors';

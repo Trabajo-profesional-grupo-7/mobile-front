@@ -1,6 +1,5 @@
 import { StyleSheet, Image, Text, Dimensions } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,7 +10,6 @@ import { API_URL, useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { dateParser } from '@/components/Parsers';
-const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const colors = Colors.light;
 
@@ -19,7 +17,7 @@ export default function ProfileScreen() {
   const [lastUpdatedTime, setLastUpdatedTime] = useState(0);
   const router = useRouter();
   const [email, setEmail] = useState('Email');
-  const [country, setCountry] = useState('Argentina');
+  const country = 'Argentina';
   const [birth_date, setBirthdate] = useState('Birthday');
   const [username, setUsername] = useState("Name")
   const [preferences, setPreferences] = useState([]);

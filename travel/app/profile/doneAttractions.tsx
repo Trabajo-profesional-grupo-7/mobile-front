@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, FlatList, ActivityIndicator } from "react-native";
+import { View, FlatList, ActivityIndicator } from "react-native";
 import { API_URL, useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { AttractionParams } from "../(tabs)";

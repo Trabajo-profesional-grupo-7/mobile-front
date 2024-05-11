@@ -1,24 +1,18 @@
-import { StyleSheet, Image, Text, Dimensions, TextInput, TouchableOpacity } from 'react-native';
-
-import EditScreenInfo from '@/components/EditScreenInfo';
+import { StyleSheet, Text, Dimensions, TextInput, TouchableOpacity } from 'react-native';
 import { View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { router, useLocalSearchParams, useRouter } from 'expo-router';
-import { API_URL, useAuth } from '../context/AuthContext';
-import LoadingIndicator from '@/components/LoadingIndicator';
-import axios from 'axios';
+import { router} from 'expo-router';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const colors = Colors.light;
 
 export default function Weather() {
-  //const params = useLocalSearchParams();
+
+
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
   const [province, setProvince] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const validateFields = () => {
     if (city.length == 0) {

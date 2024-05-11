@@ -1,13 +1,10 @@
-import { Button, StyleSheet, Image, Dimensions, TextInput } from 'react-native';
+import {  StyleSheet, Image, Dimensions  } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
-import { router, useRouter } from 'expo-router';
 import Colors from '@/constants/Colors';
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import { FlatList } from 'react-native-gesture-handler';
 import { useEffect, useState } from 'react';
 import React from 'react';
-import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator } from 'react-native-paper';
 import { AttractionCard } from '@/components/AttractionCard';
 import { API_URL, useAuth } from '../context/AuthContext';
@@ -28,7 +25,6 @@ export interface AttractionParams {
 }
 
 export default function FeedScreen() {
-  const router = useRouter();
   const [attractions, setAttractions] = useState([]);
   const [noMoreAttractions, setNoMoreAttractions] = useState(false)
   const [currentPage, setCurrentPage] = useState(0)

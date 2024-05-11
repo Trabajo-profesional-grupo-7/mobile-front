@@ -38,7 +38,7 @@ export default function ChatBot() {
             if (scrollViewRef.current) {
                 (scrollViewRef.current as ScrollView).scrollToEnd({ animated: true });
             }
-            let result = await axios.post(`${API_URL}/chatbot/send_message`,{text:sentText} )
+            const result = await axios.post(`${API_URL}/chatbot/send_message`,{text:sentText} )
             if (result.data) {
                 setMessages(prevMessages => [
                     ...prevMessages,

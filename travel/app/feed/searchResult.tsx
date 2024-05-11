@@ -1,18 +1,13 @@
-import { ActivityIndicator, Dimensions, FlatList, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
-import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Chip } from 'react-native-paper';
-import { AttractionCard, AttractionCardProps } from '@/components/AttractionCard';
+import { AttractionCard } from '@/components/AttractionCard';
 import { API_URL, useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { AttractionParams } from '../(tabs)';
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 
 export default function SearchResult() {

@@ -1,6 +1,5 @@
-import { Dimensions, StyleSheet, TextInput, TouchableOpacity, Image, Modal, Button, TouchableWithoutFeedback, Pressable } from 'react-native';
+import { Dimensions, StyleSheet, Image, Modal, TouchableWithoutFeedback, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
@@ -9,21 +8,20 @@ import { useEffect, useState } from 'react';
 import { API_URL, useAuth } from '../context/AuthContext';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-import { Calendar } from 'react-native-calendars';
 import axios from 'axios';
 import LoadingIndicator from '@/components/LoadingIndicator';
-import RNDateTimePicker from '@react-native-community/datetimepicker';
+import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
 
 export default function Attraction() {
   const params = useLocalSearchParams();
 
 
-  const [name, setName] = useState(params.attraction_name);
-  const [location, setLocation] = useState(`${params.city}, ${params.country}`);
-  const [description, setDescription] = useState('Description');
-  const [id, setId] = useState(params.attraction_id);
-  const [photo, setPhoto] = useState<string>(params.photo as string)
+  const name = params.attraction_name;
+  const location = `${params.city}, ${params.country}`;
+  const description = 'Description';
+  const id = params.attraction_id;
+  const photo = params.photo as string
 
   const [isLiked, setIsLiked] = useState(false);
   const [isDone, setIsDone] = useState(false);
@@ -41,10 +39,11 @@ export default function Attraction() {
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const onChangeDate = (event:any , selectedDate: any) => {
-    const currentDate = selectedDate;
+  const onChangeDate = (event:DateTimePickerEvent , selectedDate: Date | undefined) => {
     setShowDatePicker(false);
-    setDate(currentDate);
+    if (selectedDate != undefined) {
+      setDate(selectedDate);
+    }
     schedule();
   }
 

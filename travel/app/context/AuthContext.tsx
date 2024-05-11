@@ -76,7 +76,6 @@ export const AuthProvider = ({children}: any) => {
 
     const register = async (email:string, password:string, username:string, birth_date:string, preferences:string[], city:string) => {
         console.log(`${API_URL}/users/signup`)
-        console.log(`${username},${email},${password},${preferences},${birth_date}`)
         try {
             return await axios.post(`${API_URL}/users/signup`,{
                 "username": username, 

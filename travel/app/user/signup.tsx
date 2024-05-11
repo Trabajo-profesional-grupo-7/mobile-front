@@ -1,42 +1,38 @@
-import { StyleSheet, Image, Dimensions, TextInput, Modal, Button, ScrollView } from 'react-native';
+import { StyleSheet, Dimensions, TextInput, ScrollView } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
 import AccountButton from '@/components/AccountButton';
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Colors from '@/constants/Colors';
-import { API_URL, useAuth } from '../context/AuthContext';
-import LoadingIndicator from '@/components/LoadingIndicator';
-import { Calendar } from 'react-native-calendars';
+import { API_URL } from '../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
-import RNDateTimePicker from '@react-native-community/datetimepicker';
+import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Dropdown } from 'react-native-element-dropdown';
 import axios from 'axios';
 
 const colors = Colors.light;
 
 export default function SignupScreen() {
-    const router = useRouter();
-    const {onRegister} = useAuth();
-    
+    const router = useRouter();    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState('');
     const [username, setUsername] = useState('');
     const [showPassword, setShowPassword] = useState(false)
     const [showRepeatPassword, setShowRepeatPassword] = useState(false)
-
-    const [isLoading, setIsLoading] = useState(false);
     
     const [date, setDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
 
-    const onChangeDate = (event:any , selectedDate: any) => {
+    const onChangeDate = (event:DateTimePickerEvent , selectedDate: Date | undefined) => {
       const currentDate = selectedDate;
       setShowDatePicker(false);
-      setDate(currentDate);
+      if (currentDate != undefined) {
+        setDate(currentDate);
+      }
     }
 
 
@@ -78,7 +74,7 @@ export default function SignupScreen() {
     const updateData = async (query:string) => {
       try {
         const result = await axios.get(`${API_URL}/cities?keyword=${query}`)
-        const formattedCities = result.data.cities.map((city: { name: any; country: any; }) => ({
+        const formattedCities = result.data.cities.map((city: { name: string; country: string; }) => ({
           label: `${city.name}, ${city.country}`,
           value: `${city.name}, ${city.country}`
         }));
@@ -122,6 +118,7 @@ export default function SignupScreen() {
                 }}
                 onChange={item => {
                   setCity(item.value);
+                  setValue(item)
                 }}
               />
               <Text style={[styles.subtitle,{marginLeft:20, fontSize:25}]}>{city}</Text>
@@ -183,9 +180,6 @@ export default function SignupScreen() {
                 onChange={onChangeDate}
                 maximumDate={new Date()}
               />
-            )}
-            {isLoading && (
-              <LoadingIndicator/>
             )}
         </ScrollView>
     );

@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Dimensions, TextInput } from 'react-native';
+import { StyleSheet, Dimensions, TextInput } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -7,8 +7,6 @@ import React, { useState } from 'react';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Colors from '@/constants/Colors';
-import CodeField from 'react-native-confirmation-code-field';
-import { OtpInput } from 'react-native-otp-entry';
 import { API_URL } from '../context/AuthContext';
 import axios from 'axios';
 import LoadingIndicator from '@/components/LoadingIndicator';
@@ -20,8 +18,8 @@ const colors = Colors.light;
 export default function NewPassword() {
     const params = useLocalSearchParams();
     const router = useRouter();
-    const [email, setEmail] = useState(params.email);
-    const [code, setCode] = useState(params.code);
+    const email = params.email;
+    const code = params.code;
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)

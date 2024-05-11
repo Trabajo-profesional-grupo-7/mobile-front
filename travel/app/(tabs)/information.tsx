@@ -1,18 +1,15 @@
-import { StyleSheet, Image, Text, Dimensions, TextInput } from 'react-native';
+import { StyleSheet, Text, Dimensions } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { router, useRouter } from 'expo-router';
+import { router } from 'expo-router';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const colors = Colors.light;
 
 export default function Information() {
-    const [location, setLocation] = useState("");
 
     return(
         <View style={styles.container}>

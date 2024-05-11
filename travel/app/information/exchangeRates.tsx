@@ -1,12 +1,9 @@
-import { StyleSheet, Image, Text, Dimensions, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, Dimensions, TextInput, TouchableOpacity } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
-import Icon from 'react-native-ico-flags';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'expo-router';
 import { getSupportedCurrencies } from "react-native-format-currency";
 import { API_URL, useAuth } from '../context/AuthContext';
 import axios from 'axios';

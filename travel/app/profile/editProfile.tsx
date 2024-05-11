@@ -1,6 +1,4 @@
 import { Dimensions, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import { Chip } from 'react-native-paper';
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import React, { useEffect, useState } from 'react';
 import Colors from '@/constants/Colors';
@@ -13,25 +11,15 @@ import LoadingIndicator from '@/components/LoadingIndicator';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const preferences = ["Cat1", "Cat2", "Cat3"]
 
 export default function EditProfile() {
   const params = useLocalSearchParams();
   const [name, setName] = React.useState(`${params.username}`);
   const [location, setLocation] = useState(`${params.country}`);
-  const [birthday, setBirthday] = useState(`${params.birth_date}`);
   const [selected, setSelected] = useState<string[]>((params.preferences as string).split(","))
-  const [selectedPreferences, setSelectedPreferences] = useState<string[]>(["Cat2"]); //get de prefs
   const [isLoading, setIsLoading] = useState(false)
   const [categories, setCategories] = useState([])
 
-  const handleSelect = (val: string) => {
-    setSelectedPreferences((prev: string[]) =>
-      prev.find((p) => p === val)
-        ? prev.filter((cat) => cat !== val)
-        : [...prev, val]
-    );
-  };
 
   useEffect(() => {
 
@@ -55,7 +43,7 @@ export default function EditProfile() {
   const editProfile = async () => {
     setIsLoading(true)
     try {
-      const result = await axios.patch(`${API_URL}/users`, {
+      await axios.patch(`${API_URL}/users`, {
         "username": name,
         "preferences": selected
       })
