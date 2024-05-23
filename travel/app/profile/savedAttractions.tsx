@@ -37,7 +37,7 @@ export default function SavedAttractions() {
         }
     }
 
-    const renderAttraction = ({item}:{item:{attraction_name:string, attraction_id:string,likes_count:number,done_count:number,avg_rating:number, city:string, country: string, photo:string}}) => {
+    const renderAttraction = ({item}:{item:AttractionParams}) => {
         return (
             <AttractionCard data={item}></AttractionCard>
         )

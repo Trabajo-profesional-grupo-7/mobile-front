@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions, TextInput, ScrollView } from 'react-native';
+import { StyleSheet, Dimensions, TextInput, ScrollView, ActivityIndicator } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
@@ -70,8 +70,10 @@ export default function SignupScreen() {
 
     const [value, setValue] = useState<{ label: string; value: string; }>();
     const [data, setData] = useState([])
+    const [loadingLocations, setLoadingLocations] = useState(false)
 
     const updateData = async (query:string) => {
+      setLoadingLocations(true)
       try {
         const result = await axios.get(`${API_URL}/cities?keyword=${query}`)
         const formattedCities = result.data.cities.map((city: { name: string; country: string; }) => ({
@@ -80,8 +82,9 @@ export default function SignupScreen() {
         }));
         setData(formattedCities)
       } catch (e) {
-
+        alert(e)
       }
+      setLoadingLocations(false)
     }
 
     const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
@@ -91,7 +94,6 @@ export default function SignupScreen() {
         <ScrollView contentContainerStyle={styles.container}>
             <View style={{marginTop:"30%"}}>
               <Text style={styles.title}>Sign up</Text>
-
               <Dropdown
                 data={data}
                 search
@@ -101,6 +103,13 @@ export default function SignupScreen() {
                 placeholder="Location"
                 searchPlaceholder="Search..."
                 value={value}
+                renderRightIcon={() => (
+                  <View>
+                    {loadingLocations && (
+                      <ActivityIndicator size={20} color="black" />
+                    )}
+                  </View>
+                )}
                 onChangeText={query => {
                   if (query.length > 3) {
                     if (timer) {

@@ -40,12 +40,17 @@ export default function Attraction() {
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const onChangeDate = (event:DateTimePickerEvent , selectedDate: Date | undefined) => {
-    setShowDatePicker(false);
-    if (selectedDate != undefined) {
-      setDate(selectedDate);
+    const {
+      type,
+      nativeEvent: {timestamp, utcOffset},
+    } = event;
+    if (type == 'set' && selectedDate){
+      setDate(selectedDate)
+      schedule(selectedDate)
     }
-    schedule();
+    setShowDatePicker(false);
   }
+
 
   const getAttractionDetails = async () =>  {
     setIsLoading(true);
@@ -102,15 +107,18 @@ export default function Attraction() {
     setIsLoading(false);
   }
 
-  const schedule = async () => {
-    console.log("Make schedule for")
-    console.log(date)
+  const schedule = async (selectedDate: Date) => {
+    setIsLoading(true);
     await onRefreshToken!();
     try {
-
+      await axios.post(`${API_URL}/attractions/schedule`,{
+        "attraction_id": id,
+        "scheduled_time": selectedDate.toISOString()
+      });
     } catch (e) {
-
+      alert(e)
     }
+    setIsLoading(false);
   }
 
   const rate = async (rating: number) => {

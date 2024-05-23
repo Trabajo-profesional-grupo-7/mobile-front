@@ -15,9 +15,9 @@ export interface AttractionCardProps {
     data: {
         attraction_name: string,
         attraction_id:string,
-        likes_count:number,
-        done_count:number,
-        avg_rating:number,
+        likes_count:string,
+        done_count:string,
+        avg_rating:string,
         city: string,
         country: string,
         photo: string,

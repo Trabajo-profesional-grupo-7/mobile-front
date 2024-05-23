@@ -1,4 +1,4 @@
-import {  StyleSheet, Image, Dimensions  } from 'react-native';
+import {  StyleSheet, Dimensions  } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
@@ -68,7 +68,7 @@ export default function FeedScreen() {
     }
   }
 
-  const renderAttraction = ({item}:{item:{attraction_name:string, attraction_id:string,likes_count:number,done_count:number,avg_rating:number, city:string, country: string, photo:string}}) => {
+  const renderAttraction = ({item}:{item:{attraction_name:string, attraction_id:string,likes_count:string,done_count:string,avg_rating:string, city:string, country: string, photo:string}}) => {
     return (
         <AttractionCard data={item}></AttractionCard>
     )
