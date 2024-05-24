@@ -1,16 +1,17 @@
-import { StyleSheet, Text, Dimensions, Image } from 'react-native';
+import { StyleSheet, Text, Dimensions, Image, TouchableOpacity } from 'react-native';
 
 import { View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
 import MapView, { Callout, Details, Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 import { LocationObjectCoords } from 'expo-location';
 import * as Location from 'expo-location';
 import { API_URL, useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { ActivityIndicator } from 'react-native-paper';
+import LoadingDots from 'react-native-loading-dots';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -25,6 +26,9 @@ export default function Map() {
 
     const [location, setLocation] = useState<MapLocation>();
     const [markers, setMarkers] = useState<{ latitude: number; longitude: number; attraction_name: string; attraction_id:string, photo:string, city:string, country:string }[]>([]); 
+    const [searchHere, setSearchHere] = useState(false)
+    const [currentRegion, setCurrentRegion] = useState<Region>();
+    const [loading, setLoading] = useState(false)
     const {onRefreshToken} = useAuth();
     const mapStyle = [
         {
@@ -37,6 +41,7 @@ export default function Map() {
     ];
 
     const getAttractions = async (attractionsLocation: MapLocation ) => {
+        setLoading(true)
         if (attractionsLocation) {
             await onRefreshToken!();
             try {
@@ -59,6 +64,7 @@ export default function Map() {
                 alert(e)
             }
         }
+        setLoading(false)
     }
 
     useEffect(() => {
@@ -95,7 +101,15 @@ export default function Map() {
 
     const updateAttractions = (region: Region, details: Details) => {
         if (details.isGesture) {
-            getAttractions(region)
+            setSearchHere(true)
+            setCurrentRegion(region)
+        }
+    }
+
+    const searchOnNewLocation = () => {
+        setSearchHere(false)
+        if (currentRegion) {
+            getAttractions(currentRegion)
         }
     }
 
@@ -121,7 +135,21 @@ export default function Map() {
                         </Callout>
                     </Marker>
                 ))}
-            </MapView> 
+            </MapView>
+            {searchHere && (
+                <TouchableOpacity onPress={searchOnNewLocation} style={{justifyContent:"center",position:"absolute",borderRadius:50,bottom:30,alignSelf:"center",backgroundColor:"white", elevation:5}}>
+                    <Text style={{alignSelf:"center", paddingVertical:8, paddingHorizontal:15, fontSize:18}}>Search here</Text>
+                </TouchableOpacity>
+            )}
+            {loading && (
+                <View style={styles.dotsWrapper}>
+                    <LoadingDots 
+                        size={10}
+                        bounceHeight={5}
+                        colors={[Colors.light.primary,"#E09032","#DF9E51","#DDAC72"]}
+                    />
+                </View>
+            )}
         </View>
     )
 }
@@ -132,6 +160,16 @@ const styles = StyleSheet.create({
   },
   map:{
     width:"100%",
-    height:"100%"
-  }
+    height:"100%",
+    zIndex:-1
+  },
+  dotsWrapper: {
+    width: "20%",
+    alignSelf:"center",
+    alignContent:"center",
+    paddingTop:25,
+    marginBottom:20,
+    backgroundColor:"transparent",
+    position:"absolute",
+},
 });
