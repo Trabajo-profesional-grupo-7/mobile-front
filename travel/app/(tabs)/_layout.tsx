@@ -144,6 +144,19 @@ const DrawerLayout = () => {
         }}
       />
       <Drawer.Screen
+        name="map"
+        options={{
+          drawerLabel:'Map',
+          headerTitle:'Map',
+          headerTintColor:"white",
+          headerTitleAlign:"center",
+          headerStyle:{backgroundColor:Colors.light.primary},
+          drawerIcon: ({size, color}) => (
+            <Ionicons name='map-outline' size={size} color={color}/>
+          )
+        }}
+      />
+      <Drawer.Screen
         name="chatBot"
         options={{
           drawerLabel:'ChatBot',
