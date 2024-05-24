@@ -19,12 +19,11 @@ type CaldendarDate = {
 };
 
 export default function UserCalendar() {
-    const [selected, setSelected] = useState((new Date()).toDateString().split('T')[0]);
+    const [selected, setSelected] = useState((new Date()).toISOString().split('T')[0]);
     const [loading, setLoading] = useState(false)
     const { onRefreshToken } = useAuth();
     const [markedDates, setMarkedDates] = useState<CaldendarDate>();
     const [attractions, setAttractions] = useState<AttractionParams[]>();
-
     const [scheduledAttractions, setScheduledAttractions] = useState<AttractionHash>({})
 
     const getScheduledAttractions = async () => {
@@ -108,7 +107,7 @@ export default function UserCalendar() {
                                 {selected == date && (
                                     <>
                                         {value.map((att, index) => (
-                                            <AttractionCard key={index} data={att}></AttractionCard>
+                                            <AttractionCard key={att.attraction_id} data={att}></AttractionCard>
                                         ))}
                                     </>
                                 )}
