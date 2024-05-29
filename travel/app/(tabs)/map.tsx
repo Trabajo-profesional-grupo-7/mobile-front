@@ -100,7 +100,7 @@ export default function Map() {
     }, []);
 
     const updateAttractions = (region: Region, details: Details) => {
-        if (details.isGesture) {
+        if (details.isGesture && !loading) {
             setSearchHere(true)
             setCurrentRegion(region)
         }

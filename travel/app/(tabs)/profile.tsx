@@ -11,6 +11,7 @@ import axios from 'axios';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { dateParser } from '@/components/Parsers';
 const windowHeight = Dimensions.get('window').height;
+const width = Dimensions.get('window').width;
 const colors = Colors.light;
 
 export default function ProfileScreen() {
@@ -30,6 +31,7 @@ export default function ProfileScreen() {
     await onRefreshToken!();
     try {
       const result = await axios.get(`${API_URL}/users`);
+      console.log(result.data)
       setEmail(result.data.email);
       setBirthdate(result.data.birth_date);
       setUsername(result.data.username);
@@ -66,39 +68,37 @@ export default function ProfileScreen() {
       </TouchableOpacity>
       <View style={styles.container}>
         <View style={styles.topView}>
-          <Image 
-              style={{width:150, height:150, borderRadius:100}}
-              source={{
-                uri:"https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"}}
-            />
-          <Text style={{
-              fontWeight: '700',
-              fontSize: 25,
-            }}>
-              {username}
-            </Text>
+          <Text style={{fontSize:8*5, fontWeight:"bold", marginVertical:4}}>{username}</Text>
+          <Text style={{color:"gray", fontSize:8*3,marginVertical:4}}>{email}</Text>
+          <View style={{flexDirection:"row", alignItems:"center"}}>
+            <Ionicons name='location-outline' size={8*2}/>
+            <Text style={{fontSize:8*2,marginVertical:4}}>Buenos Aires, Argentina</Text>
+          </View>
         </View>
         <View style={styles.bottomView}>
-            
-          <View style={styles.profileItem}>
-            <Ionicons name='mail-outline' size={25}/>
-            <Text style={{fontSize:20, flex:1, marginLeft:5}}>Email</Text>
-            <Text style={{fontSize:15, fontWeight:'bold', alignSelf:'flex-end'}}>{email}</Text>
-          </View>
-
-          <View style={styles.profileItem}>
-            <Ionicons name='calendar-outline' size={25}/>
-            <Text style={{fontSize:20, flex:1, marginLeft:5}}>Birthday</Text>
-            <Text style={{fontSize:20, fontWeight:'bold', alignSelf:'flex-end'}}>{dateParser(birth_date)}</Text>
-          </View>
-          {preferences.length > 0 && 
-            <View style={styles.travelPreferences}>
-              <Text style={{fontSize:20, marginLeft:5, fontWeight:'bold'}}>Travel preferences</Text>
-              {preferences.map((item:string, index) => (
-                <Text key={index} style={{marginLeft:10, fontSize:20}}>• {item.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</Text>
-              ))}
+          <TouchableOpacity style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between", width:width-8*3, padding:8*2}}>
+            <View style={{flexDirection:"row", backgroundColor:"transparent",alignItems:"center"}}>
+              <Ionicons name='bookmark-outline' color={"#a6683f"} size={8*5} style={styles.iconContainer}/>
+              <Text style={{paddingLeft:8*2, fontSize:8*2.5, fontWeight:"bold"}}>Attractions saved</Text>
             </View>
-          }
+            <Ionicons name='chevron-forward-outline' color={"gray"} size={8*4} style={{paddingRight:8*2}}/>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between", width:width-8*3, padding:8*2}}>
+            <View style={{flexDirection:"row", backgroundColor:"transparent",alignItems:"center"}}>
+              <Ionicons name='checkmark-done' color={"#a6683f"} size={8*5} style={styles.iconContainer}/>
+              <Text style={{paddingLeft:8*2, fontSize:8*2.5, fontWeight:"bold"}}>Attractions done</Text>
+            </View>
+            <Ionicons name='chevron-forward-outline' color={"gray"} size={8*4} style={{paddingRight:8*2}}/>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between", width:width-8*3, padding:8*2}}>
+            <View style={{flexDirection:"row", backgroundColor:"transparent",alignItems:"center"}}>
+              <Ionicons name='calendar-outline' color={"#a6683f"} size={8*5} style={styles.iconContainer}/>
+              <Text style={{paddingLeft:8*2, fontSize:8*2.5, fontWeight:"bold"}}>Calendar</Text>
+            </View>
+            <Ionicons name='chevron-forward-outline' color={"gray"} size={8*4} style={{paddingRight:8*2}}/>
+          </TouchableOpacity>
         </View>
       </View>
       </>
@@ -110,28 +110,33 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    zIndex:-1
+    zIndex:-1,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
   },
   topView: {
-    height: "30%",
-    width: '100%',
-    backgroundColor:colors.dimmed,
-    borderBottomWidth:2,
-    borderBottomColor:colors.primary,
+    height: "25%",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent:"center",
+    backgroundColor:colors.background,
+    marginTop:8*2,
+    marginHorizontal:8*2,
+    marginBottom:8
   },
   bottomView: {
-    width: '80%',
-    backgroundColor:colors.secondary,
+    width: '100%',
+    backgroundColor:"transparent",
     alignItems: "center",
-    marginTop: "5%",
-    borderRadius:30,
     alignSelf:"center",
+    flex:1
+  },
+  iconContainer: {
+    backgroundColor:"#fab78c",
+    padding:8,
+    borderRadius:50,
+    opacity:1
   },
   floatingButton: {
     position: 'absolute',
@@ -143,26 +148,7 @@ const styles = StyleSheet.create({
     backgroundColor:colors.secondary,
     borderRadius:50,
     right:30,
-    top:windowHeight-200
-  },
-  profileItem: {
-    width:"100%",
-    flexDirection:"row", 
-    justifyContent:"space-between",
-    backgroundColor:"transparent",
-    alignItems:"center",
-    paddingVertical:10,
-    paddingHorizontal:15,
-    borderBottomColor:colors.background,
-    borderBottomWidth:1
-  },
-  travelPreferences: {
-    width:"100%",
-    flexDirection:"column", 
-    backgroundColor:"transparent",
-    paddingVertical:10,
-    paddingHorizontal:15,
-    borderBottomColor:colors.background,
-    borderBottomWidth:1
+    top:windowHeight-200,
+    elevation:3
   }
 });
