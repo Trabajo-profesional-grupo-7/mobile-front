@@ -18,11 +18,11 @@ export default function ProfileScreen() {
   const [lastUpdatedTime, setLastUpdatedTime] = useState(0);
   const router = useRouter();
   const [email, setEmail] = useState('Email');
-  const country = 'Argentina';
   const [birth_date, setBirthdate] = useState('Birthday');
   const [username, setUsername] = useState("Name")
   const [preferences, setPreferences] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [location, setLocation] = useState("")
   const {onRefreshToken} = useAuth();
 
  
@@ -31,11 +31,11 @@ export default function ProfileScreen() {
     await onRefreshToken!();
     try {
       const result = await axios.get(`${API_URL}/users`);
-      console.log(result.data)
       setEmail(result.data.email);
       setBirthdate(result.data.birth_date);
       setUsername(result.data.username);
       setPreferences(result.data.preferences)
+      setLocation(result.data.city)
       setIsLoading(false);
     } catch (e) {
       alert("Error getting profile info");
@@ -54,7 +54,7 @@ export default function ProfileScreen() {
   }, []);
 
   const navigateToEditProfile = () => {
-    router.navigate({pathname:"../profile/editProfile",params:{username, country, preferences, birth_date}});
+    router.navigate({pathname:"../profile/editProfile",params:{username, location, preferences, birth_date}});
   }
 
   return (
@@ -72,7 +72,7 @@ export default function ProfileScreen() {
           <Text style={{color:"gray", fontSize:8*3,marginVertical:4}}>{email}</Text>
           <View style={{flexDirection:"row", alignItems:"center"}}>
             <Ionicons name='location-outline' size={8*2}/>
-            <Text style={{fontSize:8*2,marginVertical:4}}>Buenos Aires, Argentina</Text>
+            <Text style={{fontSize:8*2,marginVertical:4}}>{location}</Text>
           </View>
         </View>
         <View style={styles.bottomView}>

@@ -18,7 +18,10 @@ export default function Attraction() {
 
 
   const name = params.attraction_name;
-  const location = `${params.city}, ${params.country}`;
+  let location = `${params.city}, ${params.country}`;
+  if (!params.city) {
+    location = `${params.country}`;
+  }
   const description = 'Description';
   const id = params.attraction_id;
   const photo = params.photo as string
@@ -31,6 +34,7 @@ export default function Attraction() {
   const [userRating, setUserRating] = useState(1)
   const [likedCount, setLikedCount] = useState(0)
   const [comments, setComments] = useState([])
+  const [types, setTypes] = useState<string[]>([])
 
   const [isLoading, setIsLoading] = useState(false);
   const [starModalVisible, setStarModalVisible] = useState(false);
@@ -57,12 +61,13 @@ export default function Attraction() {
     await onRefreshToken!();
     try {
       const result = (await axios.get(`${API_URL}/attractions/byid/${id}`)).data;
-      
+      console.log(result)
       setIsDone(result.is_done)
       setIsLiked(result.is_liked)
       setIsSaved(result.is_saved)
       setLikedCount(result.liked_count)
       setComments(result.comments)
+      setTypes(result.types)
       if (result.user_rating != null) {
         setUserRating(result.user_rating)
         setIsRated(true)
@@ -185,31 +190,50 @@ export default function Attraction() {
 
   useEffect(() => {
     getAttractionDetails()
-}, []);
+  }, []);
+
+  const transformType = (type: string): string => {
+    return type
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
+
+  const UserComment = ({username, comment}:{username:string,comment:string}) => {
+    return (
+      <View>
+        <Text style={{fontWeight:"bold", fontSize:8*2}}>{username}</Text>
+        <Text style={{fontSize:8*2, marginLeft:8}}>{comment}</Text>
+      </View>
+    )
+  }
 
   return (
     <>
-      <View style={[{ flexDirection: "row" }, styles.floatingButton]}>
-        <Ionicons style={styles.icon} name={isLiked ? 'heart' : 'heart-outline'} size={40} onPress={like} />
-        <Ionicons style={styles.icon} name={isDone ? 'checkmark-done-outline' : 'checkmark-outline'} size={40} onPress={done} />
-        <Ionicons style={styles.icon} name={isScheduled ? 'time' : 'time-outline'} size={40} onPress={() => { setShowDatePicker(true) }} />
-        <Ionicons style={styles.icon} name={isRated ? 'star' : 'star-outline'} size={40} onPress={() => { setStarModalVisible(true)}} />
-        <Ionicons style={styles.icon} name={isSaved ? 'bookmark' : 'bookmark-outline'} size={40} onPress={save} />
-        <Ionicons style={styles.icon} name='map-outline' size={40} />
-      </View>
       <View style={styles.container}>
-        <LinearGradient
-          colors={['rgba(255, 255, 255, 0)', Colors.light.background]}
-          style={styles.gradient}
-        />
         <Image
-          style={{ width: "100%", height: 250 }}
+          style={{ width: "100%", height: 8*32 }}
           source={photo ? { uri: photo } : { uri: 'https://i.imgur.com/qc0GM7G.png' }}
         />
-        <View style={{ marginHorizontal: 20 }}>
+        <View style={{ marginHorizontal: 8*3 }}>
           <Text style={styles.title}>{name}</Text>
-          <Text numberOfLines={1} ellipsizeMode="tail" style={{ fontSize: 16 }}>{location}</Text>
-          <Text numberOfLines={16} ellipsizeMode="tail" style={{ fontSize: 16 }}>{description}</Text>
+          <View style={{flexDirection:"row", alignSelf:"center", alignItems:"center"}}>
+            <Ionicons name='location-outline' size={8*2.5} color="gray" />
+            <Text numberOfLines={1} ellipsizeMode="tail" style={{ fontSize: 8*2.5, color:"gray" }}>{location}</Text>
+          </View>
+          <View style={[{ flexDirection: "row" }, styles.floatingButton]}>
+            <Ionicons style={styles.icon} name={isLiked ? 'heart' : 'heart-outline'} size={8*4.5} onPress={like} />
+            <Ionicons style={styles.icon} name={isDone ? 'checkmark-done-outline' : 'checkmark-outline'} size={8*4.5} onPress={done} />
+            <Ionicons style={styles.icon} name={isScheduled ? 'time' : 'time-outline'} size={8*4.5} onPress={() => { setShowDatePicker(true) }} />
+            <Ionicons style={styles.icon} name={isRated ? 'star' : 'star-outline'} size={8*4.5} onPress={() => { setStarModalVisible(true)}} />
+            <Ionicons style={styles.icon} name={isSaved ? 'bookmark' : 'bookmark-outline'} size={8*4.5} onPress={save} />
+            <Ionicons style={styles.icon} name='map-outline' size={8*4.5} />
+          </View>
+          <Text numberOfLines={2} style={{fontSize:8*2,marginBottom:2,fontStyle:"italic"}}>{types.map(transformType).join(', ')}</Text>
+          <Text numberOfLines={16} ellipsizeMode="tail" style={{ fontSize: 8*3 }}>{description}</Text>
+          <Text style={{ fontSize: 8*3.5, fontWeight:"bold", marginTop:4 }}>Comments</Text>
+          
         </View>
         
         <StarModal/>
@@ -234,17 +258,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 35,
+    fontSize: 8*4,
     fontWeight: 'bold',
+    alignSelf:"center",
+    marginVertical:4
   },
   icon: {
     paddingHorizontal: 2,
-  },
-  chipsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginVertical: 10,
-    marginBottom: windowWidth * 0.05,
   },
   input: {
     height: windowHeight * 0.05,
@@ -258,18 +278,13 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.light.primary,
   },
   floatingButton: {
-    position: 'absolute',
     zIndex: 1,
     width: windowWidth * 0.8,
     height: 60,
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: "white",
-    borderRadius: 50,
-    right: (windowWidth / 2) - (windowWidth * 0.8 / 2),
-    top: windowHeight - 175,
-    paddingHorizontal: 20,
-    elevation:5
+    alignSelf:"center",
+    marginVertical:4
   },
   gradient: {
     position: 'absolute',
