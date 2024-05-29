@@ -46,15 +46,18 @@ export default function UserCalendar() {
                         photo: attraction.photo,
                     }
                     const date = attraction.scheduled_day.split('T')[0]
-                    dates[date] = { start: true, end: true, selected: true, selectedColor:Colors.light.primary, textColor:"white" }
-                    if (hash[date]) {
-                        hash[date].push(parsed_attraction)
-                    } else {
-                        hash[date] = [parsed_attraction]
+                    if (date >= selected) {
+                        dates[date] = { start: true, end: true, selected: true, selectedColor:Colors.light.primary, textColor:"white" }
+                        if (hash[date]) {
+                            hash[date].push(parsed_attraction)
+                        } else {
+                            hash[date] = [parsed_attraction]
+                        }
                     }
                 }
                 setScheduledAttractions(hash)
                 setMarkedDates(dates)
+                
             }
         } catch (e) {
             alert(e);
@@ -62,6 +65,11 @@ export default function UserCalendar() {
         setLoading(false)
     }
 
+    useEffect(() => {
+        if (scheduledAttractions[selected]) {
+            setAttractions(scheduledAttractions[selected])
+        }
+    }, [scheduledAttractions]);
 
     useEffect(() => {
         getScheduledAttractions();

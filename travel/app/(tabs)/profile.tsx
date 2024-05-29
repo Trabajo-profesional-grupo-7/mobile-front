@@ -76,7 +76,7 @@ export default function ProfileScreen() {
           </View>
         </View>
         <View style={styles.bottomView}>
-          <TouchableOpacity style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between", width:width-8*3, padding:8*2}}>
+          <TouchableOpacity onPress={() => router.navigate("../profile/savedAttractions")} style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between", width:width-8*3, padding:8*2}}>
             <View style={{flexDirection:"row", backgroundColor:"transparent",alignItems:"center"}}>
               <Ionicons name='bookmark-outline' color={"#a6683f"} size={8*5} style={styles.iconContainer}/>
               <Text style={{paddingLeft:8*2, fontSize:8*2.5, fontWeight:"bold"}}>Attractions saved</Text>
@@ -84,7 +84,7 @@ export default function ProfileScreen() {
             <Ionicons name='chevron-forward-outline' color={"gray"} size={8*4} style={{paddingRight:8*2}}/>
           </TouchableOpacity>
 
-          <TouchableOpacity style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between", width:width-8*3, padding:8*2}}>
+          <TouchableOpacity onPress={() => router.navigate("../profile/doneAttractions")} style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between", width:width-8*3, padding:8*2}}>
             <View style={{flexDirection:"row", backgroundColor:"transparent",alignItems:"center"}}>
               <Ionicons name='checkmark-done' color={"#a6683f"} size={8*5} style={styles.iconContainer}/>
               <Text style={{paddingLeft:8*2, fontSize:8*2.5, fontWeight:"bold"}}>Attractions done</Text>
@@ -92,7 +92,7 @@ export default function ProfileScreen() {
             <Ionicons name='chevron-forward-outline' color={"gray"} size={8*4} style={{paddingRight:8*2}}/>
           </TouchableOpacity>
 
-          <TouchableOpacity style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between", width:width-8*3, padding:8*2}}>
+          <TouchableOpacity onPress={() => router.navigate("../profile/calendar")} style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between", width:width-8*3, padding:8*2}}>
             <View style={{flexDirection:"row", backgroundColor:"transparent",alignItems:"center"}}>
               <Ionicons name='calendar-outline' color={"#a6683f"} size={8*5} style={styles.iconContainer}/>
               <Text style={{paddingLeft:8*2, fontSize:8*2.5, fontWeight:"bold"}}>Calendar</Text>

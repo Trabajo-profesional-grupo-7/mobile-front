@@ -54,35 +54,6 @@ function CustomDrawerContent(props:any){
 }
 
 const DrawerLayout = () => { 
-  const [modalVisible, setmodalVisible] = useState(false);
-
-  const DetailsModal = () => {
-    return (
-      <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setmodalVisible(false)}>
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-            <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, width:"60%" }}>
-              <TouchableOpacity onPress={() => {router.navigate("../profile/savedAttractions");setmodalVisible(false)}} style={{height:40, justifyContent:"center"}}>
-                  <Text style={{fontSize:18}}>Attractions saved</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => {router.navigate("../profile/doneAttractions");setmodalVisible(false)}} style={{height:40, justifyContent:"center"}}>
-                  <Text style={{fontSize:18}}>Attractions done</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => {router.navigate("../profile/calendar");setmodalVisible(false)}} style={{height:40, justifyContent:"center"}}>
-                  <Text style={{fontSize:18}}>Calendar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => {setmodalVisible(false)}} style={{height:40, justifyContent:"center"}}>
-                  <Text style={{fontSize:18}}>Account settings</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-      </Modal>
-    )
-  }
-
   return <GestureHandlerRootView style={{flex:1}}>
     <Drawer 
       drawerContent={CustomDrawerContent}
@@ -117,16 +88,6 @@ const DrawerLayout = () => {
           headerStyle:{backgroundColor:Colors.light.primary},
           drawerIcon: ({size, color}) => (
             <Ionicons name='person-outline' size={size} color={color}/>
-          ),
-          headerRight: () => (
-              <TouchableOpacity
-                  onPress={() => {
-                    setmodalVisible(true);
-                  }}
-                  style={{ marginRight: 10, padding: 5 }}
-              >
-                  <Ionicons name="ellipsis-vertical" size={24} color="white" />
-              </TouchableOpacity>
           )
         }}
       />
@@ -170,7 +131,6 @@ const DrawerLayout = () => {
         }}
       />
     </Drawer>
-    <DetailsModal/>
   </GestureHandlerRootView>
 };
 
