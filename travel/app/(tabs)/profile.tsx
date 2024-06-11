@@ -38,7 +38,7 @@ export default function ProfileScreen() {
       setLocation(result.data.city)
       setIsLoading(false);
     } catch (e) {
-      alert("Error getting profile info");
+      alert(e);
     }
   }
 

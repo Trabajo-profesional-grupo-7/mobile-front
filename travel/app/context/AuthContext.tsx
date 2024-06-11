@@ -115,8 +115,10 @@ export const AuthProvider = ({children}: any) => {
     const refreshToken = async () => {
         try {
             await axios.get(`${API_URL}/users/verify_id_token`);
+
         } catch (e) {
-            axios.defaults.headers.common['Authorization'] =  `Bearer ${authState.refresh_token}`;
+            const refresh_token = await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
+            axios.defaults.headers.common['Authorization'] =  `Bearer ${refresh_token}`;
             try {
                 const result = await axios.post(`${API_URL}/users/refresh_token`);
                 setAuthState({

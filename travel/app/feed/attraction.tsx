@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, Image, Modal, TouchableWithoutFeedback, Pressable } from 'react-native';
+import { Dimensions, StyleSheet, Image, Modal, TouchableWithoutFeedback, Pressable, FlatList, ScrollView, Button, TextInput, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Text, View } from '@/components/Themed';
 import { Ionicons } from '@expo/vector-icons';
@@ -33,22 +33,23 @@ export default function Attraction() {
   const [isSaved, setIsSaved] = useState(false);
   const [userRating, setUserRating] = useState(1)
   const [likedCount, setLikedCount] = useState(0)
-  const [comments, setComments] = useState([])
+  const [comments, setComments] = useState<{ comment: string, comment_id: number, user_name: string }[]>([])
   const [types, setTypes] = useState<string[]>([])
 
   const [isLoading, setIsLoading] = useState(false);
   const [starModalVisible, setStarModalVisible] = useState(false);
+  const [commentModalVisible, setCommentModalVisible] = useState(false);
   const { onRefreshToken } = useAuth();
 
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const onChangeDate = (event:DateTimePickerEvent , selectedDate: Date | undefined) => {
+  const onChangeDate = (event: DateTimePickerEvent, selectedDate: Date | undefined) => {
     const {
       type,
-      nativeEvent: {timestamp, utcOffset},
+      nativeEvent: { timestamp, utcOffset },
     } = event;
-    if (type == 'set' && selectedDate){
+    if (type == 'set' && selectedDate) {
       setDate(selectedDate)
       schedule(selectedDate)
     }
@@ -56,12 +57,11 @@ export default function Attraction() {
   }
 
 
-  const getAttractionDetails = async () =>  {
+  const getAttractionDetails = async () => {
     setIsLoading(true);
     await onRefreshToken!();
     try {
       const result = (await axios.get(`${API_URL}/attractions/byid/${id}`)).data;
-      console.log(result)
       setIsDone(result.is_done)
       setIsLiked(result.is_liked)
       setIsSaved(result.is_saved)
@@ -116,7 +116,7 @@ export default function Attraction() {
     setIsLoading(true);
     await onRefreshToken!();
     try {
-      await axios.post(`${API_URL}/attractions/schedule`,{
+      await axios.post(`${API_URL}/attractions/schedule`, {
         "attraction_id": id,
         "scheduled_time": selectedDate.toISOString()
       });
@@ -156,34 +156,82 @@ export default function Attraction() {
     setIsLoading(false);
   }
 
-  
+
   const StarModal = () => {
     const [rating, setRating] = useState(userRating);
-    
+
     return (
       <Modal
-          animationType="fade"
-          transparent={true}
-          visible={starModalVisible}
-          onRequestClose={() => setStarModalVisible(false)}>
-          <TouchableWithoutFeedback onPress={() => setStarModalVisible(false)}>
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-              <TouchableWithoutFeedback>
-                <View style={{padding: 20, borderRadius: 10}}>
-                  <View style={{flexDirection:"row", paddingBottom:20, justifyContent:"center", backgroundColor:"transparent"}}>
-                    <Ionicons style={{ paddingHorizontal: 2 }} name={'star'} size={40} onPress={() => {setRating(1)}} />
-                    <Ionicons style={{ paddingHorizontal: 2 }} name={(rating >= 2) ? 'star' : 'star-outline'} size={40} onPress={() => {setRating(2)}} />
-                    <Ionicons style={{ paddingHorizontal: 2 }} name={(rating >= 3) ? 'star' : 'star-outline'} size={40} onPress={() => {setRating(3)}} />
-                    <Ionicons style={{ paddingHorizontal: 2 }} name={(rating >= 4) ? 'star' : 'star-outline'} size={40} onPress={() => {setRating(4)}} />
-                    <Ionicons style={{ paddingHorizontal: 2 }} name={(rating == 5) ? 'star' : 'star-outline'} size={40} onPress={() => {setRating(5)}} />
-                  </View>
-                  <Pressable style={{alignItems:"center"}} onPress={() => {rate(rating); setStarModalVisible(false)}}>
-                    <Text style={{fontSize:25, color:Colors.light.primary, fontWeight:"bold"}}>Rate</Text>
-                  </Pressable>                  
+        animationType="fade"
+        transparent={true}
+        visible={starModalVisible}
+        onRequestClose={() => setStarModalVisible(false)}>
+        <TouchableWithoutFeedback onPress={() => setStarModalVisible(false)}>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+            <TouchableWithoutFeedback>
+              <View style={{ padding: 20, borderRadius: 10 }}>
+                <View style={{ flexDirection: "row", paddingBottom: 20, justifyContent: "center", backgroundColor: "transparent" }}>
+                  <Ionicons style={{ paddingHorizontal: 2 }} name={'star'} size={40} onPress={() => { setRating(1) }} />
+                  <Ionicons style={{ paddingHorizontal: 2 }} name={(rating >= 2) ? 'star' : 'star-outline'} size={40} onPress={() => { setRating(2) }} />
+                  <Ionicons style={{ paddingHorizontal: 2 }} name={(rating >= 3) ? 'star' : 'star-outline'} size={40} onPress={() => { setRating(3) }} />
+                  <Ionicons style={{ paddingHorizontal: 2 }} name={(rating >= 4) ? 'star' : 'star-outline'} size={40} onPress={() => { setRating(4) }} />
+                  <Ionicons style={{ paddingHorizontal: 2 }} name={(rating == 5) ? 'star' : 'star-outline'} size={40} onPress={() => { setRating(5) }} />
                 </View>
-              </TouchableWithoutFeedback>
-            </View>
-          </TouchableWithoutFeedback>
+                <Pressable style={{ alignItems: "center" }} onPress={() => { rate(rating); setStarModalVisible(false) }}>
+                  <Text style={{ fontSize: 25, color: Colors.light.primary, fontWeight: "bold" }}>Rate</Text>
+                </Pressable>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    )
+  }
+
+  const CommentModal = () => {
+    const [postComment, setPostComment] = useState<string>("");
+    const maxLength = 300
+
+    const handlePostComment = async () => {
+      setCommentModalVisible(false)
+      setIsLoading(true);
+      await onRefreshToken!();
+      try {
+        await axios.post(`${API_URL}/attractions/comment?attraction_id=${id}&comment=${postComment}`);
+        setPostComment("")
+        } catch (e) {
+          alert(e)
+          }
+      setIsLoading(false);
+    }
+
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={commentModalVisible}
+        onRequestClose={() => setCommentModalVisible(false)}
+      >
+        <Pressable onPress={() => (setCommentModalVisible(false))} style={styles.modalOverlay}>
+          <Pressable style={styles.modalView}>
+            <Text style={{ fontSize: 8 * 5 }}>Tell us about <Text style={{ fontWeight: "bold", color: Colors.light.secondary }}>{name}</Text></Text>
+            <TextInput
+              value={postComment}
+              onChangeText={setPostComment}
+              maxLength={maxLength}
+              placeholder="Type a comment..."
+              style={styles.input}
+              multiline
+            />
+            <Text style={{ fontSize: 8 * 2, color: "gray" }}>
+              {postComment.length}/{maxLength}
+            </Text>
+
+            <TouchableOpacity onPress={handlePostComment} style={styles.button}>
+              <Text style={styles.buttonText}>Post</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
       </Modal>
     )
   }
@@ -200,45 +248,50 @@ export default function Attraction() {
   };
 
 
-  const UserComment = ({username, comment}:{username:string,comment:string}) => {
-    return (
-      <View>
-        <Text style={{fontWeight:"bold", fontSize:8*2}}>{username}</Text>
-        <Text style={{fontSize:8*2, marginLeft:8}}>{comment}</Text>
-      </View>
-    )
-  }
 
   return (
     <>
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 8 * 3 }} style={styles.container}>
         <Image
-          style={{ width: "100%", height: 8*32 }}
+          style={{ width: "100%", height: 8 * 32 }}
           source={photo ? { uri: photo } : { uri: 'https://i.imgur.com/qc0GM7G.png' }}
         />
-        <View style={{ marginHorizontal: 8*3 }}>
+        <View style={{ marginHorizontal: 8 * 3 }}>
           <Text style={styles.title}>{name}</Text>
-          <View style={{flexDirection:"row", alignSelf:"center", alignItems:"center"}}>
-            <Ionicons name='location-outline' size={8*2.5} color="gray" />
-            <Text numberOfLines={1} ellipsizeMode="tail" style={{ fontSize: 8*2.5, color:"gray" }}>{location}</Text>
+          <View style={{ flexDirection: "row", alignSelf: "center", alignItems: "center" }}>
+            <Ionicons name='location-outline' size={8 * 2.5} color="gray" />
+            <Text numberOfLines={1} ellipsizeMode="tail" style={{ fontSize: 8 * 2.5, color: "gray" }}>{location}</Text>
           </View>
           <View style={[{ flexDirection: "row" }, styles.floatingButton]}>
-            <Ionicons style={styles.icon} name={isLiked ? 'heart' : 'heart-outline'} size={8*4.5} onPress={like} />
-            <Ionicons style={styles.icon} name={isDone ? 'checkmark-done-outline' : 'checkmark-outline'} size={8*4.5} onPress={done} />
-            <Ionicons style={styles.icon} name={isScheduled ? 'time' : 'time-outline'} size={8*4.5} onPress={() => { setShowDatePicker(true) }} />
-            <Ionicons style={styles.icon} name={isRated ? 'star' : 'star-outline'} size={8*4.5} onPress={() => { setStarModalVisible(true)}} />
-            <Ionicons style={styles.icon} name={isSaved ? 'bookmark' : 'bookmark-outline'} size={8*4.5} onPress={save} />
-            <Ionicons style={styles.icon} name='map-outline' size={8*4.5} />
+            <Ionicons style={styles.icon} name={isLiked ? 'heart' : 'heart-outline'} size={8 * 4.5} onPress={like} />
+            <Ionicons style={styles.icon} name={isDone ? 'checkmark-done-outline' : 'checkmark-outline'} size={8 * 4.5} onPress={done} />
+            <Ionicons style={styles.icon} name={isScheduled ? 'time' : 'time-outline'} size={8 * 4.5} onPress={() => { setShowDatePicker(true) }} />
+            <Ionicons style={styles.icon} name={isRated ? 'star' : 'star-outline'} size={8 * 4.5} onPress={() => { setStarModalVisible(true) }} />
+            <Ionicons style={styles.icon} name={isSaved ? 'bookmark' : 'bookmark-outline'} size={8 * 4.5} onPress={save} />
+            <Ionicons style={styles.icon} name='map-outline' size={8 * 4.5} />
           </View>
-          <Text numberOfLines={2} style={{fontSize:8*2,marginBottom:2,fontStyle:"italic"}}>{types.map(transformType).join(', ')}</Text>
-          <Text numberOfLines={16} ellipsizeMode="tail" style={{ fontSize: 8*3 }}>{description}</Text>
-          <Text style={{ fontSize: 8*3.5, fontWeight:"bold", marginTop:4 }}>Comments</Text>
-          
+          <Text numberOfLines={2} style={{ fontSize: 8 * 2, marginBottom: 2, fontStyle: "italic" }}>{types.map(transformType).join(', ')}</Text>
+          <Text numberOfLines={16} ellipsizeMode="tail" style={{ fontSize: 8 * 3 }}>{description}</Text>
+          <Text style={{ fontSize: 8 * 3.5, fontWeight: "bold", marginTop: 4 }}>Comments</Text>
+          {comments.length === 0 ? (
+            <Text style={{ fontStyle: "italic", fontSize: 16, paddingLeft: 8 }}>No comments available</Text>
+          ) : (
+            <View style={{ paddingBottom: 8 }}>
+              {comments.map((comment, index) => (
+                <View key={comment.comment_id} style={{ paddingLeft: 8, paddingVertical: 4 }}>
+                  <Text style={{ fontWeight: "bold", fontSize: 16 }}>{comment.user_name}</Text>
+                  <Text style={{ fontSize: 16, paddingLeft: 16 }}>{comment.comment}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+          <Text onPress={() => setCommentModalVisible(true)} style={{ color: Colors.light.primary, fontWeight: "bold", paddingLeft: 8 * 3, marginTop: 8 * 2, fontSize: 8 * 2.5 }}> +Add comment </Text>
         </View>
-        
-        <StarModal/>
 
-      </View>
+        <StarModal />
+        <CommentModal />
+
+      </ScrollView>
       {showDatePicker && (
         <RNDateTimePicker
           value={date}
@@ -247,7 +300,7 @@ export default function Attraction() {
         />
       )}
       {isLoading && (
-              <LoadingIndicator/>
+        <LoadingIndicator />
       )}
     </>
   );
@@ -258,24 +311,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 8*4,
+    fontSize: 8 * 4,
     fontWeight: 'bold',
-    alignSelf:"center",
-    marginVertical:4
+    alignSelf: "center",
+    marginVertical: 4
   },
   icon: {
     paddingHorizontal: 2,
+    color: "#454545"
   },
   input: {
-    height: windowHeight * 0.05,
-    width: windowWidth * 0.9,
+    width: windowWidth * 0.8,
     margin: 12,
-    marginTop: 0,
+    marginTop: 8 * 4,
     borderWidth: 0,
     borderBottomWidth: 1,
     padding: 10,
-    borderRadius: 10,
     borderBottomColor: Colors.light.primary,
+    fontSize: 8 * 2
   },
   floatingButton: {
     zIndex: 1,
@@ -283,16 +336,32 @@ const styles = StyleSheet.create({
     height: 60,
     alignItems: 'center',
     justifyContent: 'space-between',
-    alignSelf:"center",
-    marginVertical:4
+    alignSelf: "center",
+    marginVertical: 4
   },
-  gradient: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    top: 150,
-    height: 100,
-    zIndex: 1,
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  modalView: {
+    height: '80%',
+    backgroundColor: "white",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 8 * 4,
+    alignItems: 'center',
+  },
+  button: {
+    backgroundColor: Colors.light.primary,
+    paddingVertical: 10,
+    borderRadius: 10,
+    width: windowWidth * 0.6,
+    marginTop: 8 * 8,
+    alignItems: "center",
+  },
+  buttonText: {
+    fontSize: 20,
+    color: "white",
+    fontWeight: "bold"
   },
 });
