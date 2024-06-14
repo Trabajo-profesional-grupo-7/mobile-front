@@ -153,6 +153,7 @@ export default function SignupScreen() {
             onChangeText={setPassword}
             value={password}
             placeholder="Password"
+            style={{maxWidth:200}}
             secureTextEntry={!showPassword}
             autoCapitalize="none"
           />
@@ -163,6 +164,7 @@ export default function SignupScreen() {
           <TextInput
             onChangeText={setRepeatPassword}
             value={repeatPassword}
+            style={{maxWidth:200}}
             placeholder="Repeat password"
             secureTextEntry={!showRepeatPassword}
             autoCapitalize="none"

@@ -54,6 +54,7 @@ export default function LoginScreen() {
         <TextInput
           onChangeText={setPassword}
           value={password}
+          style={{maxWidth:200}}
           placeholder="Password"
           secureTextEntry={!showPassword}
           autoCapitalize="none"
