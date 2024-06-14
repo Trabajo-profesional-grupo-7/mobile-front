@@ -19,11 +19,11 @@ function CustomDrawerContent(props:any){
   const router = useRouter();
   const {onLogout} = useAuth();
   return (
-    <View style={{flex:1, marginTop:-0}}>
-      <DrawerContentScrollView {...props} scrollEnabled={false} style={{marginTop:-30}}>
-        <View style={{backgroundColor:Colors.light.secondary, marginBottom:10}}>
+    <View style={{flex:1}}>
+      <DrawerContentScrollView {...props} scrollEnabled={false} style={{}}>
+        <View style={{marginBottom:10}}>
           <Image 
-            style={{width:120, height:120, alignSelf:'center', borderRadius:100, marginTop:40}}
+            style={{width:120, height:120, alignSelf:'center', borderRadius:100, marginTop:20}}
             source={{
               uri:"https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"}}
           />

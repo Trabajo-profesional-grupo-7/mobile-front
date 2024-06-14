@@ -248,7 +248,6 @@ export default function Attraction() {
   };
 
 
-
   return (
     <>
       <ScrollView contentContainerStyle={{ paddingBottom: 8 * 3 }} style={styles.container}>
@@ -265,19 +264,19 @@ export default function Attraction() {
           <View style={[{ flexDirection: "row" }, styles.floatingButton]}>
             <Ionicons style={styles.icon} name={isLiked ? 'heart' : 'heart-outline'} size={8 * 4.5} onPress={like} />
             <Ionicons style={styles.icon} name={isDone ? 'checkmark-done-outline' : 'checkmark-outline'} size={8 * 4.5} onPress={done} />
-            <Ionicons style={styles.icon} name={isScheduled ? 'time' : 'time-outline'} size={8 * 4.5} onPress={() => { setShowDatePicker(true) }} />
+            <Ionicons style={styles.icon} name={isScheduled ? 'calendar' : 'calendar-outline'} size={8 * 4.5} onPress={() => { setShowDatePicker(true) }} />
             <Ionicons style={styles.icon} name={isRated ? 'star' : 'star-outline'} size={8 * 4.5} onPress={() => { setStarModalVisible(true) }} />
             <Ionicons style={styles.icon} name={isSaved ? 'bookmark' : 'bookmark-outline'} size={8 * 4.5} onPress={save} />
             <Ionicons style={styles.icon} name='map-outline' size={8 * 4.5} />
           </View>
-          <Text numberOfLines={2} style={{ fontSize: 8 * 2, marginBottom: 2, fontStyle: "italic" }}>{types.map(transformType).join(', ')}</Text>
+          {types.length > 0 ? <Text numberOfLines={2} style={{ fontSize: 8 * 2, marginBottom: 2, fontStyle: "italic" }}>{types.map(transformType).join(', ')}</Text> : null}
           <Text numberOfLines={16} ellipsizeMode="tail" style={{ fontSize: 8 * 3 }}>{description}</Text>
           <Text style={{ fontSize: 8 * 3.5, fontWeight: "bold", marginTop: 4 }}>Comments</Text>
           {comments.length === 0 ? (
             <Text style={{ fontStyle: "italic", fontSize: 16, paddingLeft: 8 }}>No comments available</Text>
           ) : (
             <View style={{ paddingBottom: 8 }}>
-              {comments.map((comment, index) => (
+              {comments.map((comment) => (
                 <View key={comment.comment_id} style={{ paddingLeft: 8, paddingVertical: 4 }}>
                   <Text style={{ fontWeight: "bold", fontSize: 16 }}>{comment.user_name}</Text>
                   <Text style={{ fontSize: 16, paddingLeft: 16 }}>{comment.comment}</Text>

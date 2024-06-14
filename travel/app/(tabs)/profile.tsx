@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Text, Dimensions } from 'react-native';
+import { StyleSheet, Image, Text, Dimensions, Pressable } from 'react-native';
 
 import { View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
@@ -9,7 +9,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { API_URL, useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import LoadingIndicator from '@/components/LoadingIndicator';
-import { dateParser } from '@/components/Parsers';
+import * as ImagePicker from 'expo-image-picker';
 const windowHeight = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 const colors = Colors.light;
@@ -23,9 +23,9 @@ export default function ProfileScreen() {
   const [preferences, setPreferences] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [location, setLocation] = useState("")
-  const {onRefreshToken} = useAuth();
+  const { onRefreshToken } = useAuth();
 
- 
+
   const getProfileData = async () => {
     setLastUpdatedTime(Date.now());
     await onRefreshToken!();
@@ -42,6 +42,49 @@ export default function ProfileScreen() {
     }
   }
 
+
+  const [imageUri, setImageUri] = useState("https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg");
+
+  const uploadImage = async (image: any) => {
+    setIsLoading(true);
+    await onRefreshToken!();
+    try {
+      const form = new FormData();
+      form.append('avatar', {
+        uri: image.uri,
+        type: image.mimeType,
+        name: "image",
+      } as any);
+      //const result = await axios.post(`https://users-0x8y.onrender.com/users/avatar`, form)
+      //console.log(result)
+    } catch (e) {
+      alert(e)
+    }
+    setIsLoading(false);
+  }
+
+
+  const selectImage = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert('Permission to access camera roll is required!');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+      uploadImage(result.assets[0])
+    }
+  };
+
   useFocusEffect(() => {
     if (Date.now() - lastUpdatedTime >= 30000) {
       getProfileData();
@@ -54,54 +97,62 @@ export default function ProfileScreen() {
   }, []);
 
   const navigateToEditProfile = () => {
-    router.navigate({pathname:"../profile/editProfile",params:{username, location, preferences, birth_date}});
+    router.navigate({ pathname: "../profile/editProfile", params: { username, location, preferences, birth_date } });
   }
 
   return (
     <>
       {isLoading ? (
-              <LoadingIndicator/>
-      ):(
-      <>
-      <TouchableOpacity style={styles.floatingButton} onPress={navigateToEditProfile}>
-        <Ionicons name='pencil' size={35}/>
-      </TouchableOpacity>
-      <View style={styles.container}>
-        <View style={styles.topView}>
-          <Text style={{fontSize:8*5, fontWeight:"bold", marginVertical:4}}>{username}</Text>
-          <Text style={{color:"gray", fontSize:8*3,marginVertical:4}}>{email}</Text>
-          <View style={{flexDirection:"row", alignItems:"center"}}>
-            <Ionicons name='location-outline' size={8*2}/>
-            <Text style={{fontSize:8*2,marginVertical:4}}>{location}</Text>
+        <LoadingIndicator />
+      ) : (
+        <>
+          <TouchableOpacity style={styles.floatingButton} onPress={navigateToEditProfile}>
+            <Ionicons name='pencil' size={35} />
+          </TouchableOpacity>
+          <View style={styles.container}>
+            <View style={styles.topView}>
+              <Pressable onPress={selectImage}>
+                <Image
+                  style={{ width: 140, height: 140, alignSelf: 'center', borderRadius: 100, marginTop: 40 }}
+                  source={{
+                    uri: imageUri
+                  }}
+                />
+              </Pressable>
+              <Text style={{ fontSize: 8 * 4, fontWeight: "bold", marginTop: 4 }}>{username}</Text>
+              <Text style={{ color: "gray", fontSize: 8 * 3, marginVertical: 4 }}>{email}</Text>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Ionicons name='location-outline' size={8 * 2} />
+                <Text style={{ fontSize: 8 * 2, marginVertical: 4 }}>{location}</Text>
+              </View>
+            </View>
+            <View style={styles.bottomView}>
+              <TouchableOpacity onPress={() => router.navigate("../profile/savedAttractions")} style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: width - 8 * 3, padding: 8 * 2 }}>
+                <View style={{ flexDirection: "row", backgroundColor: "transparent", alignItems: "center" }}>
+                  <Ionicons name='bookmark-outline' color={"#a6683f"} size={8 * 5} style={styles.iconContainer} />
+                  <Text style={{ paddingLeft: 8 * 2, fontSize: 8 * 2.5, fontWeight: "bold" }}>Attractions saved</Text>
+                </View>
+                <Ionicons name='chevron-forward-outline' color={"gray"} size={8 * 4} style={{ paddingRight: 8 * 2 }} />
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => router.navigate("../profile/doneAttractions")} style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: width - 8 * 3, padding: 8 * 2 }}>
+                <View style={{ flexDirection: "row", backgroundColor: "transparent", alignItems: "center" }}>
+                  <Ionicons name='checkmark-done' color={"#a6683f"} size={8 * 5} style={styles.iconContainer} />
+                  <Text style={{ paddingLeft: 8 * 2, fontSize: 8 * 2.5, fontWeight: "bold" }}>Attractions done</Text>
+                </View>
+                <Ionicons name='chevron-forward-outline' color={"gray"} size={8 * 4} style={{ paddingRight: 8 * 2 }} />
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => router.navigate("../profile/calendar")} style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: width - 8 * 3, padding: 8 * 2 }}>
+                <View style={{ flexDirection: "row", backgroundColor: "transparent", alignItems: "center" }}>
+                  <Ionicons name='calendar-outline' color={"#a6683f"} size={8 * 5} style={styles.iconContainer} />
+                  <Text style={{ paddingLeft: 8 * 2, fontSize: 8 * 2.5, fontWeight: "bold" }}>Calendar</Text>
+                </View>
+                <Ionicons name='chevron-forward-outline' color={"gray"} size={8 * 4} style={{ paddingRight: 8 * 2 }} />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-        <View style={styles.bottomView}>
-          <TouchableOpacity onPress={() => router.navigate("../profile/savedAttractions")} style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between", width:width-8*3, padding:8*2}}>
-            <View style={{flexDirection:"row", backgroundColor:"transparent",alignItems:"center"}}>
-              <Ionicons name='bookmark-outline' color={"#a6683f"} size={8*5} style={styles.iconContainer}/>
-              <Text style={{paddingLeft:8*2, fontSize:8*2.5, fontWeight:"bold"}}>Attractions saved</Text>
-            </View>
-            <Ionicons name='chevron-forward-outline' color={"gray"} size={8*4} style={{paddingRight:8*2}}/>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => router.navigate("../profile/doneAttractions")} style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between", width:width-8*3, padding:8*2}}>
-            <View style={{flexDirection:"row", backgroundColor:"transparent",alignItems:"center"}}>
-              <Ionicons name='checkmark-done' color={"#a6683f"} size={8*5} style={styles.iconContainer}/>
-              <Text style={{paddingLeft:8*2, fontSize:8*2.5, fontWeight:"bold"}}>Attractions done</Text>
-            </View>
-            <Ionicons name='chevron-forward-outline' color={"gray"} size={8*4} style={{paddingRight:8*2}}/>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => router.navigate("../profile/calendar")} style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between", width:width-8*3, padding:8*2}}>
-            <View style={{flexDirection:"row", backgroundColor:"transparent",alignItems:"center"}}>
-              <Ionicons name='calendar-outline' color={"#a6683f"} size={8*5} style={styles.iconContainer}/>
-              <Text style={{paddingLeft:8*2, fontSize:8*2.5, fontWeight:"bold"}}>Calendar</Text>
-            </View>
-            <Ionicons name='chevron-forward-outline' color={"gray"} size={8*4} style={{paddingRight:8*2}}/>
-          </TouchableOpacity>
-        </View>
-      </View>
-      </>
+        </>
       )}
     </>
   );
@@ -110,45 +161,43 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    zIndex:-1,
+    zIndex: -1,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
   },
   topView: {
-    height: "25%",
     alignItems: "center",
-    justifyContent:"center",
-    backgroundColor:colors.background,
-    marginTop:8*2,
-    marginHorizontal:8*2,
-    marginBottom:8
+    justifyContent: "flex-start",
+    backgroundColor: colors.background,
+    marginHorizontal: 8 * 2,
+    marginBottom: 8
   },
   bottomView: {
     width: '100%',
-    backgroundColor:"transparent",
+    backgroundColor: "transparent",
     alignItems: "center",
-    alignSelf:"center",
-    flex:1
+    alignSelf: "center",
+    flex: 1
   },
   iconContainer: {
-    backgroundColor:"#fab78c",
-    padding:8,
-    borderRadius:50,
-    opacity:1
+    backgroundColor: "#fab78c",
+    padding: 8,
+    borderRadius: 50,
+    opacity: 1
   },
   floatingButton: {
     position: 'absolute',
-    zIndex:1,
+    zIndex: 1,
     width: 70,
     height: 70,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor:colors.secondary,
-    borderRadius:50,
-    right:30,
-    top:windowHeight-200,
-    elevation:3
+    backgroundColor: colors.secondary,
+    borderRadius: 50,
+    right: 30,
+    top: windowHeight - 200,
+    elevation: 3
   }
 });
