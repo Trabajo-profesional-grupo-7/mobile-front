@@ -45,25 +45,24 @@ export default function LoginScreen() {
         }}
       />
       <TextInput
-        style={[styles.input, { marginLeft: -14 }]}
+        style={styles.input}
         onChangeText={setEmail}
         value={email}
         placeholder="E-mail"
       />
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View style={styles.input}>
         <TextInput
-          style={styles.input}
           onChangeText={setPassword}
           value={password}
           placeholder="Password"
           secureTextEntry={!showPassword}
           autoCapitalize="none"
         />
-        <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={24} onPress={() => { setShowPassword(!showPassword) }} />
+        <Ionicons style={{alignSelf:"flex-end"}} name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={24} onPress={() => { setShowPassword(!showPassword) }} />
       </View>
       <Text style={styles.passwordRecoveryText} onPress={() => router.navigate("./recoverPassword")}>Forgot your password?</Text>
-      
-      
+
+
       <AccountButton title="Log In" onPress={() => { login() }} />
 
       {isLoading && (
@@ -88,7 +87,7 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontStyle: 'italic',
     fontSize: 16,
-    marginBottom:8*7
+    marginBottom: 8 * 7
   },
   separator: {
     marginVertical: 30,
@@ -102,6 +101,9 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     backgroundColor: "white",
-    elevation: 3
+    elevation: 3,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent:"space-between"
   },
 });
