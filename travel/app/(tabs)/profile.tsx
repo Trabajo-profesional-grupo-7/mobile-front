@@ -1,5 +1,5 @@
 import { StyleSheet, Image, Text, Dimensions, Pressable } from 'react-native';
-
+import mime from "mime";
 import { View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { API_URL, useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import * as ImagePicker from 'expo-image-picker';
 const windowHeight = Dimensions.get('window').height;
@@ -45,20 +45,28 @@ export default function ProfileScreen() {
 
   const [imageUri, setImageUri] = useState("https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg");
 
-  const uploadImage = async (image: any) => {
+
+  const uploadImage = async (image: ImagePicker.ImagePickerAsset) => {
     setIsLoading(true);
     await onRefreshToken!();
+
+    let formData = new FormData();
+    formData.append('avatar', {
+      uri: image.uri,
+      name: image.fileName?.toString() ?? "image.jpg",
+      type: image.mimeType?.toString() ?? "image/jpg",
+    } as any);
+
     try {
-      const form = new FormData();
-      form.append('avatar', {
-        uri: image.uri,
-        type: image.mimeType,
-        name: "image",
-      } as any);
-      //const result = await axios.post(`https://users-0x8y.onrender.com/users/avatar`, form)
-      //console.log(result)
+      const response = await axios.post(`${API_URL}/users/avatar`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      setImageUri(response.data.avatar_link)
+      console.log('Imagen subida exitosamente:')
     } catch (e) {
-      alert(e)
+      console.log(e)
     }
     setIsLoading(false);
   }
@@ -80,7 +88,7 @@ export default function ProfileScreen() {
     });
 
     if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
+      //setImageUri(result.assets[0].uri);
       uploadImage(result.assets[0])
     }
   };

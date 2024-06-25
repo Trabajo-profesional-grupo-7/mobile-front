@@ -123,6 +123,7 @@ export default function Attraction() {
     } catch (e) {
       alert(e)
     }
+    setShowDatePicker(false)
     setIsLoading(false);
   }
 
