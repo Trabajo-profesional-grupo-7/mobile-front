@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 
 import Colors from '@/constants/Colors';
 import { AuthProvider } from './context/AuthContext';
+import { ProfileProvider } from './context/ProfileContext';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -43,9 +44,11 @@ export default function RootLayout() {
   }
 
   return (
-    <AuthProvider>
-      <RootLayoutNav />
-    </AuthProvider>
+    <ProfileProvider>
+      <AuthProvider>
+        <RootLayoutNav />
+      </AuthProvider>
+    </ProfileProvider>
   );
 }
 

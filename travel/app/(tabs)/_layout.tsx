@@ -7,25 +7,53 @@ import { DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navi
 import { View, Image, Text, TouchableOpacity, Modal } from 'react-native';
 import Colors from '../../constants/Colors';
 import { router, useRouter } from 'expo-router';
-import { useAuth } from '../context/AuthContext';
+import { API_URL, useAuth } from '../context/AuthContext';
 import { confirmActionAlert } from '@/components/ConfirmActionAlert';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useProfile } from '../context/ProfileContext';
 
 const colors = Colors.light;
 
 
 
-function CustomDrawerContent(props:any){
+function CustomDrawerContent(props: any) {
   const router = useRouter();
-  const {onLogout} = useAuth();
+  const { onRefreshToken, onLogout } = useAuth();
+  const { profile, setProfile } = useProfile();
+
+  useEffect(() => {
+    const getProfileData = async () => {
+      console.log("AA")
+      await onRefreshToken!();
+      try {
+        const result = (await axios.get(`${API_URL}/users`)).data;
+        console.log(result)
+        setProfile({
+          email: result.email,
+          username: result.username,
+          preferences: result.preferences,
+          location: result.city,
+          birthdate: result.birth_date,
+          image: result.avatar_link
+        })
+      } catch (e) {
+        alert(e);
+      }
+    }
+    getProfileData()
+
+  }, [])
+
   return (
-    <View style={{flex:1}}>
+    <View style={{ flex: 1 }}>
       <DrawerContentScrollView {...props} scrollEnabled={false} style={{}}>
-        <View style={{marginBottom:10}}>
-          <Image 
-            style={{width:120, height:120, alignSelf:'center', borderRadius:100, marginTop:20}}
+        <View style={{ marginBottom: 10 }}>
+          <Image
+            style={{ width: 120, height: 120, alignSelf: 'center', borderRadius: 100, marginTop: 20 }}
             source={{
-              uri:"https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"}}
+              uri: profile.image ? profile.image : "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
+            }}
           />
           <Text style={{
             alignSelf: 'center',
@@ -33,100 +61,100 @@ function CustomDrawerContent(props:any){
             fontSize: 18,
             marginVertical: 10,
           }}>
-            Name
+            {profile.username}
           </Text>
         </View>
         <DrawerItemList {...props}></DrawerItemList>
-        <DrawerItem 
-          icon={({size, color}) => (
-            <Ionicons name='exit-outline' size={size} color={color}/>
+        <DrawerItem
+          icon={({ size, color }) => (
+            <Ionicons name='exit-outline' size={size} color={color} />
           )}
-          label={"Logout"} 
+          label={"Logout"}
           onPress={async () => {
             if (await confirmActionAlert()) {
               onLogout!()
               router.replace("../..")
             }
-          }}/>
+          }} />
       </DrawerContentScrollView>
     </View>
   );
 }
 
-const DrawerLayout = () => { 
-  return <GestureHandlerRootView style={{flex:1}}>
-    <Drawer 
+const DrawerLayout = () => {
+  return <GestureHandlerRootView style={{ flex: 1 }}>
+    <Drawer
       drawerContent={CustomDrawerContent}
       screenOptions={{
         drawerActiveBackgroundColor: colors.primary,
-        drawerActiveTintColor:colors.background
+        drawerActiveTintColor: colors.background
       }}
-      >
+    >
       <Drawer.Screen
         name="index"
         options={{
-          drawerLabel:'Feed',
-          headerTitle:'Feed',
-          headerTintColor:"white",
-          headerTitleAlign:"center",
-          headerStyle:{backgroundColor:Colors.light.primary},
+          drawerLabel: 'Feed',
+          headerTitle: 'Feed',
+          headerTintColor: "white",
+          headerTitleAlign: "center",
+          headerStyle: { backgroundColor: Colors.light.primary },
           headerRight: () => (
-            <Ionicons name='search-outline' style={{paddingRight:25}} color={'white'} size={30} onPress={() => router.navigate("../feed/searchFilter")}/>
+            <Ionicons name='search-outline' style={{ paddingRight: 25 }} color={'white'} size={30} onPress={() => router.navigate("../feed/searchFilter")} />
           ),
-          drawerIcon: ({size, color}) => (
-            <Ionicons name='newspaper-outline' size={size} color={color}/>
+          drawerIcon: ({ size, color }) => (
+            <Ionicons name='newspaper-outline' size={size} color={color} />
           )
         }}
       />
       <Drawer.Screen
         name="profile"
         options={{
-          drawerLabel:'Profile',
-          headerTitle:'Profile',
-          headerTintColor:"white",
-          headerTitleAlign:"center",
-          headerStyle:{backgroundColor:Colors.light.primary},
-          drawerIcon: ({size, color}) => (
-            <Ionicons name='person-outline' size={size} color={color}/>
+          drawerLabel: 'Profile',
+          headerTitle: 'Profile',
+          headerTintColor: "white",
+          headerTitleAlign: "center",
+          headerStyle: { backgroundColor: Colors.light.primary },
+          drawerIcon: ({ size, color }) => (
+            <Ionicons name='person-outline' size={size} color={color} />
           )
         }}
       />
       <Drawer.Screen
         name="information"
         options={{
-          drawerLabel:'Information',
-          headerTitle:'Information',
-          headerTintColor:"white",
-          headerTitleAlign:"center",
-          headerStyle:{backgroundColor:Colors.light.primary},
-          drawerIcon: ({size, color}) => (
-            <Ionicons name='information-circle-outline' size={size} color={color}/>
+          drawerLabel: 'Information',
+          headerTitle: 'Information',
+          headerTintColor: "white",
+          headerTitleAlign: "center",
+          headerStyle: { backgroundColor: Colors.light.primary },
+          drawerIcon: ({ size, color }) => (
+            <Ionicons name='information-circle-outline' size={size} color={color} />
           )
         }}
       />
       <Drawer.Screen
         name="map"
         options={{
-          drawerLabel:'Map',
-          headerTitle:'Map',
-          headerTintColor:"white",
-          headerTitleAlign:"center",
-          headerStyle:{backgroundColor:Colors.light.primary},
-          drawerIcon: ({size, color}) => (
-            <Ionicons name='map-outline' size={size} color={color}/>
+          drawerLabel: 'Map',
+          headerTitle: 'Map',
+          headerTintColor: "white",
+          headerTitleAlign: "center",
+          headerStyle: { backgroundColor: Colors.light.primary },
+          drawerIcon: ({ size, color }) => (
+            <Ionicons name='map-outline' size={size} color={color} />
           )
         }}
       />
       <Drawer.Screen
         name="chatBot"
         options={{
-          drawerLabel:'ChatBot',
-          headerTitle:'ChatBot',
-          headerTintColor:"white",
-          headerTitleAlign:"center",
-          headerStyle:{backgroundColor:Colors.light.primary},
-          drawerIcon: ({size, color}) => (
-            <Ionicons name='chatbubble-ellipses-outline' size={size} color={color}/>
+          drawerLabel: 'ChatBot',
+          headerTitle: 'ChatBot',
+          headerTintColor: "white",
+          headerTitleAlign: "center",
+          headerStyle: { backgroundColor: Colors.light.primary },
+          drawerIcon: ({ size, color }) => (
+            <Ionicons name='chatbubble-ellipses-outline' size={size} color={color} />
           )
         }}
       />

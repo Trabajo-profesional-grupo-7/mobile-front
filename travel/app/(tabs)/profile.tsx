@@ -10,6 +10,7 @@ import { API_URL, useAuth } from '../context/AuthContext';
 import axios, { AxiosError } from 'axios';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import * as ImagePicker from 'expo-image-picker';
+import { useProfile } from '../context/ProfileContext';
 const windowHeight = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 const colors = Colors.light;
@@ -24,7 +25,7 @@ export default function ProfileScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [location, setLocation] = useState("")
   const { onRefreshToken } = useAuth();
-
+  const { profile, setProfile } = useProfile();
 
   const getProfileData = async () => {
     setLastUpdatedTime(Date.now());
@@ -88,7 +89,6 @@ export default function ProfileScreen() {
     });
 
     if (!result.canceled) {
-      //setImageUri(result.assets[0].uri);
       uploadImage(result.assets[0])
     }
   };
@@ -100,9 +100,6 @@ export default function ProfileScreen() {
   });
 
 
-  useEffect(() => {
-    getProfileData();
-  }, []);
 
   const navigateToEditProfile = () => {
     router.navigate({ pathname: "../profile/editProfile", params: { username, location, preferences, birth_date } });
@@ -123,15 +120,15 @@ export default function ProfileScreen() {
                 <Image
                   style={{ width: 140, height: 140, alignSelf: 'center', borderRadius: 100, marginTop: 40 }}
                   source={{
-                    uri: imageUri
+                    uri: profile.image ? profile.image : "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
                   }}
                 />
               </Pressable>
-              <Text style={{ fontSize: 8 * 4, fontWeight: "bold", marginTop: 4 }}>{username}</Text>
-              <Text style={{ color: "gray", fontSize: 8 * 3, marginVertical: 4 }}>{email}</Text>
+              <Text style={{ fontSize: 8 * 4, fontWeight: "bold", marginTop: 4 }}>{profile.username}</Text>
+              <Text style={{ color: "gray", fontSize: 8 * 3, marginVertical: 4 }}>{profile.email}</Text>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Ionicons name='location-outline' size={8 * 2} />
-                <Text style={{ fontSize: 8 * 2, marginVertical: 4 }}>{location}</Text>
+                <Text style={{ fontSize: 8 * 2, marginVertical: 4 }}>{profile.location}</Text>
               </View>
             </View>
             <View style={styles.bottomView}>

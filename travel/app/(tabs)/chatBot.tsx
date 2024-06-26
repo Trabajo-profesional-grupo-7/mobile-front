@@ -55,11 +55,10 @@ export default function ChatBot() {
     }
 
     useEffect(() => {
-        
         const initCoversation = async () => {
             await onRefreshToken!();
             try {
-                await axios.post(`${API_URL}/chatbot/init`)
+                await axios.post(`${API_URL}/chatbot/init?latitude=&longitude=`)
             } catch (e) {
                 alert(e)
             }
