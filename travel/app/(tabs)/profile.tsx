@@ -16,35 +16,15 @@ const width = Dimensions.get('window').width;
 const colors = Colors.light;
 
 export default function ProfileScreen() {
-  const [lastUpdatedTime, setLastUpdatedTime] = useState(0);
   const router = useRouter();
-  const [email, setEmail] = useState('Email');
-  const [birth_date, setBirthdate] = useState('Birthday');
-  const [username, setUsername] = useState("Name")
-  const [preferences, setPreferences] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [location, setLocation] = useState("")
   const { onRefreshToken } = useAuth();
   const { profile, setProfile } = useProfile();
 
-  const getProfileData = async () => {
-    setLastUpdatedTime(Date.now());
-    await onRefreshToken!();
-    try {
-      const result = await axios.get(`${API_URL}/users`);
-      setEmail(result.data.email);
-      setBirthdate(result.data.birth_date);
-      setUsername(result.data.username);
-      setPreferences(result.data.preferences)
-      setLocation(result.data.city)
-      setIsLoading(false);
-    } catch (e) {
-      alert(e);
-    }
-  }
 
 
-  const [imageUri, setImageUri] = useState("https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg");
+
 
 
   const uploadImage = async (image: ImagePicker.ImagePickerAsset) => {
@@ -59,12 +39,11 @@ export default function ProfileScreen() {
     } as any);
 
     try {
-      const response = await axios.post(`${API_URL}/users/avatar`, formData, {
+      await axios.post(`${API_URL}/users/avatar`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      setImageUri(response.data.avatar_link)
       console.log('Imagen subida exitosamente:')
     } catch (e) {
       console.log(e)
@@ -93,16 +72,12 @@ export default function ProfileScreen() {
     }
   };
 
-  useFocusEffect(() => {
-    if (Date.now() - lastUpdatedTime >= 30000) {
-      getProfileData();
-    }
-  });
+
 
 
 
   const navigateToEditProfile = () => {
-    router.navigate({ pathname: "../profile/editProfile", params: { username, location, preferences, birth_date } });
+    router.navigate({ pathname: "../profile/editProfile" });
   }
 
   return (

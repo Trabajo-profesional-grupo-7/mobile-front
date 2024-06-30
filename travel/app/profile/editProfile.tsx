@@ -8,15 +8,17 @@ import axios from 'axios';
 import { API_URL } from '../context/AuthContext';
 import { MultiSelect } from 'react-native-element-dropdown';
 import LoadingIndicator from '@/components/LoadingIndicator';
+import { useProfile } from '../context/ProfileContext';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 
 export default function EditProfile() {
   const params = useLocalSearchParams();
-  const [name, setName] = React.useState(`${params.username}`);
-  const [location, setLocation] = useState(`${params.country}`);
-  const [selected, setSelected] = useState<string[]>((params.preferences as string).split(","))
+  const { profile, setProfile } = useProfile();
+  const [name, setName] = React.useState(profile.username);
+  const [location, setLocation] = useState(profile.location);
+  const [selected, setSelected] = useState<string[]>(profile.preferences)
   const [isLoading, setIsLoading] = useState(false)
   const [categories, setCategories] = useState([])
 
@@ -24,28 +26,32 @@ export default function EditProfile() {
   useEffect(() => {
 
     const getCategories = async () => {
-        setIsLoading(true)
-        try {
-            const result = await axios.get(`${API_URL}/metadata`)
-            const data = result.data.attraction_types.map((category: string) => ({
-              label: category.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
-              value: category
-            }));
-            setCategories(data)
-        } catch (e) {
-            alert(e)
-        }
-        setIsLoading(false)
+      setIsLoading(true)
+      try {
+        const result = await axios.get(`${API_URL}/metadata`)
+        const data = result.data.attraction_types.map((category: string) => ({
+          label: category.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+          value: category
+        }));
+        setCategories(data)
+      } catch (e) {
+        alert(e)
+      }
+      setIsLoading(false)
     }
     getCategories()
   }, []);
-
   const editProfile = async () => {
     setIsLoading(true)
     try {
       await axios.patch(`${API_URL}/users`, {
         "username": name,
         "preferences": selected
+      })
+      setProfile({
+        ...profile,
+        username: name,
+        preferences: selected
       })
       router.back();
     } catch (e) {
@@ -56,39 +62,39 @@ export default function EditProfile() {
 
   return (
     <>
-    <TouchableOpacity style={styles.floatingButton} onPress={editProfile}>
-        <Ionicons name='save-outline' size={35}/>
-    </TouchableOpacity>
-    <View style={styles.container}>
-      <Text style={styles.title}>Name</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={setName}
-        value={name}
-        placeholder="Name"
-      />
+      <TouchableOpacity style={styles.floatingButton} onPress={editProfile}>
+        <Ionicons name='save-outline' size={35} />
+      </TouchableOpacity>
+      <View style={styles.container}>
+        <Text style={styles.title}>Name</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={setName}
+          value={name}
+          placeholder="Name"
+        />
 
-      <Text style={styles.title}>Travel preferences</Text>
+        <Text style={styles.title}>Travel preferences</Text>
 
-      <View style={{width:"70%", height:"40%", marginLeft:20}}>
-              <MultiSelect
-                data={categories}
-                labelField="label"
-                valueField="value"
-                placeholder="Categories"
-                searchPlaceholder="Search..."
-                maxSelect={5}
-                search
-                value={selected}
-                onChange={item => {
-                  setSelected(item);
-                }}
-              />
-            </View>
-    </View>
-    {isLoading && (
-      <LoadingIndicator/>
-    )}
+        <View style={{ width: "70%", height: "40%", marginLeft: 20 }}>
+          <MultiSelect
+            data={categories}
+            labelField="label"
+            valueField="value"
+            placeholder="Categories"
+            searchPlaceholder="Search..."
+            maxSelect={5}
+            search
+            value={selected}
+            onChange={item => {
+              setSelected(item);
+            }}
+          />
+        </View>
+      </View>
+      {isLoading && (
+        <LoadingIndicator />
+      )}
     </>
   );
 }
@@ -96,16 +102,16 @@ export default function EditProfile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop:20
+    paddingTop: 20
   },
   title: {
     fontSize: 25,
     fontWeight: 'bold',
-    marginLeft:20
+    marginLeft: 20
   },
   chip: {
-    marginLeft:15,
-    marginTop:10,
+    marginLeft: 15,
+    marginTop: 10,
   },
   chipsContainer: {
     flexDirection: "row",
@@ -114,26 +120,26 @@ const styles = StyleSheet.create({
     marginBottom: windowWidth * 0.05,
   },
   input: {
-    height: windowHeight*0.05,
-    width: windowWidth*0.9,
+    height: windowHeight * 0.05,
+    width: windowWidth * 0.9,
     margin: 12,
-    marginTop:0,
+    marginTop: 0,
     borderWidth: 0,
-    borderBottomWidth:1,
+    borderBottomWidth: 1,
     padding: 10,
-    borderRadius:10,
-    borderBottomColor:Colors.light.primary,
+    borderRadius: 10,
+    borderBottomColor: Colors.light.primary,
   },
   floatingButton: {
     position: 'absolute',
-    zIndex:1,
+    zIndex: 1,
     width: 70,
     height: 70,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor:Colors.light.secondary,
-    borderRadius:50,
-    right:30,
-    top:windowHeight-200
+    backgroundColor: Colors.light.secondary,
+    borderRadius: 50,
+    right: 30,
+    top: windowHeight - 200
   }
 });

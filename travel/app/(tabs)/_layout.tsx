@@ -24,11 +24,9 @@ function CustomDrawerContent(props: any) {
 
   useEffect(() => {
     const getProfileData = async () => {
-      console.log("AA")
       await onRefreshToken!();
       try {
         const result = (await axios.get(`${API_URL}/users`)).data;
-        console.log(result)
         setProfile({
           email: result.email,
           username: result.username,
