@@ -18,13 +18,8 @@ const colors = Colors.light;
 export default function ProfileScreen() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [location, setLocation] = useState("")
   const { onRefreshToken } = useAuth();
-  const { profile, setProfile } = useProfile();
-
-
-
-
+  const { profile } = useProfile();
 
 
   const uploadImage = async (image: ImagePicker.ImagePickerAsset) => {

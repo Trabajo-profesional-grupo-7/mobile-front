@@ -7,6 +7,7 @@ interface Profile {
     location: string;
     birthdate: Date | undefined;
     image: string | undefined;
+    coordinates: { longitude: number, latitude: number } | undefined;
 }
 
 interface ProfileContextProps {
@@ -17,7 +18,7 @@ interface ProfileContextProps {
 const ProfileContext = createContext<ProfileContextProps | undefined>(undefined);
 
 export const ProfileProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [profile, setProfile] = useState<Profile>({ username: '', email: '', preferences: [], location: '', birthdate: undefined, image: undefined });
+    const [profile, setProfile] = useState<Profile>({ username: '', email: '', preferences: [], location: '', birthdate: undefined, image: undefined, coordinates: undefined });
 
     return (
         <ProfileContext.Provider value={{ profile, setProfile }}>
