@@ -15,8 +15,6 @@ import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/d
 
 export default function Attraction() {
   const params = useLocalSearchParams();
-
-
   const name = params.attraction_name;
   let location = `${params.city}, ${params.country}`;
   if (!params.city) {

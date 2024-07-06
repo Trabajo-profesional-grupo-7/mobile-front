@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { View, FlatList, ActivityIndicator } from "react-native";
 import { API_URL, useAuth } from "../context/AuthContext";
 import axios from "axios";
-import { AttractionParams } from "../(tabs)";
+import { AttractionParams, sanitizeString } from "../(tabs)";
 import { AttractionCard } from "@/components/AttractionCard";
 import Colors from "@/constants/Colors";
 const attractionsPerPage = 10
@@ -19,7 +19,7 @@ export default function DoneAttractions() {
             if (result.data) {
                 const parsedPlaces: [] = result.data.map((place: AttractionParams) => ({
                     attraction_id: place.attraction_id,
-                    attraction_name: place.attraction_name,
+                    attraction_name: sanitizeString(place.attraction_name),
                     city: place.city,
                     country: place.country,
                     photo: place.photo
