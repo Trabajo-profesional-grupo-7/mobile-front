@@ -33,7 +33,8 @@ export default function FlightDetails() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop:20
+    paddingTop:20,
+    marginTop: 100,
   },
   title: {
     fontSize: 30,
