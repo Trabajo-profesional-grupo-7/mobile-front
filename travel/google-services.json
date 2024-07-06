@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "166239204908",
+    "project_id": "trabajo-profesional-51243",
+    "storage_bucket": "trabajo-profesional-51243.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:166239204908:android:3e56f17fbbdee088840389",
+        "android_client_info": {
+          "package_name": "com.pablo6032.travel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "166239204908-s0172smbe28bdum910hnq32tgg3ca308.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiacHw62DnVdg5DY1nrpUEhoD3nfA04Ow"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "166239204908-s0172smbe28bdum910hnq32tgg3ca308.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
