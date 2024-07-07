@@ -288,7 +288,7 @@ export default function Attraction() {
           await axios.post(
             `${API_URL}/attractions/comment?attraction_id=${id}&comment=${postComment}`
           );
-          getAttractionDetails()
+          await getAttractionDetails()
           setPostComment("");
         } catch (e) {
           alert(e);

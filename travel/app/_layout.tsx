@@ -140,6 +140,18 @@ function RootLayoutNav() {
           headerTitleAlign: "center",
           headerTintColor: "white"
         }} />
+        <Stack.Screen name="planner/plans" options={{
+          headerTitle: "Planner",
+          headerStyle: { backgroundColor: Colors.light.primary },
+          headerTitleAlign: "center",
+          headerTintColor: "white"
+        }} />
+        <Stack.Screen name="planner/addPlan" options={{
+          headerTitle: "New plan",
+          headerStyle: { backgroundColor: Colors.light.primary },
+          headerTitleAlign: "center",
+          headerTintColor: "white"
+        }} />
       </Stack>
     </ThemeProvider>
   );

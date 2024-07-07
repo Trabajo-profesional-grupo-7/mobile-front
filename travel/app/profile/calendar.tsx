@@ -1,7 +1,7 @@
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { useEffect, useState } from "react";
-import { View, Text, Dimensions, FlatList, ScrollView } from "react-native";
-import { Agenda, Calendar } from "react-native-calendars";
+import { View, Text, Dimensions, ScrollView } from "react-native";
+import { Calendar } from "react-native-calendars";
 import { API_URL, useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { AttractionParams, sanitizeString } from "../(tabs)";
@@ -78,7 +78,6 @@ export default function UserCalendar() {
             }
           }
         }
-        console.log(hash);
         setScheduledAttractions(hash);
         setMarkedDates(dates);
       }
