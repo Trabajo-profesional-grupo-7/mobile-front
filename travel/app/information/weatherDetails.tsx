@@ -106,18 +106,6 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.light.primary,
     marginBottom: 15
   },
-  floatingButton: {
-    position: 'absolute',
-    zIndex: 1,
-    width: 70,
-    height: 70,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.light.secondary,
-    borderRadius: 50,
-    right: 30,
-    top: windowHeight - 200
-  },
   weatherCard: {
     backgroundColor: "white",
     width: "90%",

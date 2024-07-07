@@ -9,6 +9,7 @@ import LoadingIndicator from '@/components/LoadingIndicator';
 import { API_URL, useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import FloatingButton from '@/components/FloatingButton';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const colors = Colors.light;
@@ -57,9 +58,7 @@ export default function FlightTracker() {
 
   return (
     <>
-    <TouchableOpacity style={styles.floatingButton} onPress={getFlightDetails}>
-        <Ionicons name='search-outline' size={35}/>
-    </TouchableOpacity>
+    <FloatingButton icon={"search-outline"} onPress={getFlightDetails} />
     <View style={styles.container}>
       <Text style={styles.title}>Carrier code</Text>
       <TextInput
@@ -129,16 +128,4 @@ const styles = StyleSheet.create({
     borderRadius:10,
     borderBottomColor:Colors.light.primary,
   },
-  floatingButton: {
-    position: 'absolute',
-    zIndex:1,
-    width: 70,
-    height: 70,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor:Colors.light.secondary,
-    borderRadius:50,
-    right:30,
-    top:windowHeight-200
-  }
 });

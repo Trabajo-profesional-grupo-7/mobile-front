@@ -1,3 +1,4 @@
+import FloatingButton from "@/components/FloatingButton";
 import { dateParser } from "@/components/Parsers";
 import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
@@ -55,12 +56,7 @@ const Plans = () => {
 
   return (
     <>
-      <TouchableOpacity
-        style={styles.floatingButton}
-        onPress={navigateToAddPlan}
-      >
-        <Ionicons name="add" size={35} />
-      </TouchableOpacity>
+      <FloatingButton icon={"add"} onPress={navigateToAddPlan}/>
       <ScrollView style={styles.container}>
         <Text style={styles.title}>My plans</Text>
         {plans.map((value, index) => (
@@ -92,18 +88,5 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 8 * 3,
     fontWeight: "600",
-  },
-  floatingButton: {
-    position: "absolute",
-    zIndex: 1,
-    width: 70,
-    height: 70,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: colors.secondary,
-    borderRadius: 50,
-    right: 30,
-    top: windowHeight - 200,
-    elevation: 3,
   },
 });

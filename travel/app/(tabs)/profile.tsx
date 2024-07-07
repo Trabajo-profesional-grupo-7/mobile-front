@@ -19,6 +19,7 @@ import axios, { AxiosError } from "axios";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import * as ImagePicker from "expo-image-picker";
 import { useProfile } from "../context/ProfileContext";
+import FloatingButton from "@/components/FloatingButton";
 const windowHeight = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 const colors = Colors.light;
@@ -99,12 +100,7 @@ export default function ProfileScreen() {
         <LoadingIndicator />
       ) : (
         <>
-          <TouchableOpacity
-            style={styles.floatingButton}
-            onPress={navigateToEditProfile}
-          >
-            <Ionicons name="pencil" size={35} />
-          </TouchableOpacity>
+          <FloatingButton icon={"pencil"} onPress={navigateToEditProfile}/>
           <ScrollView
             style={styles.container}
           >
@@ -301,18 +297,5 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 50,
     opacity: 1,
-  },
-  floatingButton: {
-    position: "absolute",
-    zIndex: 1,
-    width: 70,
-    height: 70,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: colors.secondary,
-    borderRadius: 50,
-    right: 30,
-    top: windowHeight - 200,
-    elevation: 3,
   },
 });

@@ -19,6 +19,7 @@ const windowHeight = Dimensions.get("window").height;
 import * as Location from "expo-location";
 import { LocationObjectCoords } from "expo-location";
 import { useProfile } from "../context/ProfileContext";
+import FloatingButton from "@/components/FloatingButton";
 
 export default function SearchFilter() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -72,28 +73,27 @@ export default function SearchFilter() {
     getCategories();
   }, []);
 
+  
+
+  const performSearch = () => {
+    if (searchTerm != "") {
+      router.navigate({
+        pathname: "../feed/searchResult",
+        params: {
+          searchTerm,
+          selected,
+          latitude: profile.coordinates?.latitude,
+          longitude: profile.coordinates?.longitude,
+        },
+      });
+    } else {
+      alert("Please enter a search term");
+    }
+  };
+
   return (
     <>
-      <TouchableOpacity
-        style={styles.floatingButton}
-        onPress={() => {
-          if (searchTerm != "") {
-            router.navigate({
-              pathname: "../feed/searchResult",
-              params: {
-                searchTerm,
-                selected,
-                latitude: profile.coordinates?.latitude,
-                longitude: profile.coordinates?.longitude,
-              },
-            });
-          } else {
-            alert("Please enter a search term")
-          }
-        }}
-      >
-        <Ionicons name="search-outline" size={35} />
-      </TouchableOpacity>
+      <FloatingButton icon={"search-outline"} onPress={performSearch} />
       <View style={styles.container}>
         <Text style={styles.title}>Search term</Text>
         <TextInput
@@ -160,17 +160,5 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     borderBottomColor: Colors.light.primary,
-  },
-  floatingButton: {
-    position: "absolute",
-    zIndex: 1,
-    width: 70,
-    height: 70,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: Colors.light.secondary,
-    borderRadius: 50,
-    right: 30,
-    top: windowHeight - 200,
   },
 });

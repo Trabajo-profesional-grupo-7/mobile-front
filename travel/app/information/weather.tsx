@@ -1,47 +1,55 @@
-import { StyleSheet, Text, Dimensions, TextInput, TouchableOpacity } from 'react-native';
-import { View } from '@/components/Themed';
-import Colors from '@/constants/Colors';
-import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
-import { router} from 'expo-router';
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+import {
+  StyleSheet,
+  Text,
+  Dimensions,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import { View } from "@/components/Themed";
+import Colors from "@/constants/Colors";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { router } from "expo-router";
+import FloatingButton from "@/components/FloatingButton";
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 export default function Weather() {
-
-
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
   const [province, setProvince] = useState("");
 
   const validateFields = () => {
     if (city.length == 0) {
-      alert("City field cannot be empty")
-      return false
+      alert("City field cannot be empty");
+      return false;
     }
     return true;
-  }
+  };
 
   const getWeatherInfo = async () => {
     if (validateFields()) {
-      let requestString = `city=${city}`
+      let requestString = `city=${city}`;
       if (country.length) {
-        requestString = requestString.concat(`&country=${country}`)
+        requestString = requestString.concat(`&country=${country}`);
       }
       if (province.length) {
-        requestString = requestString.concat(`&province=${province}`)
+        requestString = requestString.concat(`&province=${province}`);
       }
-      console.log(requestString)
-      router.navigate({pathname:"../information/weatherDetails", params:{requestString}})
+      console.log(requestString);
+      router.navigate({
+        pathname: "../information/weatherDetails",
+        params: { requestString },
+      });
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.floatingButton} onPress={getWeatherInfo}>
-        <Ionicons name='search-outline' size={35}/>
-      </TouchableOpacity>
-      <Text style={{fontSize:35, paddingBottom:15}}>Browse the weather forecast of your destination</Text>
+      <FloatingButton icon={"search-outline"} onPress={getWeatherInfo} />
+      <Text style={{ fontSize: 35, paddingBottom: 15 }}>
+        Browse the weather forecast of your destination
+      </Text>
       <Text style={styles.title}>City</Text>
       <TextInput
         style={styles.input}
@@ -72,31 +80,19 @@ export default function Weather() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding:20
+    padding: 20,
   },
   title: {
     fontSize: 30,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   input: {
-    height: windowHeight*0.05,
-    width: windowWidth*0.9,
-    marginTop:0,
+    height: windowHeight * 0.05,
+    width: windowWidth * 0.9,
+    marginTop: 0,
     borderWidth: 0,
-    borderBottomWidth:1,
-    borderBottomColor:Colors.light.primary,
-    marginBottom:15
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.light.primary,
+    marginBottom: 15,
   },
-  floatingButton: {
-    position: 'absolute',
-    zIndex:1,
-    width: 70,
-    height: 70,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor:Colors.light.secondary,
-    borderRadius:50,
-    right:30,
-    top:windowHeight-200
-  }
 });

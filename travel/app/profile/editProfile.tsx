@@ -9,6 +9,7 @@ import { API_URL } from '../context/AuthContext';
 import { MultiSelect } from 'react-native-element-dropdown';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { useProfile } from '../context/ProfileContext';
+import FloatingButton from '@/components/FloatingButton';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -62,9 +63,7 @@ export default function EditProfile() {
 
   return (
     <>
-      <TouchableOpacity style={styles.floatingButton} onPress={editProfile}>
-        <Ionicons name='save-outline' size={35} />
-      </TouchableOpacity>
+      <FloatingButton icon={"save-outline"} onPress={editProfile} />
       <View style={styles.container}>
         <Text style={styles.title}>Name</Text>
         <TextInput
@@ -130,16 +129,4 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderBottomColor: Colors.light.primary,
   },
-  floatingButton: {
-    position: 'absolute',
-    zIndex: 1,
-    width: 70,
-    height: 70,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.light.secondary,
-    borderRadius: 50,
-    right: 30,
-    top: windowHeight - 200
-  }
 });

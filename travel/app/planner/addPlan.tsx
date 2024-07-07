@@ -17,6 +17,7 @@ import RNDateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { dateParser } from "@/components/Parsers";
+import FloatingButton from "@/components/FloatingButton";
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
 const colors = Colors.light;
@@ -63,12 +64,8 @@ const NewPlan = () => {
     event: DateTimePickerEvent,
     selectedDate: Date | undefined
   ) => {
-    const {
-      type,
-      nativeEvent: { timestamp, utcOffset },
-    } = event;
     setShowStartDatePicker(false);
-    if (type == "set" && selectedDate) {
+    if (event.type == "set" && selectedDate) {
       setStartDate(selectedDate);
       setEndDate(addOneDay(selectedDate));
     }
@@ -78,12 +75,8 @@ const NewPlan = () => {
     event: DateTimePickerEvent,
     selectedDate: Date | undefined
   ) => {
-    const {
-      type,
-      nativeEvent: { timestamp, utcOffset },
-    } = event;
     setShowEndDatePicker(false);
-    if (type == "set" && selectedDate) {
+    if (event.type == "set" && selectedDate) {
       setEndDate(selectedDate);
     }
   };
@@ -103,10 +96,7 @@ const NewPlan = () => {
 
   return (
     <>
-      <TouchableOpacity style={styles.floatingButton} onPress={createPlan}>
-        <Ionicons name="airplane" size={35} />
-      </TouchableOpacity>
-
+      <FloatingButton icon="airplane" onPress={createPlan} />
       <View style={styles.container}>
         {showStartDatePicker && (
           <RNDateTimePicker
@@ -250,18 +240,5 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     borderBottomColor: Colors.light.primary,
-  },
-  floatingButton: {
-    position: "absolute",
-    zIndex: 1,
-    width: 70,
-    height: 70,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: colors.secondary,
-    borderRadius: 50,
-    right: 30,
-    top: windowHeight - 200,
-    elevation: 3,
   },
 });
