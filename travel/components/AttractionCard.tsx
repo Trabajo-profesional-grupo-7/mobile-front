@@ -22,7 +22,7 @@ export interface AttractionCardProps {
   data: {
     attraction_name: string;
     attraction_id: string;
-    likes_count: string;
+    liked_count: string;
     done_count: string;
     avg_rating: string;
     city: string;
@@ -32,23 +32,24 @@ export interface AttractionCardProps {
 }
 
 function sanitizeString(input: string): string {
-    const regex = /[(){}[\]<>]/g;
-    return input.replace(regex, '');
+  const regex = /[(){}[\]<>]/g;
+  return input.replace(regex, "");
 }
 
 export const AttractionCard: React.FC<AttractionCardProps> = (
   props: AttractionCardProps
 ) => {
-  const [name, setName] = useState(props.data.attraction_name);
   const [location, setLocation] = useState(
     `${props.data.city}, ${props.data.country}`
   );
-  const [image, setImage] = useState(props.data.photo);
   return (
     <View style={styles.attractionCard}>
       <TouchableOpacity
         onPress={() => {
-          router.navigate({ pathname: "../feed/attraction", params: props.data });
+          router.navigate({
+            pathname: "../feed/attraction",
+            params: props.data,
+          });
         }}
       >
         <View style={{ flexDirection: "row", backgroundColor: "transparent" }}>
@@ -60,8 +61,8 @@ export const AttractionCard: React.FC<AttractionCardProps> = (
               borderBottomLeftRadius: 10,
             }}
             source={
-              image
-                ? { uri: image }
+              props.data.photo
+                ? { uri: props.data.photo }
                 : { uri: "https://i.imgur.com/qc0GM7G.png" }
             }
           />
@@ -71,15 +72,31 @@ export const AttractionCard: React.FC<AttractionCardProps> = (
               ellipsizeMode="tail"
               style={{ fontSize: 20, fontWeight: "bold" }}
             >
-              {name}
+              {props.data.attraction_name}
             </Text>
             <Text
               numberOfLines={1}
               ellipsizeMode="tail"
-              style={{ fontSize: 14 }}
+              style={{ fontSize: 14, fontStyle: "italic" }}
             >
+              {<Ionicons name="location-outline" />}
               {props.data.city ? location : props.data.country}
             </Text>
+            <View
+              style={{
+                justifyContent: "flex-end",
+                flex: 1,
+                backgroundColor: "transparent",
+                padding: 8,
+              }}
+            >
+              <Text style={{ alignSelf: "flex-end" }}>
+                {<Ionicons name="heart" />}
+                {props.data.liked_count} {" "}
+                {<Ionicons name="star" />} 
+                {props.data.avg_rating}
+              </Text>
+            </View>
           </View>
         </View>
       </TouchableOpacity>

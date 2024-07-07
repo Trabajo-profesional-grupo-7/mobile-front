@@ -17,7 +17,7 @@ const attractionsPerPage = 10;
 export interface AttractionParams {
   attraction_id: string;
   attraction_name: string;
-  likes_count: string;
+  liked_count: string;
   done_count: string;
   avg_rating: string;
   city: string;
@@ -54,6 +54,8 @@ export default function FeedScreen() {
           city: place.city,
           country: place.country,
           photo: place.photo,
+          liked_count: place.liked_count,
+          avg_rating: place.avg_rating
         }));
         if (parsedPlaces.length < attractionsPerPage) {
           setAttractionsList((prevState) => {
@@ -103,7 +105,7 @@ export default function FeedScreen() {
     item: {
       attraction_name: string;
       attraction_id: string;
-      likes_count: string;
+      liked_count: string;
       done_count: string;
       avg_rating: string;
       city: string;

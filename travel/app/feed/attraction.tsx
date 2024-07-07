@@ -10,6 +10,7 @@ import {
   Button,
   TextInput,
   TouchableOpacity,
+  Linking,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Text, View } from "@/components/Themed";
@@ -46,6 +47,7 @@ export default function Attraction() {
   const [summary, setSummary] = useState<string | null>(null);
   const [address, setAddress] = useState<string | null>(null);
   const [gmapsUri, setGmapsUri] = useState<string | null>(null);
+  const [avgRating, setAvgRating] = useState<number | null>(null);
   const [comments, setComments] = useState<
     { comment: string; comment_id: number; user_name: string }[]
   >([]);
@@ -89,6 +91,7 @@ export default function Attraction() {
       setSummary(result.editorial_summary);
       setGmapsUri(result.google_maps_uri);
       setAddress(result.formatted_address);
+      setAvgRating(result.avg_rating);
       if (result.user_rating != null) {
         setUserRating(result.user_rating);
         setIsRated(true);
@@ -105,9 +108,11 @@ export default function Attraction() {
     try {
       if (isLiked) {
         await axios.delete(`${API_URL}/attractions/unlike?attraction_id=${id}`);
+        setLikedCount((prevState) => prevState - 1);
         setIsLiked(false);
       } else {
         await axios.post(`${API_URL}/attractions/like?attraction_id=${id}`);
+        setLikedCount((prevState) => prevState + 1);
         setIsLiked(true);
       }
     } catch (e) {
@@ -177,6 +182,22 @@ export default function Attraction() {
       alert(e);
     }
     setIsLoading(false);
+  };
+
+  const openGoogleMaps = () => {
+    if (gmapsUri) {
+      Linking.canOpenURL(gmapsUri)
+        .then((supported) => {
+          if (supported) {
+            return Linking.openURL(gmapsUri);
+          } else {
+            alert("Error opening this attraction on Google Maps");
+          }
+        })
+        .catch(() => alert("Error opening this attraction on Google Maps"));
+    } else {
+      alert("Error opening this attraction on Google Maps");
+    }
   };
 
   const StarModal = () => {
@@ -287,7 +308,7 @@ export default function Attraction() {
           await axios.post(
             `${API_URL}/attractions/comment?attraction_id=${id}&comment=${postComment}`
           );
-          await getAttractionDetails()
+          await getAttractionDetails();
           setPostComment("");
         } catch (e) {
           alert(e);
@@ -296,6 +317,11 @@ export default function Attraction() {
       } else {
         alert("Can't post an empty comment!");
       }
+    };
+
+    const truncate = (str: string, maxLength: number) => {
+      if (str.length <= maxLength) return str;
+      return str.substring(0, maxLength - 3) + "...";
     };
 
     return (
@@ -315,7 +341,7 @@ export default function Attraction() {
               <Text
                 style={{ fontWeight: "bold", color: Colors.light.secondary }}
               >
-                {name}
+                {truncate(name as string, 60)}
               </Text>
             </Text>
             <TextInput
@@ -380,23 +406,24 @@ export default function Attraction() {
               {location}
             </Text>
           </View>
+          <Text>{address}</Text>
           <View style={[{ flexDirection: "row" }, styles.floatingButton]}>
             <Ionicons
               style={styles.icon}
               name={isLiked ? "heart" : "heart-outline"}
-              size={8 * 4.5}
+              size={8 * 5}
               onPress={like}
             />
             <Ionicons
               style={styles.icon}
               name={isDone ? "checkmark-done-outline" : "checkmark-outline"}
-              size={8 * 4.5}
+              size={8 * 5}
               onPress={done}
             />
             <Ionicons
               style={styles.icon}
               name={isScheduled ? "calendar" : "calendar-outline"}
-              size={8 * 4.5}
+              size={8 * 5}
               onPress={() => {
                 setShowDatePicker(true);
               }}
@@ -404,7 +431,7 @@ export default function Attraction() {
             <Ionicons
               style={styles.icon}
               name={isRated ? "star" : "star-outline"}
-              size={8 * 4.5}
+              size={8 * 5}
               onPress={() => {
                 setStarModalVisible(true);
               }}
@@ -412,11 +439,21 @@ export default function Attraction() {
             <Ionicons
               style={styles.icon}
               name={isSaved ? "bookmark" : "bookmark-outline"}
-              size={8 * 4.5}
+              size={8 * 5}
               onPress={save}
             />
-            <Ionicons style={styles.icon} name="map-outline" size={8 * 4.5} />
+            <Ionicons
+              style={styles.icon}
+              name="map-outline"
+              size={8 * 5}
+              onPress={openGoogleMaps}
+            />
           </View>
+          <Text>
+            {<Ionicons name="heart" />}
+            {likedCount} {<Ionicons name="star" />}
+            {avgRating}
+          </Text>
           {types.length > 0 ? (
             <Text
               numberOfLines={2}
