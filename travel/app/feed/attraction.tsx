@@ -67,10 +67,10 @@ export default function Attraction() {
       type,
       nativeEvent: { timestamp, utcOffset },
     } = event;
+    setShowDatePicker(false);
     if (type == "set" && selectedDate) {
       setDate(selectedDate);
       schedule(selectedDate);
-      setShowDatePicker(false);
     }
   };
 
@@ -144,7 +144,6 @@ export default function Attraction() {
     } catch (e) {
       alert(e);
     }
-    setShowDatePicker(false);
     setIsLoading(false);
   };
 

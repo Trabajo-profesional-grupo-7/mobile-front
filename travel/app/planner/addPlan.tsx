@@ -7,6 +7,7 @@ import {
   Dimensions,
   TextInput,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { API_URL } from "../context/AuthContext";
@@ -15,9 +16,17 @@ import { Ionicons } from "@expo/vector-icons";
 import RNDateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
+import { dateParser } from "@/components/Parsers";
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
 const colors = Colors.light;
+const CITY_PLACEHOLDER = "Choose a city";
+
+const addOneDay = (date: Date): Date => {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + 1);
+  return newDate;
+};
 
 const NewPlan = () => {
   const [name, setName] = useState("");
@@ -46,8 +55,8 @@ const NewPlan = () => {
   };
 
   const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(addOneDay(new Date()));
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [endDate, setEndDate] = useState(new Date());
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
   const onChangeStartDate = (
@@ -58,10 +67,10 @@ const NewPlan = () => {
       type,
       nativeEvent: { timestamp, utcOffset },
     } = event;
+    setShowStartDatePicker(false);
     if (type == "set" && selectedDate) {
-      console.log(selectedDate);
       setStartDate(selectedDate);
-      setShowStartDatePicker(false);
+      setEndDate(addOneDay(selectedDate));
     }
   };
 
@@ -73,81 +82,145 @@ const NewPlan = () => {
       type,
       nativeEvent: { timestamp, utcOffset },
     } = event;
+    setShowEndDatePicker(false);
     if (type == "set" && selectedDate) {
-      console.log(selectedDate);
       setEndDate(selectedDate);
-      setShowEndDatePicker(false);
+    }
+  };
+
+  const validateInputs = () => {
+    if (!name.length || !city) return false;
+    return true;
+  };
+
+  const createPlan = () => {
+    if (validateInputs()) {
+      console.log("Create plan");
+    } else {
+      alert("Can't have empty fields");
     }
   };
 
   return (
-    <View style={styles.container}>
-      {showStartDatePicker && (
-        <RNDateTimePicker
-          value={startDate}
-          onChange={onChangeStartDate}
-          minimumDate={new Date()}
-        />
-      )}
+    <>
+      <TouchableOpacity style={styles.floatingButton} onPress={createPlan}>
+        <Ionicons name="airplane" size={35} />
+      </TouchableOpacity>
 
-      {showEndDatePicker && (
-        <RNDateTimePicker
-          value={endDate}
-          onChange={onChangeEndDate}
-          minimumDate={startDate}
-        />
-      )}
-
-      <Text style={styles.title}>Name the plan</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={setName}
-        value={name}
-        placeholder="Name"
-      />
-
-      <Dropdown
-        data={data}
-        search
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        placeholder="Choose a destination"
-        placeholderStyle={styles.title}
-        searchPlaceholder="Search..."
-        value={value}
-        renderRightIcon={() => (
-          <View>
-            {loadingLocations ? (
-              <ActivityIndicator size={20} color="black" />
-            ) : (
-              <Ionicons name="caret-down" />
-            )}
-          </View>
+      <View style={styles.container}>
+        {showStartDatePicker && (
+          <RNDateTimePicker
+            value={startDate}
+            onChange={onChangeStartDate}
+            minimumDate={new Date()}
+          />
         )}
-        onChangeText={(query) => {
-          if (query.length > 3) {
-            setLoadingLocations(true);
-            if (timer) {
-              clearTimeout(timer);
+
+        {showEndDatePicker && (
+          <RNDateTimePicker
+            value={endDate}
+            onChange={onChangeEndDate}
+            minimumDate={addOneDay(startDate)}
+          />
+        )}
+
+        <Text style={styles.title}>Name the plan</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={setName}
+          value={name}
+          placeholder="Name"
+        />
+
+        <Dropdown
+          data={data}
+          search
+          maxHeight={300}
+          labelField="label"
+          valueField="value"
+          placeholder="Choose a destination"
+          placeholderStyle={styles.title}
+          searchPlaceholder="Search..."
+          value={value}
+          renderRightIcon={() => (
+            <View>
+              {loadingLocations ? (
+                <ActivityIndicator size={20} color="black" />
+              ) : (
+                <Ionicons name="caret-down" />
+              )}
+            </View>
+          )}
+          onChangeText={(query) => {
+            if (query.length > 3) {
+              setLoadingLocations(true);
+              if (timer) {
+                clearTimeout(timer);
+              }
+              setTimer(
+                setTimeout(() => {
+                  updateData(query);
+                  setTimer(null);
+                }, 1000)
+              );
+            } else if (query.length == 0) {
+              setData([]);
             }
-            setTimer(
-              setTimeout(() => {
-                updateData(query);
-                setTimer(null);
-              }, 1000)
-            );
-          } else if (query.length == 0) {
-            setData([]);
-          }
-        }}
-        onChange={(item) => {
-          setCity(item.value);
-          setValue(item);
-        }}
-      />
-      <Text style={{ fontSize: 8 * 3, marginLeft: 8 }}>{city}</Text>
-    </View>
+          }}
+          onChange={(item) => {
+            setCity(item.value);
+            setValue(item);
+          }}
+        />
+        <Text style={styles.subtitle}>{city ? city : CITY_PLACEHOLDER}</Text>
+
+        <Text style={styles.title}>Start date</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Text style={styles.subtitle}>
+            {dateParser(startDate.toISOString())} {startDate.getFullYear()}
+          </Text>
+          <Ionicons
+            name="calendar-outline"
+            onPress={() => setShowStartDatePicker(true)}
+            size={35}
+            style={{
+              backgroundColor: colors.secondary,
+              padding: 10,
+              borderRadius: 30,
+            }}
+          />
+        </View>
+
+        <Text style={styles.title}>End date</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Text style={styles.subtitle}>
+            {dateParser(endDate.toISOString())} {endDate.getFullYear()}
+          </Text>
+          <Ionicons
+            name="calendar-outline"
+            onPress={() => setShowEndDatePicker(true)}
+            size={35}
+            style={{
+              backgroundColor: colors.secondary,
+              padding: 10,
+              borderRadius: 30,
+            }}
+          />
+        </View>
+      </View>
+    </>
   );
 };
 
@@ -157,10 +230,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    gap: 8,
   },
   title: {
     fontSize: 25,
     fontWeight: "bold",
+  },
+  subtitle: {
+    fontSize: 8 * 3,
+    marginLeft: 8,
   },
   input: {
     height: windowHeight * 0.05,
@@ -172,5 +250,18 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     borderBottomColor: Colors.light.primary,
+  },
+  floatingButton: {
+    position: "absolute",
+    zIndex: 1,
+    width: 70,
+    height: 70,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.secondary,
+    borderRadius: 50,
+    right: 30,
+    top: windowHeight - 200,
+    elevation: 3,
   },
 });
