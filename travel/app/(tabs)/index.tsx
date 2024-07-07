@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet, Dimensions, RefreshControl } from "react-native";
 
 import { Text, View } from "@/components/Themed";
 import Colors from "@/constants/Colors";
@@ -9,6 +9,7 @@ import { ActivityIndicator } from "react-native-paper";
 import { AttractionCard } from "@/components/AttractionCard";
 import { API_URL, useAuth } from "../context/AuthContext";
 import axios from "axios";
+import { useProfile } from "../context/ProfileContext";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 const attractionsPerPage = 10;
@@ -30,18 +31,21 @@ export function sanitizeString(input: string): string {
 }
 
 export default function FeedScreen() {
-  const [attractions, setAttractions] = useState([]);
-  const [noMoreAttractions, setNoMoreAttractions] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [cantGetAttractions, setCantGetAttractions] = useState(false);
+  const [attractionsList, setAttractionsList] = useState({
+    attractions: [],
+    noMoreAttractions: false,
+    cantGetAttractions: false,
+    currentPage: 0,
+  });
   const { onRefreshToken } = useAuth();
-
+  const [loading, setLoading] = useState(false);
+  const { profile } = useProfile();
 
   const getAttractions = async () => {
     await onRefreshToken!();
     try {
       const result = await axios.get(
-        `${API_URL}/attractions/recommendations?page=${currentPage}`
+        `${API_URL}/attractions/recommendations?page=${attractionsList.currentPage}`
       );
       if (result.data) {
         const parsedPlaces: [] = result.data.map((place: AttractionParams) => ({
@@ -52,18 +56,38 @@ export default function FeedScreen() {
           photo: place.photo,
         }));
         if (parsedPlaces.length < attractionsPerPage) {
-          setNoMoreAttractions(true);
-          if (currentPage == 0 && parsedPlaces.length == 0) {
-            setCantGetAttractions(true);
+          setAttractionsList((prevState) => {
+            return {
+              ...prevState,
+              noMoreAttractions: true,
+            };
+          });
+          if (attractionsList.currentPage == 0 && parsedPlaces.length == 0) {
+            setAttractionsList((prevState) => {
+              return {
+                ...prevState,
+                cantGetAttractions: true,
+              };
+            });
           }
         }
-        setAttractions([...attractions, ...parsedPlaces]);
+        setAttractionsList((prevState) => {
+          return {
+            ...prevState,
+            attractions: [...prevState.attractions, ...parsedPlaces],
+          };
+        });
       }
     } catch (error: any) {
       if (error.response) {
         if (error.response.status === 404) {
-          setCantGetAttractions(true);
-          setNoMoreAttractions(true);
+          setAttractionsList((prevState) => {
+            return {
+              ...prevState,
+              cantGetAttractions: true,
+              noMoreAttractions: true,
+            };
+          });
         } else {
           alert(error.message);
         }
@@ -87,7 +111,12 @@ export default function FeedScreen() {
       photo: string;
     };
   }) => {
-    return <AttractionCard data={item}></AttractionCard>;
+    return (
+      <>
+        <AttractionCard data={item} />
+        <View></View>
+      </>
+    );
   };
 
   const renderLoader = () => {
@@ -99,81 +128,68 @@ export default function FeedScreen() {
   };
 
   const loadMoreAttractions = () => {
-    setCurrentPage(currentPage + 1);
-    getAttractions();
+    setAttractionsList((prevState) => {
+      return {
+        ...prevState,
+        currentPage: prevState.currentPage + 1,
+      };
+    });
   };
 
   useEffect(() => {
     getAttractions();
-  }, []);
+  }, [attractionsList.currentPage]);
 
   const reloadFeed = async () => {
-    setAttractions([]);
-    setNoMoreAttractions(false);
-    setCantGetAttractions(false);
-    setCurrentPage(0);
-    try {
-      await onRefreshToken!();
-      await axios.post(`${API_URL}/attractions/run-recommendation-system`);
-    } catch (e) {
-      alert(e);
+    setAttractionsList((prevState) => {
+      return {
+        ...prevState,
+        currentPage: 0,
+        attractions: [],
+        noMoreAttractions: false,
+        cantGetAttractions: false,
+      };
+    });
+  
+  };
+
+  useEffect(() => {
+    if (profile.preferences.length != 0) {
+      reloadFeed();
     }
-    await getAttractions();
+  }, [profile.preferences]);
+
+  const onRefresh = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
   };
 
   return (
-    <View style={styles.container}>
-      <View style={{ padding: 10, flex: 1 }}>
-        <View style={{ alignItems: "flex-start" }}>
-          <Text style={{ fontSize: 25, fontWeight: "bold", marginBottom: 10 }}>
-            Recommended attractions
-          </Text>
-        </View>
-        <View style={{ paddingBottom: 30 }}>
-          {attractions.length == 0 && cantGetAttractions && (
-            <>
-              <Text
-                style={{ fontSize: 40, paddingTop: 30, paddingHorizontal: 25 }}
-              >
-                Looks like we can't recommend attractions to you yet
-              </Text>
-              <Text
-                style={{
-                  fontSize: 20,
-                  paddingHorizontal: 25,
-                  fontStyle: "italic",
-                  fontWeight: "bold",
-                  color: Colors.light.secondary,
-                }}
-              >
-                Try searching for and interacting with some attractions first
-              </Text>
-              <Text
-                onPress={reloadFeed}
-                style={{
-                  fontSize: 25,
-                  paddingHorizontal: 25,
-                  fontStyle: "italic",
-                  fontWeight: "bold",
-                  color: Colors.light.primary,
-                }}
-              >
-                Reload
-              </Text>
-            </>
-          )}
-          <FlatList
-            data={attractions}
-            renderItem={renderAttraction}
-            style={{ width: "100%" }}
-            ListFooterComponent={
-              noMoreAttractions || cantGetAttractions ? null : renderLoader
-            }
-            onEndReached={noMoreAttractions ? null : loadMoreAttractions}
-            onEndReachedThreshold={0}
-          ></FlatList>
-        </View>
-      </View>
+    <View style={{ padding: 10, flexGrow: 1, paddingBottom: 30 }}>
+      <FlatList
+        data={attractionsList.attractions}
+        renderItem={renderAttraction}
+        style={{ width: "100%" }}
+        ListHeaderComponent={
+          <View style={{ alignItems: "flex-start" }}>
+            <Text
+              style={{ fontSize: 25, fontWeight: "bold", marginBottom: 10 }}
+            >
+              Recommended attractions
+            </Text>
+          </View>
+        }
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={onRefresh} />
+        }
+        ListFooterComponent={
+          attractionsList.noMoreAttractions || attractionsList.cantGetAttractions ? null : renderLoader
+        }
+        onEndReached={attractionsList.noMoreAttractions ? null : loadMoreAttractions}
+        onEndReachedThreshold={0}
+      />
     </View>
   );
 }

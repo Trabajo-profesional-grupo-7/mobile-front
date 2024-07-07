@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { AttractionCard } from '@/components/AttractionCard';
 import { API_URL, useAuth } from '../context/AuthContext';
 import axios from 'axios';
-import { AttractionParams } from '../(tabs)';
+import { AttractionParams, sanitizeString } from '../(tabs)';
 
 
 export default function SearchResult() {
@@ -29,7 +29,7 @@ export default function SearchResult() {
             if (result.data) {
                 const parsedPlaces = result.data.map((place: AttractionParams) => ({
                     attraction_id: place.attraction_id,
-                    attraction_name: place.attraction_name,
+                    attraction_name: sanitizeString(place.attraction_name),
                     city: place.city,
                     country: place.country,
                     photo: place.photo

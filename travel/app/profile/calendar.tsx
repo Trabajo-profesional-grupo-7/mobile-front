@@ -66,12 +66,19 @@ export default function UserCalendar() {
               textColor: "white",
             };
             if (hash[date]) {
-              hash[date].push(parsed_attraction);
+              const attractionExists = hash[date].some(
+                (attraction) =>
+                  attraction.attraction_id === parsed_attraction.attraction_id
+              );
+              if (!attractionExists) {
+                hash[date].push(parsed_attraction);
+              }
             } else {
               hash[date] = [parsed_attraction];
             }
           }
         }
+        console.log(hash);
         setScheduledAttractions(hash);
         setMarkedDates(dates);
       }

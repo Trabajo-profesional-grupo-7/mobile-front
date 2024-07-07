@@ -27,13 +27,15 @@ function CustomDrawerContent(props: any) {
       await onRefreshToken!();
       try {
         const result = (await axios.get(`${API_URL}/users`)).data;
+        console.log(result)
         setProfile({
           email: result.email,
           username: result.username,
           preferences: result.preferences,
           location: result.city,
           birthdate: result.birth_date,
-          image: result.avatar_link
+          image: result.avatar_link,
+          coordinates: undefined
         })
       } catch (e) {
         alert(e);

@@ -30,7 +30,6 @@ export default function SearchFilter() {
   const { onRefreshToken } = useAuth();
   const { profile, setProfile } = useProfile();
 
-
   useEffect(() => {
     const getLocation = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -77,17 +76,21 @@ export default function SearchFilter() {
     <>
       <TouchableOpacity
         style={styles.floatingButton}
-        onPress={() =>
-          router.navigate({
-            pathname: "../feed/searchResult",
-            params: {
-              searchTerm,
-              selected,
-              latitude: profile.coordinates?.latitude,
-              longitude: profile.coordinates?.longitude,
-            },
-          })
-        }
+        onPress={() => {
+          if (searchTerm != "") {
+            router.navigate({
+              pathname: "../feed/searchResult",
+              params: {
+                searchTerm,
+                selected,
+                latitude: profile.coordinates?.latitude,
+                longitude: profile.coordinates?.longitude,
+              },
+            });
+          } else {
+            alert("Please enter a search term")
+          }
+        }}
       >
         <Ionicons name="search-outline" size={35} />
       </TouchableOpacity>
