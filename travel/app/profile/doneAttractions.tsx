@@ -23,6 +23,8 @@ export default function DoneAttractions() {
           city: place.city,
           country: place.country,
           photo: place.photo,
+          liked_count: place.liked_count,
+          avg_rating: place.avg_rating,
         }));
         if (parsedPlaces.length < attractionsPerPage) {
           setNoMoreAttractions(true);
