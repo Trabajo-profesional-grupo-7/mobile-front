@@ -1,65 +1,77 @@
-import { Dimensions, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import { Text, View } from '@/components/Themed';
-import React, { useEffect, useState } from 'react';
-import Colors from '@/constants/Colors';
-import { Ionicons } from '@expo/vector-icons';
-import { router, useLocalSearchParams } from 'expo-router';
-import axios from 'axios';
-import { API_URL } from '../context/AuthContext';
-import { MultiSelect } from 'react-native-element-dropdown';
-import LoadingIndicator from '@/components/LoadingIndicator';
-import { useProfile } from '../context/ProfileContext';
-import FloatingButton from '@/components/FloatingButton';
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
+import {
+  Dimensions,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import { Text, View } from "@/components/Themed";
+import React, { useEffect, useState } from "react";
+import Colors from "@/constants/Colors";
+import { Ionicons } from "@expo/vector-icons";
+import { router, useLocalSearchParams } from "expo-router";
+import axios from "axios";
+import { API_URL } from "../context/AuthContext";
+import { MultiSelect } from "react-native-element-dropdown";
+import LoadingIndicator from "@/components/LoadingIndicator";
+import { useProfile } from "../context/ProfileContext";
+import FloatingButton from "@/components/FloatingButton";
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 export default function EditProfile() {
   const params = useLocalSearchParams();
   const { profile, setProfile } = useProfile();
   const [name, setName] = React.useState(profile.username);
   const [location, setLocation] = useState(profile.location);
-  const [selected, setSelected] = useState<string[]>(profile.preferences)
-  const [isLoading, setIsLoading] = useState(false)
-  const [categories, setCategories] = useState([])
-
+  const [selected, setSelected] = useState<string[]>(profile.preferences);
+  const [isLoading, setIsLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-
     const getCategories = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
-        const result = await axios.get(`${API_URL}/metadata`)
+        const result = await axios.get(`${API_URL}/metadata`);
         const data = result.data.attraction_types.map((category: string) => ({
-          label: category.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
-          value: category
+          label: category
+            .split("_")
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" "),
+          value: category,
         }));
-        setCategories(data)
+        setCategories(data);
       } catch (e) {
-        alert(e)
+        alert(e);
       }
-      setIsLoading(false)
-    }
-    getCategories()
+      setIsLoading(false);
+    };
+    getCategories();
   }, []);
+
+  const validateFields = () => selected.length && name.length;
+
   const editProfile = async () => {
-    setIsLoading(true)
-    try {
-      await axios.patch(`${API_URL}/users`, {
-        "username": name,
-        "preferences": selected
-      })
-      setProfile({
-        ...profile,
-        username: name,
-        preferences: selected
-      })
-      router.back();
-    } catch (e) {
-      alert(e)
+    if (validateFields()) {
+      setIsLoading(true);
+      try {
+        await axios.patch(`${API_URL}/users`, {
+          username: name,
+          preferences: selected,
+        });
+        setProfile({
+          ...profile,
+          username: name,
+          preferences: selected,
+        });
+        router.back();
+      } catch (e) {
+        alert(e);
+      }
+      setIsLoading(false);
+    } else {
+      alert("Can't have empty fields");
     }
-    setIsLoading(false)
-  }
+  };
 
   return (
     <>
@@ -85,15 +97,13 @@ export default function EditProfile() {
             maxSelect={5}
             search
             value={selected}
-            onChange={item => {
+            onChange={(item) => {
               setSelected(item);
             }}
           />
         </View>
       </View>
-      {isLoading && (
-        <LoadingIndicator />
-      )}
+      {isLoading && <LoadingIndicator />}
     </>
   );
 }
@@ -101,12 +111,12 @@ export default function EditProfile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20
+    paddingTop: 20,
   },
   title: {
     fontSize: 25,
-    fontWeight: 'bold',
-    marginLeft: 20
+    fontWeight: "bold",
+    marginLeft: 20,
   },
   chip: {
     marginLeft: 15,
