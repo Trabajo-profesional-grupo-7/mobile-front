@@ -24,7 +24,7 @@ export default function LoginScreen() {
   const login = async () => {
     console.log("Logging in");
     setIsLoading(true);
-    const result = await onLogin!(email.toLocaleLowerCase(), password);
+    const result = await onLogin!(email.toLocaleLowerCase().trim(), password);
     if (result && result.error) {
       alert("Incorrect email or password");
     } else {

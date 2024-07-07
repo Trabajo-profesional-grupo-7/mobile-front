@@ -85,7 +85,7 @@ export default function SignupScreen() {
       router.navigate({
         pathname: "../user/selectCategories",
         params: {
-          email: email.toLocaleLowerCase(),
+          email: email.toLocaleLowerCase().trim(),
           password,
           username,
           date: date.toISOString().split("T")[0],

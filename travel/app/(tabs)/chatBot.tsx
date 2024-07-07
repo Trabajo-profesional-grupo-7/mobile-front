@@ -190,22 +190,23 @@ const styles = StyleSheet.create({
     borderTopWidth: 3,
   },
   messageContainer: {
-    maxWidth: "70%",
+    maxWidth: "80%",
     marginBottom: 8,
     padding: 12,
     borderRadius: 8,
   },
   senderMessage: {
     alignSelf: "flex-end",
-    backgroundColor: colors.primary,
+    backgroundColor: colors.secondary,
   },
   receiverMessage: {
     alignSelf: "flex-start",
     backgroundColor: "#9ec3ff",
   },
   messageText: {
-    fontSize: 16,
-    color: "#333333",
+    fontSize: 8 * 2.5,
+    color: colors.text,
+    fontWeight: "500",
   },
   dotsWrapper: {
     width: "20%",

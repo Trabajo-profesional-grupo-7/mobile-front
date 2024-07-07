@@ -33,27 +33,58 @@ const DateWeatherCard = ({
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
+          backgroundColor: "transparent",
         }}
       >
-        <View>
-          <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+        <View style={{ backgroundColor: "transparent" }}>
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontSize: 20,
+              backgroundColor: "transparent",
+            }}
+          >
             {dateParser(date)}
           </Text>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "transparent",
+            }}
+          >
             <Ionicons name="water-outline" size={18} />
             <Text>Humidity: {weather.humidity}</Text>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "transparent",
+            }}
+          >
             <Ionicons name="rainy-outline" size={18} />
             <Text>
               Precipitation chance: {weather.precipitation_probability}%
             </Text>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "transparent",
+            }}
+          >
             <Ionicons name="sunny-outline" size={18} />
             <Text>UV Index: {weather.uv_index}</Text>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "transparent",
+            }}
+          >
             <Ionicons name="eye-outline" size={18} />
             <Text>Visibility: {weather.visibility}</Text>
           </View>
