@@ -15,7 +15,6 @@ import {
 const windowHeight = Dimensions.get("window").height;
 const colors = Colors.light;
 
-
 interface PlanProps {
   title: string;
   location: string;
@@ -51,12 +50,12 @@ const Plans = () => {
   const [plans, setPlans] = useState([plan, plan]);
 
   const navigateToAddPlan = () => {
-    router.navigate("../planner/addPlan")
-  }
+    router.navigate("../planner/addPlan");
+  };
 
   return (
     <>
-      <FloatingButton icon={"add"} onPress={navigateToAddPlan}/>
+      <FloatingButton icon={"add"} onPress={navigateToAddPlan} />
       <ScrollView style={styles.container}>
         <Text style={styles.title}>My plans</Text>
         {plans.map((value, index) => (

@@ -5,11 +5,11 @@ const windowHeight = Dimensions.get("window").height;
 const colors = Colors.light;
 
 interface Props {
-    icon: keyof typeof Ionicons.glyphMap;
-    onPress: () => void;
-  }
+  icon: keyof typeof Ionicons.glyphMap;
+  onPress: () => void;
+}
 
-const FloatingButton = ({icon, onPress}:Props) => {
+const FloatingButton = ({ icon, onPress }: Props) => {
   return (
     <TouchableOpacity
       style={{

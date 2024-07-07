@@ -451,7 +451,8 @@ export default function Attraction() {
           </View>
           <Text>
             {<Ionicons name="heart" />}
-            {likedCount} {<Ionicons name="star" />}
+            {likedCount}
+            {<Ionicons name="star" />}
             {avgRating}
           </Text>
           {types.length > 0 ? (

@@ -30,7 +30,6 @@ export default function ProfileScreen() {
   const { onRefreshToken } = useAuth();
   const { profile, setProfile } = useProfile();
 
-
   const getProfileData = async () => {
     await onRefreshToken!();
     try {
@@ -38,11 +37,11 @@ export default function ProfileScreen() {
       setProfile({
         ...profile,
         image: result.avatar_link,
-      })
+      });
     } catch (e) {
       alert(e);
     }
-  }
+  };
 
   const uploadImage = async (image: ImagePicker.ImagePickerAsset) => {
     setIsLoading(true);
@@ -62,7 +61,7 @@ export default function ProfileScreen() {
         },
       });
       console.log("Imagen subida exitosamente:");
-      getProfileData()
+      getProfileData();
     } catch (e) {
       console.log(e);
     }
@@ -100,10 +99,8 @@ export default function ProfileScreen() {
         <LoadingIndicator />
       ) : (
         <>
-          <FloatingButton icon={"pencil"} onPress={navigateToEditProfile}/>
-          <ScrollView
-            style={styles.container}
-          >
+          <FloatingButton icon={"pencil"} onPress={navigateToEditProfile} />
+          <ScrollView style={styles.container}>
             <View style={styles.topView}>
               <Pressable onPress={selectImage}>
                 <Image

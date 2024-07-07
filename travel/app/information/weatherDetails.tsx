@@ -1,46 +1,70 @@
-import { StyleSheet, Text, Dimensions, ScrollView } from 'react-native';
+import { StyleSheet, Text, Dimensions, ScrollView } from "react-native";
 
-import { View } from '@/components/Themed';
-import Colors from '@/constants/Colors';
-import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
-import { useLocalSearchParams } from 'expo-router';
-import { API_URL, useAuth } from '../context/AuthContext';
-import LoadingIndicator from '@/components/LoadingIndicator';
-import axios from 'axios';
-import { dateParser } from '@/components/Parsers';
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+import { View } from "@/components/Themed";
+import Colors from "@/constants/Colors";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import { API_URL, useAuth } from "../context/AuthContext";
+import LoadingIndicator from "@/components/LoadingIndicator";
+import axios from "axios";
+import { dateParser } from "@/components/Parsers";
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
-const DateWeatherCard = ({ date, weather }: { date: string, weather: { temperature: string, humidity: string, precipitation_probability: string, uv_index: string, visibility: string } }) => {
-  const temperature = weather.temperature.toString().split(".")[0]
+const DateWeatherCard = ({
+  date,
+  weather,
+}: {
+  date: string;
+  weather: {
+    temperature: string;
+    humidity: string;
+    precipitation_probability: string;
+    uv_index: string;
+    visibility: string;
+  };
+}) => {
+  const temperature = weather.temperature.toString().split(".")[0];
   return (
     <View style={styles.weatherCard}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <View>
-          <Text style={{ fontWeight: "bold", fontSize: 20 }}>{dateParser(date)}</Text>
+          <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+            {dateParser(date)}
+          </Text>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Ionicons name='water-outline' size={18} />
+            <Ionicons name="water-outline" size={18} />
             <Text>Humidity: {weather.humidity}</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Ionicons name='rainy-outline' size={18} />
-            <Text>Precipitation chance: {weather.precipitation_probability}%</Text>
+            <Ionicons name="rainy-outline" size={18} />
+            <Text>
+              Precipitation chance: {weather.precipitation_probability}%
+            </Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Ionicons name='sunny-outline' size={18} />
+            <Ionicons name="sunny-outline" size={18} />
             <Text>UV Index: {weather.uv_index}</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Ionicons name='eye-outline' size={18} />
+            <Ionicons name="eye-outline" size={18} />
             <Text>Visibility: {weather.visibility}</Text>
           </View>
         </View>
-        <Text style={{ fontSize: 45, fontWeight: "bold" }}>{temperature}°C</Text>
+        <Text style={{ fontSize: 45, fontWeight: "bold" }}>
+          {temperature}°C
+        </Text>
       </View>
     </View>
-  )
-}
+  );
+};
 
 export default function WeatherDetails() {
   const params = useLocalSearchParams();
@@ -49,19 +73,20 @@ export default function WeatherDetails() {
   const { onRefreshToken } = useAuth();
   const [weatherData, setWeatherData] = useState([]);
 
-
   const getWeatherDetails = async () => {
     setIsLoading(true);
     await onRefreshToken!();
     try {
-      const result = await axios.get(`${API_URL}/weather?${params.requestString}`);
-      setWeatherData(result.data.five_day_weather)
-      setLocation(result.data.location)
+      const result = await axios.get(
+        `${API_URL}/weather?${params.requestString}`
+      );
+      setWeatherData(result.data.five_day_weather);
+      setLocation(result.data.location);
     } catch (e) {
       alert(e);
     }
     setIsLoading(false);
-  }
+  };
 
   useEffect(() => {
     getWeatherDetails();
@@ -69,19 +94,39 @@ export default function WeatherDetails() {
 
   return (
     <View style={styles.container}>
-
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Weather results for:</Text>
-        <Text style={{ fontStyle: "italic", fontSize: 30, alignSelf: "center", marginBottom: 20 }}>{location}</Text>
-        {weatherData.map((item: { date: string, weather: { temperature: string; humidity: string; precipitation_probability: string; uv_index: string; visibility: string; } }, index) => (
-          <View key={index} style={{ alignItems: "center" }}>
-            <DateWeatherCard date={item.date} weather={item.weather} />
-          </View>
-        ))}
+        <Text
+          style={{
+            fontStyle: "italic",
+            fontSize: 30,
+            alignSelf: "center",
+            marginBottom: 20,
+          }}
+        >
+          {location}
+        </Text>
+        {weatherData.map(
+          (
+            item: {
+              date: string;
+              weather: {
+                temperature: string;
+                humidity: string;
+                precipitation_probability: string;
+                uv_index: string;
+                visibility: string;
+              };
+            },
+            index
+          ) => (
+            <View key={index} style={{ alignItems: "center" }}>
+              <DateWeatherCard date={item.date} weather={item.weather} />
+            </View>
+          )
+        )}
       </ScrollView>
-      {isLoading && (
-        <LoadingIndicator />
-      )}
+      {isLoading && <LoadingIndicator />}
     </View>
   );
 }
@@ -91,11 +136,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 10,
-    alignContent: "center"
+    alignContent: "center",
   },
   title: {
     fontSize: 30,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   input: {
     height: windowHeight * 0.05,
@@ -104,7 +149,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderBottomWidth: 1,
     borderBottomColor: Colors.light.primary,
-    marginBottom: 15
+    marginBottom: 15,
   },
   weatherCard: {
     backgroundColor: "white",
@@ -112,6 +157,6 @@ const styles = StyleSheet.create({
     elevation: 5,
     padding: 20,
     margin: 5,
-    borderRadius: 5
-  }
+    borderRadius: 5,
+  },
 });

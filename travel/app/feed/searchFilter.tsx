@@ -73,8 +73,6 @@ export default function SearchFilter() {
     getCategories();
   }, []);
 
-  
-
   const performSearch = () => {
     if (searchTerm != "") {
       router.navigate({

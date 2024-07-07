@@ -92,8 +92,7 @@ export const AttractionCard: React.FC<AttractionCardProps> = (
             >
               <Text style={{ alignSelf: "flex-end" }}>
                 {<Ionicons name="heart" />}
-                {props.data.liked_count} {" "}
-                {<Ionicons name="star" />} 
+                {props.data.liked_count} {<Ionicons name="star" />}
                 {props.data.avg_rating}
               </Text>
             </View>

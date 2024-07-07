@@ -49,7 +49,7 @@ export default function UserCalendar() {
           const parsed_attraction: AttractionParams = {
             attraction_id: attraction.attraction_id,
             attraction_name: sanitizeString(attraction.attraction_name),
-            likes_count: attraction.liked_count,
+            liked_count: attraction.liked_count,
             done_count: attraction.done_count,
             avg_rating: attraction.avg_rating,
             city: attraction.city,

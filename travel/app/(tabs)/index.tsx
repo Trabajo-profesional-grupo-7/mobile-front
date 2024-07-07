@@ -55,7 +55,7 @@ export default function FeedScreen() {
           country: place.country,
           photo: place.photo,
           liked_count: place.liked_count,
-          avg_rating: place.avg_rating
+          avg_rating: place.avg_rating,
         }));
         if (parsedPlaces.length < attractionsPerPage) {
           setAttractionsList((prevState) => {
@@ -152,7 +152,6 @@ export default function FeedScreen() {
         cantGetAttractions: false,
       };
     });
-  
   };
 
   useEffect(() => {
@@ -187,9 +186,14 @@ export default function FeedScreen() {
           <RefreshControl refreshing={loading} onRefresh={onRefresh} />
         }
         ListFooterComponent={
-          attractionsList.noMoreAttractions || attractionsList.cantGetAttractions ? null : renderLoader
+          attractionsList.noMoreAttractions ||
+          attractionsList.cantGetAttractions
+            ? null
+            : renderLoader
         }
-        onEndReached={attractionsList.noMoreAttractions ? null : loadMoreAttractions}
+        onEndReached={
+          attractionsList.noMoreAttractions ? null : loadMoreAttractions
+        }
         onEndReachedThreshold={0}
       />
     </View>
