@@ -85,7 +85,7 @@ export default function SignupScreen() {
       router.navigate({
         pathname: "../user/selectCategories",
         params: {
-          email,
+          email: email.toLocaleLowerCase(),
           password,
           username,
           date: date.toISOString().split("T")[0],
@@ -179,6 +179,7 @@ export default function SignupScreen() {
           onChangeText={setEmail}
           value={email}
           placeholder="Email"
+          autoCapitalize="none"
         />
         <Text style={styles.subtitle}>Password</Text>
         <View style={styles.input}>
@@ -186,12 +187,13 @@ export default function SignupScreen() {
             onChangeText={setPassword}
             value={password}
             placeholder="Password"
-            style={{ maxWidth: 200 }}
+            style={{ flex: 1 }}
             secureTextEntry={!showPassword}
             autoCapitalize="none"
           />
+
           <Ionicons
-            style={{ alignSelf: "flex-end" }}
+            style={{ alignSelf: "center", marginBottom: -4 }}
             name={showPassword ? "eye-off-outline" : "eye-outline"}
             size={24}
             onPress={() => {
@@ -204,13 +206,13 @@ export default function SignupScreen() {
           <TextInput
             onChangeText={setRepeatPassword}
             value={repeatPassword}
-            style={{ maxWidth: 200 }}
+            style={{ flex: 1 }}
             placeholder="Repeat password"
             secureTextEntry={!showRepeatPassword}
             autoCapitalize="none"
           />
           <Ionicons
-            style={{ alignSelf: "flex-end" }}
+            style={{ alignSelf: "center", marginBottom: -4 }}
             name={showRepeatPassword ? "eye-off-outline" : "eye-outline"}
             size={24}
             onPress={() => {
@@ -244,12 +246,7 @@ export default function SignupScreen() {
         </View>
       </View>
       <View style={{ marginBottom: "15%" }}>
-        <AccountButton
-          title="Continue"
-          onPress={() => {
-            register();
-          }}
-        />
+        <AccountButton title="Continue" onPress={register} />
       </View>
       {showDatePicker && (
         <RNDateTimePicker
@@ -298,6 +295,6 @@ const styles = StyleSheet.create({
     elevation: 3,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
   },
 });

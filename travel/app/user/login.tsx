@@ -25,7 +25,7 @@ export default function LoginScreen() {
   const login = async () => {
     console.log("Logging in")
     setIsLoading(true)
-    const result = await onLogin!(email, password);
+    const result = await onLogin!(email.toLocaleLowerCase(), password);
     if (result && result.error) {
       alert("Incorrect email or password");
     } else {
@@ -48,23 +48,24 @@ export default function LoginScreen() {
         style={styles.input}
         onChangeText={setEmail}
         value={email}
+        autoCapitalize="none"
         placeholder="E-mail"
       />
       <View style={styles.input}>
         <TextInput
           onChangeText={setPassword}
           value={password}
-          style={{maxWidth:200}}
+          style={{flex:1}}
           placeholder="Password"
           secureTextEntry={!showPassword}
           autoCapitalize="none"
         />
-        <Ionicons style={{alignSelf:"flex-end"}} name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={24} onPress={() => { setShowPassword(!showPassword) }} />
+        <Ionicons style={{alignSelf:"flex-end", marginBottom:-4}} name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={24} onPress={() => { setShowPassword(!showPassword) }} />
       </View>
       <Text style={styles.passwordRecoveryText} onPress={() => router.navigate("./recoverPassword")}>Forgot your password?</Text>
 
 
-      <AccountButton title="Log In" onPress={() => { login() }} />
+      <AccountButton title="Log In" onPress={login} />
 
       {isLoading && (
         <LoadingIndicator />
