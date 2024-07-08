@@ -209,6 +209,15 @@ function RootLayoutNav() {
             headerTintColor: "white",
           }}
         />
+        <Stack.Screen
+          name="planner/planDetails"
+          options={{
+            headerTitle: "Plan",
+            headerStyle: { backgroundColor: Colors.light.primary },
+            headerTitleAlign: "center",
+            headerTintColor: "white",
+          }}
+        />
       </Stack>
     </ThemeProvider>
   );

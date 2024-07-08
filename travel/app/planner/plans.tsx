@@ -3,7 +3,7 @@ import { dateParser } from "@/components/Parsers";
 import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Text,
   StyleSheet,
@@ -12,42 +12,78 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
+import { API_URL, useAuth } from "../context/AuthContext";
+import axios from "axios";
+import LoadingIndicator from "@/components/LoadingIndicator";
 const windowHeight = Dimensions.get("window").height;
 const colors = Colors.light;
 
-interface PlanProps {
-  title: string;
-  location: string;
-  startDate: Date;
-  endDate: Date;
+export interface Attraction {
+  attraction_id: string;
+  attraction_name: string;
+  date: string;
 }
 
-const PlanCard = ({ title, location, startDate, endDate }: PlanProps) => {
+interface Plan {
+  [date: string]: Attraction[];
+}
+
+export interface PlanProps {
+  user_id: number;
+  plan_name: string;
+  destination: string;
+  init_date: string;
+  end_date: string;
+  attractions: string[];
+  plan: Plan;
+  id: string;
+}
+
+const PlanCard = (props: PlanProps) => {
+  const router = useRouter();
+
+  const navigateToPlan = () => {
+    router.navigate({
+      pathname: "../planner/planDetails",
+      params: { ...props, plan: JSON.stringify(props.plan) },
+    });
+  };
+
   return (
-    <TouchableOpacity style={styles.planCard}>
-      <Text style={styles.cardTitle}>{title}</Text>
+    <TouchableOpacity style={styles.planCard} onPress={navigateToPlan}>
+      <Text style={styles.cardTitle}>{props.plan_name}</Text>
       <Text style={{ fontStyle: "italic" }}>
-        {dateParser(startDate.toISOString())} -{" "}
-        {dateParser(endDate.toISOString())}
+        {dateParser(props.init_date)} - {dateParser(props.end_date)}
       </Text>
       <Text>
         <Ionicons name="location-outline" size={8 * 1.5} />
-        {location}
+        {props.destination}
       </Text>
     </TouchableOpacity>
   );
 };
 
 const Plans = () => {
-  const plan = {
-    title: "Rome plan",
-    location: "Rome",
-    startDate: new Date("2025-01-02"),
-    endDate: new Date("2025-01-08"),
-  };
-
   const router = useRouter();
-  const [plans, setPlans] = useState([plan, plan]);
+  const { onRefreshToken } = useAuth();
+  const [plans, setPlans] = useState<PlanProps[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const getPlans = async () => {
+      setLoading(true);
+      await onRefreshToken!();
+      try {
+        const { data } = await axios.get(`${API_URL}/plan/user`);
+        setPlans(data);
+      } catch (e) {
+        console.log(e);
+      }
+      setLoading(false);
+    };
+
+    getPlans();
+  }, []);
 
   const navigateToAddPlan = () => {
     router.navigate("../planner/addPlan");
@@ -62,6 +98,7 @@ const Plans = () => {
           <PlanCard key={index} {...value} />
         ))}
       </ScrollView>
+      {loading && <LoadingIndicator />}
     </>
   );
 };
