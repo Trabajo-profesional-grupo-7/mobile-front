@@ -44,7 +44,6 @@ export default function FlightTracker() {
 
   const getFlightDetails = async () => {
     if (carrierCode.length && flightNumber.length) {
-
       setIsLoading(true);
       await onRefreshToken!();
       try {
@@ -53,7 +52,6 @@ export default function FlightTracker() {
             date.toISOString().split("T")[0]
           }`
         );
-        console.log(result.data);
         if (result.data) {
           router.navigate({
             pathname: "../information/flightDetails",
@@ -68,11 +66,11 @@ export default function FlightTracker() {
           });
         }
       } catch (e) {
-        alert(e);
+        alert("We were unable to find that flight.");
       }
       setIsLoading(false);
     } else {
-      alert("Can't have empty fields")
+      alert("Can't have empty fields");
     }
   };
 

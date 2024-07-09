@@ -4,7 +4,7 @@ import { View } from "@/components/Themed";
 import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { API_URL, useAuth } from "../context/AuthContext";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import axios from "axios";
@@ -114,7 +114,8 @@ export default function WeatherDetails() {
       setWeatherData(result.data.five_day_weather);
       setLocation(result.data.location);
     } catch (e) {
-      alert(e);
+      alert("We were unable to find weather data for that location.");
+      router.back();
     }
     setIsLoading(false);
   };

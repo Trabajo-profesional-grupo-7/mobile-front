@@ -7,7 +7,6 @@ import {
 } from "react-native";
 import { View } from "@/components/Themed";
 import Colors from "@/constants/Colors";
-import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { router } from "expo-router";
 import FloatingButton from "@/components/FloatingButton";
@@ -36,7 +35,6 @@ export default function Weather() {
       if (province.length) {
         requestString = requestString.concat(`&province=${province}`);
       }
-      console.log(requestString);
       router.navigate({
         pathname: "../information/weatherDetails",
         params: { requestString },

@@ -100,7 +100,7 @@ const NewPlan = () => {
           end_date: endDate.toISOString().split("T")[0],
         });
         alert(
-          "We are working hard on crafting a personalized trip for you! \n We will get back to you when its ready 😉✈️!"
+          "We are working hard on crafting a personalized trip for you! \nWe will get back to you when its ready 😉✈️!"
         );
         router.back();
       } catch (e) {
