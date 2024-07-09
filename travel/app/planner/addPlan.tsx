@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
-import { API_URL } from "../context/AuthContext";
+import { API_URL, useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import RNDateTimePicker, {
@@ -18,6 +18,8 @@ import RNDateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { dateParser } from "@/components/Parsers";
 import FloatingButton from "@/components/FloatingButton";
+import LoadingIndicator from "@/components/LoadingIndicator";
+import { useRouter } from "expo-router";
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
 const colors = Colors.light;
@@ -37,7 +39,7 @@ const NewPlan = () => {
 
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
   const [loadingLocations, setLoadingLocations] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const updateData = async (query: string) => {
     setLoadingLocations(true);
     try {
@@ -54,12 +56,12 @@ const NewPlan = () => {
     }
     setLoadingLocations(false);
   };
-
+  const router = useRouter();
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(addOneDay(new Date()));
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-
+  const { onRefreshToken } = useAuth();
   const onChangeStartDate = (
     event: DateTimePickerEvent,
     selectedDate: Date | undefined
@@ -86,9 +88,22 @@ const NewPlan = () => {
     return true;
   };
 
-  const createPlan = () => {
+  const createPlan = async () => {
     if (validateInputs()) {
-      console.log("Create plan");
+      setLoading(true);
+      await onRefreshToken!();
+      try {
+        axios.post(`${API_URL}/plan`, {
+          plan_name: name,
+          destination: city.split(",")[0],
+          init_date: startDate.toISOString().split("T")[0],
+          end_date: endDate.toISOString().split("T")[0],
+        });
+        router.back();
+      } catch (e) {
+        alert(e);
+      }
+      setLoading(false);
     } else {
       alert("Can't have empty fields");
     }
@@ -210,6 +225,7 @@ const NewPlan = () => {
           />
         </View>
       </View>
+      {loading && <LoadingIndicator />}
     </>
   );
 };

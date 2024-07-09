@@ -4,20 +4,17 @@ import { Text, View } from "@/components/Themed";
 import { useRouter } from "expo-router";
 import AccountButton from "@/components/AccountButton";
 import messaging from "@react-native-firebase/messaging";
-import notifee from '@notifee/react-native';
-
+import notifee from "@notifee/react-native";
 
 export default function InitialScreen() {
   const router = useRouter();
 
-  
-  
-
   async function onMessageReceived(message: any) {
     const channelId = await notifee.createChannel({
-      id: 'default',
-      name: 'Default Channel',
+      id: "default",
+      name: "Default Channel",
     });
+
     notifee.displayNotification({
       title: message.notification.title,
       body: message.notification.body,
@@ -27,13 +24,12 @@ export default function InitialScreen() {
     });
   }
 
-
   messaging().onMessage(onMessageReceived);
 
   return (
     <View style={styles.container}>
       <View style={{ flex: 1 }}>
-        <Text style={styles.title}>Travel App</Text>
+        <Text style={styles.title}>gIAn</Text>
         <Image
           style={{
             width: 200,

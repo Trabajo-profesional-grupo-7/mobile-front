@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import Colors from "@/constants/Colors";
 import { AuthProvider } from "./context/AuthContext";
 import { ProfileProvider } from "./context/ProfileContext";
+import { PlansProvider } from "./context/PlansContext";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -44,11 +45,13 @@ export default function RootLayout() {
   }
 
   return (
-    <ProfileProvider>
-      <AuthProvider>
-        <RootLayoutNav />
-      </AuthProvider>
-    </ProfileProvider>
+    <PlansProvider>
+      <ProfileProvider>
+        <AuthProvider>
+          <RootLayoutNav />
+        </AuthProvider>
+      </ProfileProvider>
+    </PlansProvider>
   );
 }
 

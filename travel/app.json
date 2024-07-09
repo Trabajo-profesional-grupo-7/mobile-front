@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "travel",
-    "slug": "travel",
+    "name": "gIAn",
+    "slug": "gIAn",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -24,7 +24,7 @@
     "android": {
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.pablo6032.travel",
@@ -51,7 +51,7 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow Travel App to use your location."
+          "locationAlwaysAndWhenInUsePermission": "Allow gIAn to use your location."
         }
       ]
     ],
@@ -63,7 +63,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "af2dadbb-f658-4557-a19b-a1218e90b829"
+        "projectId": "726a7ad5-7cd1-469c-b552-1993c4ba8389"
       }
     }
   }

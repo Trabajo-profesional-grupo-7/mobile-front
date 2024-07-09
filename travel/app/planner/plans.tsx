@@ -3,7 +3,7 @@ import { dateParser } from "@/components/Parsers";
 import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Text,
   StyleSheet,
@@ -11,33 +11,12 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  RefreshControl,
 } from "react-native";
 import { API_URL, useAuth } from "../context/AuthContext";
 import axios from "axios";
 import LoadingIndicator from "@/components/LoadingIndicator";
-const windowHeight = Dimensions.get("window").height;
-const colors = Colors.light;
-
-export interface Attraction {
-  attraction_id: string;
-  attraction_name: string;
-  date: string;
-}
-
-interface Plan {
-  [date: string]: Attraction[];
-}
-
-export interface PlanProps {
-  user_id: number;
-  plan_name: string;
-  destination: string;
-  init_date: string;
-  end_date: string;
-  attractions: string[];
-  plan: Plan;
-  id: string;
-}
+import { PlanProps, usePlans } from "../context/PlansContext";
 
 const PlanCard = (props: PlanProps) => {
   const router = useRouter();
@@ -45,7 +24,7 @@ const PlanCard = (props: PlanProps) => {
   const navigateToPlan = () => {
     router.navigate({
       pathname: "../planner/planDetails",
-      params: { ...props, plan: JSON.stringify(props.plan) },
+      params: { id: props.id },
     });
   };
 
@@ -66,33 +45,44 @@ const PlanCard = (props: PlanProps) => {
 const Plans = () => {
   const router = useRouter();
   const { onRefreshToken } = useAuth();
-  const [plans, setPlans] = useState<PlanProps[]>([]);
   const [loading, setLoading] = useState(false);
+  const { plans, setPlans } = usePlans();
 
+  const getPlans = async () => {
+    setLoading(true);
+    await onRefreshToken!();
+    try {
+      const { data } = await axios.get(`${API_URL}/plan/user`);
+      setPlans(data);
+    } catch (e) {
+      console.log(e);
+    }
+    setLoading(false);
+  };
   useEffect(() => {
-    const getPlans = async () => {
-      setLoading(true);
-      await onRefreshToken!();
-      try {
-        const { data } = await axios.get(`${API_URL}/plan/user`);
-        setPlans(data);
-      } catch (e) {
-        console.log(e);
-      }
-      setLoading(false);
-    };
-
     getPlans();
   }, []);
 
   const navigateToAddPlan = () => {
     router.navigate("../planner/addPlan");
   };
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await getPlans();
+    setRefreshing(false);
+  }, []);
 
   return (
     <>
       <FloatingButton icon={"add"} onPress={navigateToAddPlan} />
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <Text style={styles.title}>My plans</Text>
         {plans.map((value, index) => (
           <PlanCard key={index} {...value} />

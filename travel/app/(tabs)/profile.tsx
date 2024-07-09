@@ -43,6 +43,10 @@ export default function ProfileScreen() {
     }
   };
 
+  function getRandomString(min: number, max: number): string {
+    return (Math.floor(Math.random() * (max - min + 1)) + min).toString();
+  }
+
   const uploadImage = async (image: ImagePicker.ImagePickerAsset) => {
     setIsLoading(true);
     await onRefreshToken!();
@@ -50,7 +54,7 @@ export default function ProfileScreen() {
     let formData = new FormData();
     formData.append("avatar", {
       uri: image.uri,
-      name: image.fileName?.toString() ?? "image.jpg",
+      name: image.fileName?.toString() ?? `${getRandomString(0,9999999)}.jpg`,
       type: image.mimeType?.toString() ?? "image/jpg",
     } as any);
 

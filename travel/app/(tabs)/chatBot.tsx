@@ -102,13 +102,11 @@ export default function ChatBot() {
 
     const initConversation = async () => {
       await onRefreshToken!();
-      console.log("Empezando");
       try {
         await axios.post(
           `${API_URL}/chatbot/init?latitude=${profile.coordinates?.latitude}&longitude=${profile.coordinates?.longitude}`
         );
       } catch (e) {
-        console.log("aca");
         alert(e);
       }
     };

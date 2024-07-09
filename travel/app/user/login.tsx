@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     fontSize: 16,
     marginBottom: 8 * 7,
+    overflow:"visible"
   },
   separator: {
     marginVertical: 30,
