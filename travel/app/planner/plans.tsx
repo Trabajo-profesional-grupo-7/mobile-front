@@ -17,7 +17,10 @@ import { API_URL, useAuth } from "../context/AuthContext";
 import axios from "axios";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { PlanProps, usePlans } from "../context/PlansContext";
+import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
+import { LinearGradient } from "expo-linear-gradient";
 
+const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
 const PlanCard = (props: PlanProps) => {
   const router = useRouter();
 
@@ -70,7 +73,9 @@ const Plans = () => {
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
+    setLoading(true);
     await getPlans();
+    setLoading(false);
     setRefreshing(false);
   }, []);
 
@@ -84,9 +89,22 @@ const Plans = () => {
         }
       >
         <Text style={styles.title}>My plans</Text>
-        {plans.map((value, index) => (
-          <PlanCard key={index} {...value} />
-        ))}
+        {loading ? (
+          <View
+            style={{
+              backgroundColor: "transparent",
+              alignItems: "center",
+              marginVertical: 8,
+            }}
+          >
+            <ShimmerPlaceholder style={styles.cardPlaceholder} />
+            <ShimmerPlaceholder style={styles.cardPlaceholder} />
+            <ShimmerPlaceholder style={styles.cardPlaceholder} />
+            <Text style={{fontSize:8*3, fontStyle:"italic", color:"gray", margin:8}}>Loading plans...</Text>
+          </View>
+        ) : (
+          plans.map((value, index) => <PlanCard key={index} {...value} />)
+        )}
       </ScrollView>
       {loading && <LoadingIndicator />}
     </>
@@ -114,5 +132,11 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 8 * 3,
     fontWeight: "600",
+  },
+  cardPlaceholder: {
+    width: "95%",
+    height: 8 * 12,
+    margin: 8,
+    borderRadius: 4,
   },
 });

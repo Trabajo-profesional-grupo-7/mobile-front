@@ -12,7 +12,6 @@ import {
   TouchableOpacity,
   Linking,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { Text, View } from "@/components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
@@ -26,6 +25,11 @@ import LoadingIndicator from "@/components/LoadingIndicator";
 import RNDateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
+
+import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
+import { LinearGradient } from "expo-linear-gradient";
+
+const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
 
 export default function Attraction() {
   const params = useLocalSearchParams();
@@ -376,6 +380,25 @@ export default function Attraction() {
       .join(" ");
   };
 
+  const Placeholder = () => {
+    return (
+      <View style={{ backgroundColor: "transparent", alignItems: "center" }}>
+        <ShimmerPlaceholder
+          style={{ width: "100%", height: 8 * 3, marginVertical: 4 }}
+        />
+        <ShimmerPlaceholder
+          style={{ width: "90%", height: 8 * 6, marginVertical: 8 }}
+        />
+        <ShimmerPlaceholder
+          style={{ width: "100%", height: 8 * 5, marginVertical: 8 }}
+        />
+        <ShimmerPlaceholder
+          style={{ width: "95%", height: 8 * 12, marginVertical: 8 }}
+        />
+      </View>
+    );
+  };
+
   return (
     <>
       <ScrollView
@@ -395,121 +418,137 @@ export default function Attraction() {
               flexDirection: "row",
               alignSelf: "center",
               alignItems: "center",
-              backgroundColor:"transparent"
+              backgroundColor: "transparent",
             }}
           >
             <Ionicons name="location-outline" size={8 * 2.5} color="gray" />
             <Text
               numberOfLines={1}
               ellipsizeMode="tail"
-              style={{ fontSize: 8 * 2.5, color: "gray" }}
+              style={{ fontSize: 8 * 2.5, color: "gray", marginBottom: 4 }}
             >
               {location}
             </Text>
           </View>
-          <Text>{address}</Text>
-          <View style={[{ flexDirection: "row" }, styles.floatingButton]}>
-            <Ionicons
-              style={styles.icon}
-              name={isLiked ? "heart" : "heart-outline"}
-              size={8 * 5}
-              onPress={like}
-            />
-            <Ionicons
-              style={styles.icon}
-              name={isDone ? "checkmark-done-outline" : "checkmark-outline"}
-              size={8 * 5}
-              onPress={done}
-            />
-            <Ionicons
-              style={styles.icon}
-              name={isScheduled ? "calendar" : "calendar-outline"}
-              size={8 * 5}
-              onPress={() => {
-                setShowDatePicker(true);
-              }}
-            />
-            <Ionicons
-              style={styles.icon}
-              name={isRated ? "star" : "star-outline"}
-              size={8 * 5}
-              onPress={() => {
-                setStarModalVisible(true);
-              }}
-            />
-            <Ionicons
-              style={styles.icon}
-              name={isSaved ? "bookmark" : "bookmark-outline"}
-              size={8 * 5}
-              onPress={save}
-            />
-            <Ionicons
-              style={styles.icon}
-              name="map-outline"
-              size={8 * 5}
-              onPress={openGoogleMaps}
-            />
-          </View>
-          <Text>
-            {<Ionicons name="heart" />}
-            {likedCount}{"  "}
-            {<Ionicons name="star" />}
-            {avgRating}
-          </Text>
-          {types.length > 0 ? (
-            <Text
-              numberOfLines={2}
-              style={{ fontSize: 8 * 2, marginBottom: 2, fontStyle: "italic" }}
-            >
-              {types.map(transformType).join(", ")}
-            </Text>
-          ) : null}
-          {summary != null && (
-            <Text
-              numberOfLines={16}
-              ellipsizeMode="tail"
-              style={{ fontSize: 8 * 3 }}
-            >
-              {summary}
-            </Text>
-          )}
-          <Text style={{ fontSize: 8 * 3.5, fontWeight: "bold", marginTop: 4 }}>
-            Comments
-          </Text>
-          {comments.length === 0 ? (
-            <Text style={{ fontStyle: "italic", fontSize: 16, paddingLeft: 8 }}>
-              No comments available
-            </Text>
+
+          {isLoading ? (
+            <Placeholder />
           ) : (
-            <View style={{ paddingBottom: 8 }}>
-              {comments.map((comment) => (
-                <View
-                  key={comment.comment_id}
-                  style={{ paddingLeft: 8, paddingVertical: 4 }}
+            <>
+              <Text>{address}</Text>
+              <View style={[{ flexDirection: "row" }, styles.floatingButton]}>
+                <Ionicons
+                  style={styles.icon}
+                  name={isLiked ? "heart" : "heart-outline"}
+                  size={8 * 5}
+                  onPress={like}
+                />
+                <Ionicons
+                  style={styles.icon}
+                  name={isDone ? "checkmark-done-outline" : "checkmark-outline"}
+                  size={8 * 5}
+                  onPress={done}
+                />
+                <Ionicons
+                  style={styles.icon}
+                  name={isScheduled ? "calendar" : "calendar-outline"}
+                  size={8 * 5}
+                  onPress={() => {
+                    setShowDatePicker(true);
+                  }}
+                />
+                <Ionicons
+                  style={styles.icon}
+                  name={isRated ? "star" : "star-outline"}
+                  size={8 * 5}
+                  onPress={() => {
+                    setStarModalVisible(true);
+                  }}
+                />
+                <Ionicons
+                  style={styles.icon}
+                  name={isSaved ? "bookmark" : "bookmark-outline"}
+                  size={8 * 5}
+                  onPress={save}
+                />
+                <Ionicons
+                  style={styles.icon}
+                  name="map-outline"
+                  size={8 * 5}
+                  onPress={openGoogleMaps}
+                />
+              </View>
+              <Text>
+                {<Ionicons name="heart" />}
+                {likedCount}
+                {"  "}
+                {<Ionicons name="star" />}
+                {avgRating}
+              </Text>
+              {types.length > 0 ? (
+                <Text
+                  numberOfLines={2}
+                  style={{
+                    fontSize: 8 * 2,
+                    marginBottom: 2,
+                    fontStyle: "italic",
+                  }}
                 >
-                  <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                    {comment.user_name}
-                  </Text>
-                  <Text style={{ fontSize: 16, paddingLeft: 4 }}>
-                    {comment.comment}
-                  </Text>
+                  {types.map(transformType).join(", ")}
+                </Text>
+              ) : null}
+              {summary != null && (
+                <Text
+                  numberOfLines={16}
+                  ellipsizeMode="tail"
+                  style={{ fontSize: 8 * 3 }}
+                >
+                  {summary}
+                </Text>
+              )}
+              <Text
+                style={{ fontSize: 8 * 3.5, fontWeight: "bold", marginTop: 4 }}
+              >
+                Comments
+              </Text>
+              {comments.length === 0 ? (
+                <Text
+                  style={{ fontStyle: "italic", fontSize: 16, paddingLeft: 8 }}
+                >
+                  No comments available
+                </Text>
+              ) : (
+                <View style={{ paddingBottom: 8 }}>
+                  {comments.map((comment) => (
+                    <View
+                      key={comment.comment_id}
+                      style={{ paddingLeft: 8, paddingVertical: 4 }}
+                    >
+                      <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                        {comment.user_name}
+                      </Text>
+                      <Text style={{ fontSize: 16, paddingLeft: 4 }}>
+                        {comment.comment}
+                      </Text>
+                    </View>
+                  ))}
                 </View>
-              ))}
-            </View>
+              )}
+              <Text
+                onPress={() => setCommentModalVisible(true)}
+                style={{
+                  color: Colors.light.primary,
+                  fontWeight: "bold",
+                  paddingLeft: 8 * 3,
+                  marginTop: 8 * 2,
+                  fontSize: 8 * 2.5,
+                }}
+              >
+                {" "}
+                +Add comment{" "}
+              </Text>
+            </>
           )}
-          <Text
-            onPress={() => setCommentModalVisible(true)}
-            style={{
-              color: Colors.light.primary,
-              fontWeight: "bold",
-              paddingLeft: 8 * 3,
-              marginTop: 8 * 2,
-              fontSize: 8 * 2.5,
-            }}
-          >
-            {" "}
-            +Add comment{" "}
-          </Text>
         </View>
 
         <StarModal />
@@ -522,7 +561,6 @@ export default function Attraction() {
           minimumDate={new Date()}
         />
       )}
-      {isLoading && <LoadingIndicator />}
     </>
   );
 }
