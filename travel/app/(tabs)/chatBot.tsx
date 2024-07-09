@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, ScrollView } from "react-native";
+import { View, StyleSheet, TextInput, ScrollView } from "react-native";
 import Colors from "../../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef, useState } from "react";
@@ -9,6 +9,7 @@ import { router } from "expo-router";
 import * as Location from "expo-location";
 import { useProfile } from "../context/ProfileContext";
 const colors = Colors.light;
+import Markdown from "react-native-markdown-display";
 
 interface Message {
   message: string;
@@ -29,7 +30,7 @@ const ChatMessage = ({
         isSender ? styles.senderMessage : styles.receiverMessage,
       ]}
     >
-      <Text style={styles.messageText}>{message}</Text>
+      <Markdown style={markdownStyles}>{message}</Markdown>
     </View>
   );
 };
@@ -147,13 +148,16 @@ export default function ChatBot() {
         <Ionicons
           name="send-outline"
           onPress={() => {
-            sendMessage(text);
-            setText("");
+            if (text.length) {
+              sendMessage(text);
+              setText("");
+            }
           }}
           size={30}
+          color={text.length ? colors.background : colors.text}
           style={{
             borderRadius: 50,
-            backgroundColor: colors.background,
+            backgroundColor: text.length ? colors.secondary : colors.background,
             padding: 10,
             margin: 10,
           }}
@@ -177,20 +181,19 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   inputContainer: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.dimmed,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
     minHeight: 100,
     maxHeight: 160,
     paddingHorizontal: 10,
-    borderTopColor: colors.secondary,
-    borderTopWidth: 3,
   },
   messageContainer: {
     maxWidth: "80%",
     marginBottom: 8,
     padding: 12,
+    paddingBottom: 18,
     borderRadius: 8,
   },
   senderMessage: {
@@ -216,3 +219,9 @@ const styles = StyleSheet.create({
     bottom: 100,
   },
 });
+
+const markdownStyles = {
+  body: {
+    fontSize: 8 * 2.5,
+  },
+};
