@@ -39,8 +39,7 @@ export default function Attraction() {
     location = `${params.country}`;
   }
   const id = params.attraction_id;
-  const photo = params.photo as string;
-
+  const [photo, setPhoto] = useState(params.photo as string);
   const [isLiked, setIsLiked] = useState(false);
   const [isDone, setIsDone] = useState(false);
   const [isScheduled, setIsScheduled] = useState(false);
@@ -53,7 +52,12 @@ export default function Attraction() {
   const [gmapsUri, setGmapsUri] = useState<string | null>(null);
   const [avgRating, setAvgRating] = useState<number | null>(null);
   const [comments, setComments] = useState<
-    { comment: string; comment_id: number; user_name: string }[]
+    {
+      comment: string;
+      comment_id: number;
+      user_name: string;
+      avatar_link: string;
+    }[]
   >([]);
   const [types, setTypes] = useState<string[]>([]);
 
@@ -96,6 +100,7 @@ export default function Attraction() {
       setGmapsUri(result.google_maps_uri);
       setAddress(result.formatted_address);
       setAvgRating(result.avg_rating);
+      setPhoto(result.photo);
       if (result.user_rating != null) {
         setUserRating(result.user_rating);
         setIsRated(true);
@@ -304,7 +309,7 @@ export default function Attraction() {
     const maxLength = 300;
 
     const handlePostComment = async () => {
-      if (postComment.length) {
+      if (postComment && postComment.length) {
         setCommentModalVisible(false);
         setIsLoading(true);
         await onRefreshToken!();
@@ -342,11 +347,13 @@ export default function Attraction() {
           <Pressable style={styles.modalView}>
             <Text style={{ fontSize: 8 * 5 }}>
               Tell us about{" "}
-              <Text
-                style={{ fontWeight: "bold", color: Colors.light.secondary }}
-              >
-                {truncate(name as string, 60)}
-              </Text>
+              {name && (
+                <Text
+                  style={{ fontWeight: "bold", color: Colors.light.secondary }}
+                >
+                  {truncate(name as string, 60)}
+                </Text>
+              )}
             </Text>
             <TextInput
               value={postComment}
@@ -356,9 +363,11 @@ export default function Attraction() {
               style={styles.input}
               multiline
             />
-            <Text style={{ fontSize: 8 * 2, color: "gray" }}>
-              {postComment.length}/{maxLength}
-            </Text>
+            {postComment && (
+              <Text style={{ fontSize: 8 * 2, color: "gray" }}>
+                {postComment.length}/{maxLength}
+              </Text>
+            )}
 
             <TouchableOpacity onPress={handlePostComment} style={styles.button}>
               <Text style={styles.buttonText}>Post</Text>
@@ -485,7 +494,7 @@ export default function Attraction() {
                 {<Ionicons name="star" />}
                 {avgRating}
               </Text>
-              {types.length > 0 ? (
+              {types && types.length > 0 ? (
                 <Text
                   numberOfLines={2}
                   style={{
@@ -511,7 +520,7 @@ export default function Attraction() {
               >
                 Comments
               </Text>
-              {comments.length === 0 ? (
+              {comments && comments.length === 0 ? (
                 <Text
                   style={{ fontStyle: "italic", fontSize: 16, paddingLeft: 8 }}
                 >
@@ -522,14 +531,32 @@ export default function Attraction() {
                   {comments.map((comment) => (
                     <View
                       key={comment.comment_id}
-                      style={{ paddingLeft: 8, paddingVertical: 4 }}
+                      style={{
+                        paddingLeft: 8,
+                        paddingVertical: 4,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 8 * 2,
+                      }}
                     >
-                      <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                        {comment.user_name}
-                      </Text>
-                      <Text style={{ fontSize: 16, paddingLeft: 4 }}>
-                        {comment.comment}
-                      </Text>
+                      <Image
+                        style={{
+                          height: 8 * 4,
+                          width: 8 * 4,
+                          borderRadius: 100,
+                        }}
+                        source={
+                          comment.avatar_link
+                            ? { uri: comment.avatar_link }
+                            : { uri: "https://i.imgur.com/qc0GM7G.png" }
+                        }
+                      />
+                      <View style={{ flexDirection: "column" }}>
+                        <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                          {comment.user_name}
+                        </Text>
+                        <Text style={{ fontSize: 16 }}>{comment.comment}</Text>
+                      </View>
                     </View>
                   ))}
                 </View>

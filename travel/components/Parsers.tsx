@@ -18,20 +18,22 @@ export const dateParser = (date: string) => {
   const month = months[parseInt(monthStr, 10) - 1];
   const day = parseInt(dayStr, 10);
 
-  let daySuffix = "";
-  switch (day % 10) {
-    case 1:
-      daySuffix = "st";
-      break;
-    case 2:
-      daySuffix = "nd";
-      break;
-    case 3:
-      daySuffix = "rd";
-      break;
-    default:
-      daySuffix = "th";
-      break;
+  let daySuffix = "th";
+  if (day < 10) {
+    switch (day % 10) {
+      case 1:
+        daySuffix = "st";
+        break;
+      case 2:
+        daySuffix = "nd";
+        break;
+      case 3:
+        daySuffix = "rd";
+        break;
+      default:
+        daySuffix = "th";
+        break;
+    }
   }
 
   return `${month} ${day}${daySuffix}`;

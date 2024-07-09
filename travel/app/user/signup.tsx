@@ -58,7 +58,7 @@ export default function SignupScreen() {
         date.toISOString().split("T")[0].length
       )
     ) {
-      alert("Cant have empty fields");
+      alert("Can't have empty fields");
       return false;
     }
 

@@ -1,5 +1,5 @@
 import { dateParser } from "@/components/Parsers";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import {
   View,
   StyleSheet,
@@ -106,6 +106,10 @@ const PlanDetails = () => {
                   <TouchableOpacity
                     key={attraction.attraction_id}
                     style={styles.attraction}
+                    onPress={() => router.navigate({
+                      pathname: "../feed/attraction",
+                      params: {attraction_id: attraction.attraction_id, attraction_name: attraction.attraction_name},
+                    })}
                   >
                     <View
                       style={{

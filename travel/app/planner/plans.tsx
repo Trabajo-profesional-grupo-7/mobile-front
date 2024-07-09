@@ -10,7 +10,7 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
-  Dimensions,
+  Image,
   RefreshControl,
 } from "react-native";
 import { API_URL, useAuth } from "../context/AuthContext";
@@ -33,14 +33,24 @@ const PlanCard = (props: PlanProps) => {
 
   return (
     <TouchableOpacity style={styles.planCard} onPress={navigateToPlan}>
-      <Text style={styles.cardTitle}>{props.plan_name}</Text>
-      <Text style={{ fontStyle: "italic" }}>
-        {dateParser(props.init_date)} - {dateParser(props.end_date)}
-      </Text>
-      <Text>
-        <Ionicons name="location-outline" size={8 * 1.5} />
-        {props.destination}
-      </Text>
+      <Image
+        style={{height:8*20,width:8*20, borderTopLeftRadius:8, borderBottomLeftRadius:8 }}
+        source={
+          props.image
+            ? { uri: props.image }
+            : { uri: "https://i.imgur.com/qc0GM7G.png" }
+        }
+      />
+      <View style={{backgroundColor:"transparent", padding: 8}}>
+        <Text style={styles.cardTitle}>{props.plan_name}</Text>
+        <Text style={{ fontStyle: "italic" }}>
+          {dateParser(props.init_date)} - {dateParser(props.end_date)}
+        </Text>
+        <Text>
+          <Ionicons name="location-outline" size={8 * 1.5} />
+          {props.destination}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -100,10 +110,32 @@ const Plans = () => {
             <ShimmerPlaceholder style={styles.cardPlaceholder} />
             <ShimmerPlaceholder style={styles.cardPlaceholder} />
             <ShimmerPlaceholder style={styles.cardPlaceholder} />
-            <Text style={{fontSize:8*3, fontStyle:"italic", color:"gray", margin:8}}>Loading plans...</Text>
+            <Text
+              style={{
+                fontSize: 8 * 3,
+                fontStyle: "italic",
+                color: "gray",
+                margin: 8,
+              }}
+            >
+              Loading plans...
+            </Text>
           </View>
-        ) : (
+        ) : plans.length ? (
           plans.map((value, index) => <PlanCard key={index} {...value} />)
+        ) : (
+          <View>
+            <Text
+              style={{
+                fontSize: 8 * 5,
+                color: "gray",
+                fontStyle: "italic",
+                margin: 8 * 3,
+              }}
+            >
+              Looks like you haven't requested a personalized plan yet...
+            </Text>
+          </View>
         )}
       </ScrollView>
       {loading && <LoadingIndicator />}
@@ -125,9 +157,9 @@ const styles = StyleSheet.create({
   planCard: {
     backgroundColor: "white",
     elevation: 5,
-    padding: 8 * 2,
     borderRadius: 8,
     margin: 8,
+    flexDirection: "row",
   },
   cardTitle: {
     fontSize: 8 * 3,
