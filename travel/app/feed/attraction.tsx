@@ -112,43 +112,38 @@ export default function Attraction() {
   };
 
   const like = async () => {
-    setIsLoading(true);
+    setIsLiked((prevState) => !prevState);
     await onRefreshToken!();
     try {
       if (isLiked) {
         await axios.delete(`${API_URL}/attractions/unlike?attraction_id=${id}`);
         setLikedCount((prevState) => prevState - 1);
-        setIsLiked(false);
       } else {
         await axios.post(`${API_URL}/attractions/like?attraction_id=${id}`);
         setLikedCount((prevState) => prevState + 1);
-        setIsLiked(true);
       }
     } catch (e) {
+      setIsLiked((prevState) => !prevState);
       alert(e);
     }
-    setIsLoading(false);
   };
 
   const done = async () => {
-    setIsLoading(true);
+    setIsDone((prevState) => !prevState);
     await onRefreshToken!();
     try {
       if (isDone) {
         await axios.delete(`${API_URL}/attractions/undone?attraction_id=${id}`);
-        setIsDone(false);
       } else {
         await axios.post(`${API_URL}/attractions/done?attraction_id=${id}`);
-        setIsDone(true);
       }
     } catch (e) {
+      setIsDone((prevState) => !prevState);
       alert(e);
     }
-    setIsLoading(false);
   };
 
   const schedule = async (selectedDate: Date) => {
-    setIsLoading(true);
     await onRefreshToken!();
     try {
       await axios.post(`${API_URL}/attractions/schedule`, {
@@ -158,39 +153,34 @@ export default function Attraction() {
     } catch (e) {
       alert(e);
     }
-    setIsLoading(false);
   };
 
   const rate = async (rating: number) => {
-    setIsLoading(true);
+    setIsRated((prevState) => !prevState);
+    setUserRating(rating);
     await onRefreshToken!();
     try {
       await axios.post(
         `${API_URL}/attractions/rate?attraction_id=${id}&rating=${rating}`
       );
-      setIsRated(true);
-      setUserRating(rating);
     } catch (e) {
       alert(e);
     }
-    setIsLoading(false);
   };
 
   const save = async () => {
-    setIsLoading(true);
+    setIsSaved((prevState) => !prevState);
     await onRefreshToken!();
     try {
       if (isSaved) {
         await axios.delete(`${API_URL}/attractions/unsave?attraction_id=${id}`);
-        setIsSaved(false);
       } else {
         await axios.post(`${API_URL}/attractions/save?attraction_id=${id}`);
-        setIsSaved(true);
       }
     } catch (e) {
+      setIsSaved((prevState) => !prevState);
       alert(e);
     }
-    setIsLoading(false);
   };
 
   const openGoogleMaps = () => {
