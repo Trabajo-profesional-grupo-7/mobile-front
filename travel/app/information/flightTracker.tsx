@@ -43,32 +43,37 @@ export default function FlightTracker() {
   };
 
   const getFlightDetails = async () => {
-    setIsLoading(true);
-    await onRefreshToken!();
-    try {
-      const result = await axios.get(
-        `${API_URL}/flights/status?carrier_code=${carrierCode}&flight_number=${flightNumber}&departure_date=${
-          date.toISOString().split("T")[0]
-        }`
-      );
-      console.log(result.data);
-      if (result.data) {
-        router.navigate({
-          pathname: "../information/flightDetails",
-          params: {
-            departureAirport: result.data.departure_airport,
-            departureTime: result.data.flight_departure_time,
-            departureDate: result.data.flight_departure_date,
-            arrivalAirport: result.data.arrival_airport,
-            arrivalTime: result.data.flight_arrival_time,
-            arrivalDate: result.data.flight_arrival_date,
-          },
-        });
+    if (carrierCode.length && flightNumber.length) {
+
+      setIsLoading(true);
+      await onRefreshToken!();
+      try {
+        const result = await axios.get(
+          `${API_URL}/flights/status?carrier_code=${carrierCode}&flight_number=${flightNumber}&departure_date=${
+            date.toISOString().split("T")[0]
+          }`
+        );
+        console.log(result.data);
+        if (result.data) {
+          router.navigate({
+            pathname: "../information/flightDetails",
+            params: {
+              departureAirport: result.data.departure_airport,
+              departureTime: result.data.flight_departure_time,
+              departureDate: result.data.flight_departure_date,
+              arrivalAirport: result.data.arrival_airport,
+              arrivalTime: result.data.flight_arrival_time,
+              arrivalDate: result.data.flight_arrival_date,
+            },
+          });
+        }
+      } catch (e) {
+        alert(e);
       }
-    } catch (e) {
-      alert(e);
+      setIsLoading(false);
+    } else {
+      alert("Can't have empty fields")
     }
-    setIsLoading(false);
   };
 
   return (

@@ -76,30 +76,34 @@ export default function ExchangeRates() {
           />
         ))}
       </Picker>
-      <View style={{ alignItems: "center" }}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View style={{ alignItems: "center", overflow:"visible" }}>
+        <View style={{ flexDirection: "row", alignItems: "center", overflow:"visible" }}>
           <TextInput
             style={styles.input}
             onChangeText={setSourceCurrencyAmt}
             value={sourceCurrencyAmt}
             placeholder=""
             keyboardType="numeric"
+            maxLength={12}
           />
           <Text style={{ fontSize: 40 }}>{sourceCurrency}</Text>
         </View>
 
         <TouchableOpacity style={styles.button} onPress={getCurrencyExchange}>
-          <Ionicons name="chevron-expand-outline" size={70} />
+          <Ionicons
+            name="chevron-expand-outline"
+            size={70}
+            color={"white"}
+          />
         </TouchableOpacity>
 
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text
-            numberOfLines={1}
             style={{
               fontSize: 40,
               marginHorizontal: 30,
               marginVertical: 20,
-              width: 140,
+              width: windowWidth * 0.5,
             }}
           >
             {destCurrencyAmt}
@@ -139,8 +143,8 @@ const styles = StyleSheet.create({
     marginBottom: 60,
   },
   input: {
-    height: windowHeight * 0.08,
-    width: windowWidth * 0.4,
+    height: 8*7,
+    width: windowWidth * 0.5,
     margin: 12,
     marginTop: 0,
     borderWidth: 0,
@@ -148,14 +152,15 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     borderBottomColor: Colors.light.primary,
-    fontSize: 45,
+    fontSize: 8*4,
+    overflow:"visible"
   },
   button: {
     width: 70,
     height: 70,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: colors.primary,
+    backgroundColor: colors.secondary,
     borderRadius: 50,
   },
 });

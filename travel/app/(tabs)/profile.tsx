@@ -20,7 +20,7 @@ import LoadingIndicator from "@/components/LoadingIndicator";
 import * as ImagePicker from "expo-image-picker";
 import { useProfile } from "../context/ProfileContext";
 import FloatingButton from "@/components/FloatingButton";
-const windowHeight = Dimensions.get("window").height;
+import NavigationCard from "@/components/NavigationCard";
 const width = Dimensions.get("window").width;
 const colors = Colors.light;
 
@@ -54,7 +54,7 @@ export default function ProfileScreen() {
     let formData = new FormData();
     formData.append("avatar", {
       uri: image.uri,
-      name: image.fileName?.toString() ?? `${getRandomString(0,9999999)}.jpg`,
+      name: image.fileName?.toString() ?? `${getRandomString(0, 9999999)}.jpg`,
       type: image.mimeType?.toString() ?? "image/jpg",
     } as any);
 
@@ -132,7 +132,13 @@ export default function ProfileScreen() {
               >
                 {profile.email}
               </Text>
-              <View style={{ flexDirection: "row", alignItems: "center", backgroundColor:"transparent" }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  backgroundColor: "transparent",
+                }}
+              >
                 <Ionicons name="location-outline" size={8 * 2} />
                 <Text style={{ fontSize: 8 * 2, marginVertical: 4 }}>
                   {profile.location}
@@ -140,128 +146,23 @@ export default function ProfileScreen() {
               </View>
             </View>
             <View style={styles.bottomView}>
-              <TouchableOpacity
+              <NavigationCard
                 onPress={() => router.navigate("../profile/savedAttractions")}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: width - 8 * 3,
-                  padding: 8 * 2,
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    backgroundColor: "transparent",
-                    alignItems: "center",
-                  }}
-                >
-                  <Ionicons
-                    name="bookmark-outline"
-                    color={"#a6683f"}
-                    size={8 * 5}
-                    style={styles.iconContainer}
-                  />
-                  <Text
-                    style={{
-                      paddingLeft: 8 * 2,
-                      fontSize: 8 * 2.5,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Attractions saved
-                  </Text>
-                </View>
-                <Ionicons
-                  name="chevron-forward-outline"
-                  color={"gray"}
-                  size={8 * 4}
-                  style={{ paddingRight: 8 * 2 }}
-                />
-              </TouchableOpacity>
+                icon={"bookmark-outline"}
+                text={"Attractions saved"}
+              />
 
-              <TouchableOpacity
+              <NavigationCard
                 onPress={() => router.navigate("../profile/doneAttractions")}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: width - 8 * 3,
-                  padding: 8 * 2,
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    backgroundColor: "transparent",
-                    alignItems: "center",
-                  }}
-                >
-                  <Ionicons
-                    name="checkmark-done"
-                    color={"#a6683f"}
-                    size={8 * 5}
-                    style={styles.iconContainer}
-                  />
-                  <Text
-                    style={{
-                      paddingLeft: 8 * 2,
-                      fontSize: 8 * 2.5,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Attractions done
-                  </Text>
-                </View>
-                <Ionicons
-                  name="chevron-forward-outline"
-                  color={"gray"}
-                  size={8 * 4}
-                  style={{ paddingRight: 8 * 2 }}
-                />
-              </TouchableOpacity>
+                icon={"checkmark-done"}
+                text={"Attractions done"}
+              />
 
-              <TouchableOpacity
+              <NavigationCard
                 onPress={() => router.navigate("../profile/calendar")}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: width - 8 * 3,
-                  padding: 8 * 2,
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    backgroundColor: "transparent",
-                    alignItems: "center",
-                  }}
-                >
-                  <Ionicons
-                    name="calendar-outline"
-                    color={"#a6683f"}
-                    size={8 * 5}
-                    style={styles.iconContainer}
-                  />
-                  <Text
-                    style={{
-                      paddingLeft: 8 * 2,
-                      fontSize: 8 * 2.5,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Calendar
-                  </Text>
-                </View>
-                <Ionicons
-                  name="chevron-forward-outline"
-                  color={"gray"}
-                  size={8 * 4}
-                  style={{ paddingRight: 8 * 2 }}
-                />
-              </TouchableOpacity>
+                icon={"calendar-outline"}
+                text={"Calendar"}
+              />
             </View>
           </ScrollView>
         </>

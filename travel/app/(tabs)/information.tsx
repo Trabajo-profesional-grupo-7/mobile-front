@@ -1,4 +1,4 @@
-import { StyleSheet, Text, Dimensions } from "react-native";
+import { StyleSheet, Text, Dimensions, ScrollView } from "react-native";
 
 import { View } from "@/components/Themed";
 import Colors from "@/constants/Colors";
@@ -6,45 +6,49 @@ import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { router } from "expo-router";
+import NavigationCard from "@/components/NavigationCard";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 export default function Information() {
   return (
-    <View style={styles.container}>
-      <Text style={{ fontSize: 25, paddingHorizontal: 20 }}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text
+        style={{ fontSize: 25, paddingHorizontal: 20, marginVertical: 8 * 3 }}
+      >
         Find the conversion rate between different currencies
       </Text>
-      <TouchableOpacity
-        style={styles.serviceCard}
-        onPress={() => router.navigate("../information/exchangeRates")}
-      >
-        <Ionicons name="cash-outline" size={80} />
-        <Text style={styles.title}>Exchange rates</Text>
-      </TouchableOpacity>
 
-      <Text style={{ fontSize: 25, paddingHorizontal: 20 }}>
+      <NavigationCard
+        onPress={() => router.navigate("../information/exchangeRates")}
+        icon={"cash-outline"}
+        text={"Exchange rates"}
+      />
+
+      <Text
+        style={{ fontSize: 25, paddingHorizontal: 20, marginVertical: 8 * 3 }}
+      >
         Get weather information for your destination
       </Text>
-      <TouchableOpacity
-        style={styles.serviceCard}
-        onPress={() => router.navigate("../information/weather")}
-      >
-        <Ionicons name="cloud-outline" size={80} />
-        <Text style={styles.title}>Weather</Text>
-      </TouchableOpacity>
 
-      <Text style={{ fontSize: 25, paddingHorizontal: 20 }}>
+      <NavigationCard
+        onPress={() => router.navigate("../information/weather")}
+        icon={"cloud-outline"}
+        text={"Weather"}
+      />
+
+      <Text
+        style={{ fontSize: 25, paddingHorizontal: 20, marginVertical: 8 * 3 }}
+      >
         Access details of your upcoming flights
       </Text>
-      <TouchableOpacity
-        style={styles.serviceCard}
+
+      <NavigationCard
         onPress={() => router.navigate("../information/flightTracker")}
-      >
-        <Ionicons name="airplane-outline" size={80} />
-        <Text style={styles.title}>Flight tracker</Text>
-      </TouchableOpacity>
-    </View>
+        icon={"airplane-outline"}
+        text={"Flight tracker"}
+      />
+    </ScrollView>
   );
 }
 
@@ -52,6 +56,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 15,
+    alignItems: "center",
   },
   title: {
     fontSize: 35,
