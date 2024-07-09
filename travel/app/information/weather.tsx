@@ -50,7 +50,7 @@ export default function Weather() {
       <Text style={{ fontSize: 35, paddingBottom: 15 }}>
         Browse the weather forecast of your destination
       </Text>
-      <Text style={styles.title}>City</Text>
+      <Text style={styles.title}>City *</Text>
       <TextInput
         style={styles.input}
         onChangeText={setCity}
@@ -58,7 +58,7 @@ export default function Weather() {
         placeholder="City"
       />
 
-      <Text style={styles.title}>Country (optional)</Text>
+      <Text style={styles.title}>Country</Text>
       <TextInput
         style={styles.input}
         onChangeText={setCountry}
@@ -66,13 +66,15 @@ export default function Weather() {
         placeholder="Country"
       />
 
-      <Text style={styles.title}>Province (optional)</Text>
+      <Text style={styles.title}>Province</Text>
       <TextInput
         style={styles.input}
         onChangeText={setProvince}
         value={province}
         placeholder="Province"
       />
+
+      <Text style={{color:"gray", marginTop:8*4}}>*Required field</Text>
     </View>
   );
 }
@@ -83,7 +85,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 30,
+    fontSize: 25,
     fontWeight: "bold",
   },
   input: {

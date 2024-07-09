@@ -27,7 +27,7 @@ const FloatingButton = ({ icon, onPress }: Props) => {
       }}
       onPress={onPress}
     >
-      <Ionicons name={icon} size={35} />
+      <Ionicons name={icon} size={35} color={colors.background} />
     </TouchableOpacity>
   );
 };
