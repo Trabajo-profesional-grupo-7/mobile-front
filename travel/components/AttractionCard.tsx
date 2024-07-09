@@ -63,7 +63,7 @@ export const AttractionCard: React.FC<AttractionCardProps> = (
             source={
               props.data.photo
                 ? { uri: props.data.photo }
-                : { uri: "https://i.imgur.com/qc0GM7G.png" }
+                : { uri: "https://i.imgur.com/v6KaRnG.png" }
             }
           />
           <View style={{ padding: 5, backgroundColor: "transparent", flex: 1 }}>

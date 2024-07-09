@@ -21,7 +21,7 @@ import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
 import { LinearGradient } from "expo-linear-gradient";
 
 const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
-const PlanCard = (props: PlanProps) => {
+export const PlanCard = (props: PlanProps) => {
   const router = useRouter();
 
   const navigateToPlan = () => {
@@ -34,14 +34,19 @@ const PlanCard = (props: PlanProps) => {
   return (
     <TouchableOpacity style={styles.planCard} onPress={navigateToPlan}>
       <Image
-        style={{height:8*20,width:8*20, borderTopLeftRadius:8, borderBottomLeftRadius:8 }}
+        style={{
+          height: 8 * 20,
+          width: 8 * 20,
+          borderTopLeftRadius: 8,
+          borderBottomLeftRadius: 8,
+        }}
         source={
           props.image
             ? { uri: props.image }
-            : { uri: "https://i.imgur.com/qc0GM7G.png" }
+            : { uri: "https://i.imgur.com/v6KaRnG.png" }
         }
       />
-      <View style={{backgroundColor:"transparent", padding: 8}}>
+      <View style={{ backgroundColor: "transparent", padding: 8 }}>
         <Text style={styles.cardTitle}>{props.plan_name}</Text>
         <Text style={{ fontStyle: "italic" }}>
           {dateParser(props.init_date)} - {dateParser(props.end_date)}

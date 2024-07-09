@@ -407,7 +407,7 @@ export default function Attraction() {
         <Image
           style={{ width: "100%", height: 8 * 32 }}
           source={
-            photo ? { uri: photo } : { uri: "https://i.imgur.com/qc0GM7G.png" }
+            photo ? { uri: photo } : { uri: "https://i.imgur.com/v6KaRnG.png" }
           }
         />
         <View style={{ marginHorizontal: 8 * 3 }}>
@@ -538,7 +538,7 @@ export default function Attraction() {
                         source={
                           comment.avatar_link
                             ? { uri: comment.avatar_link }
-                            : { uri: "https://i.imgur.com/qc0GM7G.png" }
+                            : { uri: "https://i.imgur.com/v6KaRnG.png" }
                         }
                       />
                       <View style={{ flexDirection: "column" }}>

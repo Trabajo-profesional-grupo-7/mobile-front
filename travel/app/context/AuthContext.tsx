@@ -113,23 +113,6 @@ export const AuthProvider = ({ children }: any) => {
     await messaging().registerDeviceForRemoteMessages();
 
     const token = await messaging().getToken();
-    
-    async function onMessageReceived(message: any) {
-      const channelId = await notifee.createChannel({
-        id: "default",
-        name: "Default Channel",
-      });
-  
-      notifee.displayNotification({
-        title: message.notification.title,
-        body: message.notification.body,
-        android: {
-          channelId,
-        },
-      });
-    }
-  
-    messaging().onMessage(onMessageReceived);
 
     console.log(`${API_URL}/users/signup`);
     try {
@@ -153,6 +136,23 @@ export const AuthProvider = ({ children }: any) => {
         email,
         password,
       });
+
+      async function onMessageReceived(message: any) {
+        const channelId = await notifee.createChannel({
+          id: "default",
+          name: "Default Channel",
+        });
+
+        notifee.displayNotification({
+          title: message.notification.title,
+          body: message.notification.body,
+          android: {
+            channelId,
+          },
+        });
+      }
+      messaging().onMessage(onMessageReceived);
+
       setAuthState({
         token: result.data.token,
         refresh_token: result.data.refresh_token,

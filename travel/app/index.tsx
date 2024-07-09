@@ -20,7 +20,7 @@ export default function InitialScreen() {
             marginTop: 20,
           }}
           source={{
-            uri: "https://i.imgur.com/qc0GM7G.png",
+            uri: "https://i.imgur.com/v6KaRnG.png",
           }}
         />
       </View>
