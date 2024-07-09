@@ -16,6 +16,7 @@ import { confirmActionAlert } from "@/components/ConfirmActionAlert";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useProfile } from "../context/ProfileContext";
+import { usePlans } from "../context/PlansContext";
 
 const colors = Colors.light;
 
@@ -23,6 +24,7 @@ function CustomDrawerContent(props: any) {
   const router = useRouter();
   const { onRefreshToken, onLogout } = useAuth();
   const { profile, setProfile } = useProfile();
+  const { setPlans } = usePlans();
 
   useEffect(() => {
     const getProfileData = async () => {
@@ -84,6 +86,16 @@ function CustomDrawerContent(props: any) {
           onPress={async () => {
             if (await confirmActionAlert()) {
               onLogout!();
+              setProfile({
+                username: "",
+                email: "",
+                preferences: [],
+                location: "",
+                birthdate: undefined,
+                image: undefined,
+                coordinates: undefined,
+              });
+              setPlans([]);
               router.replace("../..");
             }
           }}
@@ -172,7 +184,7 @@ const DrawerLayout = () => {
           name="chatBot"
           options={{
             drawerLabel: "ChatBot",
-            headerTitle: "ChatBot",
+            headerTitle: "gIAn",
             headerTintColor: "white",
             headerTitleAlign: "center",
             headerStyle: { backgroundColor: Colors.light.primary },

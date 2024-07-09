@@ -132,7 +132,7 @@ export default function ProfileScreen() {
               >
                 {profile.email}
               </Text>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <View style={{ flexDirection: "row", alignItems: "center", backgroundColor:"transparent" }}>
                 <Ionicons name="location-outline" size={8 * 2} />
                 <Text style={{ fontSize: 8 * 2, marginVertical: 4 }}>
                   {profile.location}
