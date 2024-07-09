@@ -25,9 +25,9 @@ const windowWidth = Dimensions.get("window").width;
 const colors = Colors.light;
 const CITY_PLACEHOLDER = "Choose a city";
 
-const addOneDay = (date: Date): Date => {
+const addDays = (date: Date, amount: number): Date => {
   const newDate = new Date(date);
-  newDate.setDate(newDate.getDate() + 1);
+  newDate.setDate(newDate.getDate() + amount);
   return newDate;
 };
 
@@ -58,7 +58,7 @@ const NewPlan = () => {
   };
   const router = useRouter();
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(addOneDay(new Date()));
+  const [endDate, setEndDate] = useState(addDays(new Date(), 1));
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const { onRefreshToken } = useAuth();
@@ -69,7 +69,7 @@ const NewPlan = () => {
     setShowStartDatePicker(false);
     if (event.type == "set" && selectedDate) {
       setStartDate(selectedDate);
-      setEndDate(addOneDay(selectedDate));
+      setEndDate(addDays(selectedDate, 1));
     }
   };
 
@@ -128,7 +128,8 @@ const NewPlan = () => {
           <RNDateTimePicker
             value={endDate}
             onChange={onChangeEndDate}
-            minimumDate={addOneDay(startDate)}
+            minimumDate={addDays(startDate, 1)}
+            maximumDate={addDays(startDate, 10)}
           />
         )}
 
