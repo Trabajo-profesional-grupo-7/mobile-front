@@ -28,7 +28,7 @@ export default function InitialScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, alignItems: "center", paddingTop:16 }}>
         <Text style={styles.title}>gIAn</Text>
         <Image
           style={{

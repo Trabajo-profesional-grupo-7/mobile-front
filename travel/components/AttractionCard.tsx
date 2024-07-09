@@ -90,11 +90,24 @@ export const AttractionCard: React.FC<AttractionCardProps> = (
                 padding: 8,
               }}
             >
-              <Text style={{ alignSelf: "flex-end" }}>
-                {<Ionicons name="heart" />}
-                {props.data.liked_count} {<Ionicons name="star" />}
-                {props.data.avg_rating}
-              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                  backgroundColor: "transparent",
+                }}
+              >
+                <Text style={{ alignSelf: "flex-end" }}>
+                  {<Ionicons name="heart" />}
+                  {props.data.liked_count}{"  "}
+                </Text>
+                {props.data.avg_rating && (
+                  <Text style={{ alignSelf: "flex-end" }}>
+                    {<Ionicons name="star" />}
+                    {props.data.avg_rating}
+                  </Text>
+                )}
+              </View>
             </View>
           </View>
         </View>

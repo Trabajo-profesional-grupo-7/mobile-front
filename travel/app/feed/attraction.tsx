@@ -395,6 +395,7 @@ export default function Attraction() {
               flexDirection: "row",
               alignSelf: "center",
               alignItems: "center",
+              backgroundColor:"transparent"
             }}
           >
             <Ionicons name="location-outline" size={8 * 2.5} color="gray" />

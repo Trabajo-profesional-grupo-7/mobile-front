@@ -38,6 +38,8 @@ export default function SearchResult() {
           city: place.city,
           country: place.country,
           photo: place.photo,
+          avg_rating: place.avg_rating,
+          liked_count: place.liked_count,
         }));
         setAttractions(parsedPlaces);
         if (parsedPlaces.length == 0) {

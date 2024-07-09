@@ -121,7 +121,7 @@ export default function SignupScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View style={{ marginTop: "30%" }}>
+      <View style={{ marginTop: "20%" }}>
         <Text style={styles.title}>Sign up</Text>
         <Dropdown
           data={data}
@@ -130,6 +130,7 @@ export default function SignupScreen() {
           labelField="label"
           valueField="value"
           placeholder="Location"
+          placeholderStyle={{ fontSize: 20 }}
           searchPlaceholder="Search..."
           value={value}
           renderRightIcon={() => (
@@ -162,8 +163,8 @@ export default function SignupScreen() {
             setValue(item);
           }}
         />
-        <Text style={[styles.subtitle, { marginLeft: 20, fontSize: 25 }]}>
-          {city}
+        <Text style={[styles.input, { color: "gray" }]}>
+          {city ? city : "Choose location"}
         </Text>
 
         <Text style={styles.subtitle}>Username</Text>
@@ -245,7 +246,7 @@ export default function SignupScreen() {
           </View>
         </View>
       </View>
-      <View style={{ marginBottom: "15%" }}>
+      <View style={{ marginTop: 8 * 3 }}>
         <AccountButton title="Continue" onPress={register} />
       </View>
       {showDatePicker && (
@@ -255,6 +256,7 @@ export default function SignupScreen() {
           display={"spinner"}
           onChange={onChangeDate}
           maximumDate={new Date()}
+          timeZoneOffsetInMinutes={-3 * 60}
         />
       )}
     </ScrollView>
@@ -265,7 +267,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "space-between",
     minHeight: Math.round(windowHeight),
   },
   title: {
