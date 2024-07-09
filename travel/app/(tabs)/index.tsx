@@ -38,10 +38,10 @@ export default function FeedScreen() {
     currentPage: 0,
   });
   const { onRefreshToken } = useAuth();
-  const [loading, setLoading] = useState(false);
   const { profile } = useProfile();
 
   const getAttractions = async () => {
+    console.log(`Current page: ${attractionsList.currentPage}`);
     await onRefreshToken!();
     try {
       const result = await axios.get(
@@ -139,7 +139,9 @@ export default function FeedScreen() {
   };
 
   useEffect(() => {
-    getAttractions();
+    if (profile.preferences.length != 0) {
+      getAttractions();
+    }
   }, [attractionsList.currentPage]);
 
   const reloadFeed = async () => {
@@ -160,43 +162,42 @@ export default function FeedScreen() {
     }
   }, [profile.preferences]);
 
-  const onRefresh = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-  };
-
   return (
-    <View style={{ padding: 10, flexGrow: 1, paddingBottom: 30 }}>
-      <FlatList
-        data={attractionsList.attractions}
-        renderItem={renderAttraction}
-        style={{ width: "100%" }}
-        ListHeaderComponent={
-          <View style={{ alignItems: "flex-start" }}>
-            <Text
-              style={{ fontSize: 25, fontWeight: "bold", marginBottom: 10 }}
-            >
-              Recommended attractions
-            </Text>
-          </View>
-        }
-        refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={onRefresh} />
-        }
-        ListFooterComponent={
-          attractionsList.noMoreAttractions ||
-          attractionsList.cantGetAttractions
-            ? null
-            : renderLoader
-        }
-        onEndReached={
-          attractionsList.noMoreAttractions ? null : loadMoreAttractions
-        }
-        onEndReachedThreshold={0}
-      />
-    </View>
+    <FlatList
+      data={attractionsList.attractions}
+      renderItem={renderAttraction}
+      style={{ width: "100%", padding: 10, flexGrow: 1 }}
+      ListHeaderComponent={
+        <View style={{ alignItems: "flex-start" }}>
+          <Text style={{ fontSize: 25, fontWeight: "bold", marginBottom: 10 }}>
+            Recommended attractions
+          </Text>
+        </View>
+      }
+      ListFooterComponent={
+        attractionsList.noMoreAttractions ||
+        attractionsList.cantGetAttractions ? (
+          <Text
+            style={{
+              backgroundColor: "transparent",
+              padding: 8 * 4,
+              fontStyle: "italic",
+              color: "gray",
+              fontSize: 8 * 2.5,
+              alignSelf: "center",
+            }}
+          >
+            No more attractions to show
+          </Text>
+        ) : (
+          renderLoader
+        )
+      }
+      onEndReached={
+        attractionsList.noMoreAttractions ? null : loadMoreAttractions
+      }
+      onEndReachedThreshold={0}
+    />
   );
 }
 
