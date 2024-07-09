@@ -151,36 +151,6 @@ const DrawerLayout = () => {
           }}
         />
         <Drawer.Screen
-          name="information"
-          options={{
-            drawerLabel: "Information",
-            headerTitle: "Information",
-            headerTintColor: "white",
-            headerTitleAlign: "center",
-            headerStyle: { backgroundColor: Colors.light.primary },
-            drawerIcon: ({ size, color }) => (
-              <Ionicons
-                name="information-circle-outline"
-                size={size}
-                color={color}
-              />
-            ),
-          }}
-        />
-        <Drawer.Screen
-          name="map"
-          options={{
-            drawerLabel: "Map",
-            headerTitle: "Map",
-            headerTintColor: "white",
-            headerTitleAlign: "center",
-            headerStyle: { backgroundColor: Colors.light.primary },
-            drawerIcon: ({ size, color }) => (
-              <Ionicons name="map-outline" size={size} color={color} />
-            ),
-          }}
-        />
-        <Drawer.Screen
           name="chatBot"
           options={{
             drawerLabel: "ChatBot",
@@ -207,6 +177,36 @@ const DrawerLayout = () => {
             headerStyle: { backgroundColor: Colors.light.primary },
             drawerIcon: ({ size, color }) => (
               <Ionicons name="airplane-outline" size={size} color={color} />
+            ),
+          }}
+        />
+        <Drawer.Screen
+          name="map"
+          options={{
+            drawerLabel: "Map",
+            headerTitle: "Map",
+            headerTintColor: "white",
+            headerTitleAlign: "center",
+            headerStyle: { backgroundColor: Colors.light.primary },
+            drawerIcon: ({ size, color }) => (
+              <Ionicons name="map-outline" size={size} color={color} />
+            ),
+          }}
+        />
+        <Drawer.Screen
+          name="information"
+          options={{
+            drawerLabel: "Information",
+            headerTitle: "Information",
+            headerTintColor: "white",
+            headerTitleAlign: "center",
+            headerStyle: { backgroundColor: Colors.light.primary },
+            drawerIcon: ({ size, color }) => (
+              <Ionicons
+                name="information-circle-outline"
+                size={size}
+                color={color}
+              />
             ),
           }}
         />

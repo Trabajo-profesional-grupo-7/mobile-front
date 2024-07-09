@@ -46,7 +46,7 @@ export default function LoginScreen() {
           marginBottom: 30,
         }}
         source={{
-          uri: "https://i.imgur.com/qc0GM7G.png",
+          uri: "https://i.imgur.com/v6KaRnG.png",
         }}
       />
       <TextInput

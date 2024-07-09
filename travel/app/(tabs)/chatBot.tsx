@@ -1,4 +1,4 @@
-import { View, StyleSheet, TextInput, ScrollView } from "react-native";
+import { View, StyleSheet, TextInput, ScrollView, Image, Dimensions } from "react-native";
 import Colors from "../../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef, useState } from "react";
@@ -10,7 +10,8 @@ import * as Location from "expo-location";
 import { useProfile } from "../context/ProfileContext";
 const colors = Colors.light;
 import Markdown from "react-native-markdown-display";
-
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 interface Message {
   message: string;
   isSender: boolean;
@@ -121,6 +122,19 @@ export default function ChatBot() {
 
   return (
     <View style={styles.container}>
+      <Image
+        style={{
+          width: 200,
+          height: 200,
+          opacity: 0.3,
+          alignSelf:"center",
+          position:"absolute",
+          top:"25%"
+        }}
+        source={{
+          uri: "https://i.imgur.com/OJAJRDW.png",
+        }}
+      />
       <ScrollView ref={scrollViewRef} style={{ flex: 1 }}>
         <View style={{ paddingHorizontal: 15, paddingVertical: 5 }}>
           {messages.map(({ message, isSender }, index) => (
