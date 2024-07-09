@@ -33,6 +33,7 @@ interface PlansContextProps {
   plans: PlanProps[];
   setPlans: (plans: PlanProps[]) => void;
   replacePlan: (newPlan: PlanProps) => void;
+  deletePlan: (id: string) => void;
 }
 
 const PlansContext = createContext<PlansContextProps | undefined>(undefined);
@@ -48,8 +49,12 @@ export const PlansProvider: React.FC<{ children: ReactNode }> = ({
     );
   };
 
+  const deletePlan = (id: string) => {
+    setPlans((prevPlans) => prevPlans.filter((plan) => plan.id !== id));
+  };
+
   return (
-    <PlansContext.Provider value={{ plans, setPlans, replacePlan }}>
+    <PlansContext.Provider value={{ plans, setPlans, replacePlan, deletePlan }}>
       {children}
     </PlansContext.Provider>
   );

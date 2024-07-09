@@ -16,6 +16,7 @@ import { API_URL, useAuth } from "../context/AuthContext";
 import { useState } from "react";
 import axios from "axios";
 import LoadingIndicator from "@/components/LoadingIndicator";
+import { confirmActionAlert } from "@/components/ConfirmActionAlert";
 const windowWidth = Dimensions.get("window").width;
 
 export interface Attraction {
@@ -26,7 +27,7 @@ export interface Attraction {
 
 const PlanDetails = () => {
   const { id } = useLocalSearchParams();
-  const { plans, replacePlan } = usePlans();
+  const { plans, replacePlan, deletePlan } = usePlans();
   let plan = plans.find((plan) => plan.id === id) as PlanProps;
   const { onRefreshToken } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -73,6 +74,19 @@ const PlanDetails = () => {
     setLoading(false);
   };
 
+  const handleDeletePlan = async () => {
+    setLoading(true);
+    await onRefreshToken!();
+    try {
+      await axios.delete(`${API_URL}/plan/${plan.id}`);
+      router.back();
+      deletePlan(plan.id);
+    } catch (e) {
+      console.log(e);
+    }
+    setLoading(false);
+  };
+
   return (
     <>
       <ScrollView style={styles.container}>
@@ -80,7 +94,13 @@ const PlanDetails = () => {
           source={{ uri: plan.image }}
           style={{ width: windowWidth, height: 8 * 32 }}
         />
-        <View style={{ padding: 8 * 2, backgroundColor: "transparent" }}>
+        <View
+          style={{
+            padding: 8 * 2,
+            paddingBottom: 0,
+            backgroundColor: "transparent",
+          }}
+        >
           <View style={{ alignItems: "center" }}>
             <Text style={styles.title}>{plan.plan_name}</Text>
             <Text
@@ -106,10 +126,15 @@ const PlanDetails = () => {
                   <TouchableOpacity
                     key={attraction.attraction_id}
                     style={styles.attraction}
-                    onPress={() => router.navigate({
-                      pathname: "../feed/attraction",
-                      params: {attraction_id: attraction.attraction_id, attraction_name: attraction.attraction_name},
-                    })}
+                    onPress={() =>
+                      router.navigate({
+                        pathname: "../feed/attraction",
+                        params: {
+                          attraction_id: attraction.attraction_id,
+                          attraction_name: attraction.attraction_name,
+                        },
+                      })
+                    }
                   >
                     <View
                       style={{
@@ -140,7 +165,9 @@ const PlanDetails = () => {
                             if (plan.plan[date].length > 1) {
                               removeAttraction(date, attraction.attraction_id);
                             } else {
-                              alert("Can't delete all attractions from a given day")
+                              alert(
+                                "Can't delete all attractions from a given day"
+                              );
                             }
                           }}
                         >
@@ -154,6 +181,22 @@ const PlanDetails = () => {
             ))}
           </View>
         </View>
+        <Text
+          style={{
+            color: "#f06e65",
+            alignSelf: "center",
+            fontSize: 8 * 4,
+            paddingBottom: 8 * 3,
+            fontWeight: "500",
+          }}
+          onPress={async () => {
+            if (await confirmActionAlert()) {
+              handleDeletePlan();
+            }
+          }}
+        >
+          Delete plan
+        </Text>
       </ScrollView>
       {loading && <LoadingIndicator />}
     </>

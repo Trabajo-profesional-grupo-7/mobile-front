@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, FlatList, ActivityIndicator } from "react-native";
+import { View, FlatList, Text, ActivityIndicator } from "react-native";
 import { API_URL, useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { AttractionParams, sanitizeString } from "../(tabs)";
@@ -11,8 +11,10 @@ export default function DoneAttractions() {
   const [attractions, setAttractions] = useState([]);
   const [noMoreAttractions, setNoMoreAttractions] = useState(false);
   const { onRefreshToken } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const getDoneAttractions = async () => {
+    setLoading(true);
     await onRefreshToken!();
     try {
       const result = await axios.get(`${API_URL}/attractions/done-list`);
@@ -34,6 +36,7 @@ export default function DoneAttractions() {
     } catch (e) {
       alert(e);
     }
+    setLoading(false);
   };
 
   const renderAttraction = ({
@@ -69,14 +72,33 @@ export default function DoneAttractions() {
 
   return (
     <View style={{ paddingTop: 10 }}>
-      <FlatList
-        data={attractions}
-        renderItem={renderAttraction}
-        style={{ width: "100%" }}
-        ListFooterComponent={noMoreAttractions ? null : renderLoader}
-        onEndReached={noMoreAttractions ? null : loadMoreAttractions}
-        onEndReachedThreshold={0}
-      ></FlatList>
+      {loading ? (
+        renderLoader()
+      ) : (
+        <>
+          {attractions.length ? (
+            <FlatList
+              data={attractions}
+              renderItem={renderAttraction}
+              style={{ width: "100%" }}
+              ListFooterComponent={noMoreAttractions ? null : renderLoader}
+              onEndReached={noMoreAttractions ? null : loadMoreAttractions}
+              onEndReachedThreshold={0}
+            />
+          ) : (
+            <Text
+              style={{
+                fontSize: 8 * 5,
+                color: "gray",
+                fontStyle: "italic",
+                margin: 8 * 3,
+              }}
+            >
+              No attractions done
+            </Text>
+          )}
+        </>
+      )}
     </View>
   );
 }
