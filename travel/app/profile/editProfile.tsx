@@ -2,13 +2,11 @@ import {
   Dimensions,
   StyleSheet,
   TextInput,
-  TouchableOpacity,
 } from "react-native";
 import { Text, View } from "@/components/Themed";
 import React, { useEffect, useState } from "react";
 import Colors from "@/constants/Colors";
-import { Ionicons } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import axios from "axios";
 import { API_URL } from "../context/AuthContext";
 import { MultiSelect } from "react-native-element-dropdown";
@@ -19,10 +17,8 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 export default function EditProfile() {
-  const params = useLocalSearchParams();
   const { profile, setProfile } = useProfile();
   const [name, setName] = React.useState(profile.username);
-  const [location, setLocation] = useState(profile.location);
   const [selected, setSelected] = useState<string[]>(profile.preferences);
   const [isLoading, setIsLoading] = useState(false);
   const [categories, setCategories] = useState([]);

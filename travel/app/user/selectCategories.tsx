@@ -1,7 +1,7 @@
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Dimensions, ScrollView } from "react-native";
 import Colors from "@/constants/Colors";
 const colors = Colors.light;
 import { API_URL, useAuth } from "../context/AuthContext";
@@ -75,7 +75,7 @@ export default function SelectCategories() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <View style={{ marginLeft: 40, alignSelf: "flex-start" }}>
         <Text style={styles.title}>Tell us about yourself</Text>
         <Text
@@ -90,7 +90,7 @@ export default function SelectCategories() {
           You can select up to 5 categories
         </Text>
       </View>
-      <View style={{ width: "70%", height: "20%" }}>
+      <View style={{ width: "70%", height: "40%" }}>
         <MultiSelect
           data={categories}
           labelField="label"
@@ -106,11 +106,11 @@ export default function SelectCategories() {
         />
       </View>
 
-      <View style={{ marginBottom: "20%", marginTop: "10%" }}>
+      <View style={{}}>
         <AccountButton title="Sign up" onPress={register} />
       </View>
       {isLoading && <LoadingIndicator />}
-    </View>
+    </ScrollView>
   );
 }
 

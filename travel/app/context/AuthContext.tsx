@@ -112,6 +112,7 @@ export const AuthProvider = ({ children }: any) => {
     await messaging().registerDeviceForRemoteMessages();
 
     const token = await messaging().getToken();
+    console.log(token);
 
     console.log(`${API_URL}/users/signup`);
     try {

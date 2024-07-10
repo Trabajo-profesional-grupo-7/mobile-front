@@ -176,7 +176,7 @@ export default function UserCalendar() {
             {planDates.includes(selected) && (
               <>
                 <Text style={{ marginLeft: 8, fontSize: 8 * 4 }}>Plans</Text>
-                {plans.map((value, index) => (
+                {plans.map((value) => (
                   <View key={value.id}>
                     {selected in value.plan && <PlanCard {...value} />}
                   </View>
@@ -185,14 +185,14 @@ export default function UserCalendar() {
             )}
 
             {Object.entries(scheduledAttractions).map(
-              ([date, value], index) => (
+              ([date, value]) => (
                 <View key={date}>
                   {selected == date && (
                     <>
                       <Text style={{ marginLeft: 8, fontSize: 8 * 4 }}>
                         Attractions scheduled
                       </Text>
-                      {value.map((att, index) => (
+                      {value.map((att) => (
                         <AttractionCard
                           key={att.attraction_id}
                           data={att}
