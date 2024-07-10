@@ -256,7 +256,7 @@ export default function SignupScreen() {
           display={"spinner"}
           onChange={onChangeDate}
           maximumDate={new Date()}
-          timeZoneOffsetInMinutes={-3 * 60}
+          timeZoneOffsetInMinutes={60 * 3}
         />
       )}
     </ScrollView>

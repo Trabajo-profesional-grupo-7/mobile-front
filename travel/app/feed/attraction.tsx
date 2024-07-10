@@ -28,6 +28,7 @@ import RNDateTimePicker, {
 
 import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
 import { LinearGradient } from "expo-linear-gradient";
+import { dateParser } from "@/components/Parsers";
 
 const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
 
@@ -150,6 +151,7 @@ export default function Attraction() {
         attraction_id: id,
         scheduled_time: selectedDate.toISOString(),
       });
+      alert(`Scheduled succesfully for ${dateParser(selectedDate.toISOString())}`)
     } catch (e) {
       alert(e);
     }
@@ -538,7 +540,7 @@ export default function Attraction() {
                         source={
                           comment.avatar_link
                             ? { uri: comment.avatar_link }
-                            : { uri: "https://i.imgur.com/v6KaRnG.png" }
+                            : { uri: "https://i.imgur.com/V0hpt6N.png" }
                         }
                       />
                       <View style={{ flexDirection: "column" }}>
@@ -576,6 +578,7 @@ export default function Attraction() {
           value={date}
           onChange={onChangeDate}
           minimumDate={new Date()}
+          timeZoneOffsetInMinutes={60 * 3}
         />
       )}
     </>

@@ -143,7 +143,6 @@ const Plans = () => {
           </View>
         )}
       </ScrollView>
-      {loading && <LoadingIndicator />}
     </>
   );
 };
@@ -172,7 +171,7 @@ const styles = StyleSheet.create({
   },
   cardPlaceholder: {
     width: "95%",
-    height: 8 * 12,
+    height: 8 * 18,
     margin: 8,
     borderRadius: 4,
   },

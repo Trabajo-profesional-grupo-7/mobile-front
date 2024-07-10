@@ -8,6 +8,8 @@ import { AttractionParams, sanitizeString } from "../(tabs)";
 import Colors from "@/constants/Colors";
 import { dateParser } from "@/components/Parsers";
 import { AttractionCard } from "@/components/AttractionCard";
+import { PlanProps, usePlans } from "../context/PlansContext";
+import { PlanCard } from "../planner/plans";
 const windowWidth = Dimensions.get("window").width;
 
 type AttractionHash = {
@@ -29,16 +31,39 @@ export default function UserCalendar() {
     new Date().toISOString().split("T")[0]
   );
   const [loading, setLoading] = useState(false);
+  const [planDates, setPlanDates] = useState<string[]>([]);
   const { onRefreshToken } = useAuth();
   const [markedDates, setMarkedDates] = useState<CaldendarDate>();
   const [attractions, setAttractions] = useState<AttractionParams[]>();
   const [scheduledAttractions, setScheduledAttractions] =
     useState<AttractionHash>({});
 
+  const calendarMarkTemplate = {
+    end: true,
+    selected: true,
+    selectedColor: "#fa7620",
+    start: true,
+    textColor: "white",
+  };
+  const { plans, setPlans } = usePlans();
+
   const getScheduledAttractions = async () => {
     setLoading(true);
     await onRefreshToken!();
     try {
+      const result = await axios.get(`${API_URL}/plan/user`);
+      setPlans(result.data);
+      const fetchedPlans: PlanProps[] = result.data;
+      const allDates = fetchedPlans.reduce<string[]>((acc, plan) => {
+        const planDates = Object.keys(plan.plan);
+        return acc.concat(planDates);
+      }, []);
+      setPlanDates(allDates);
+      const auxPlanDates = Array.from(new Set(allDates));
+      let planDates: CaldendarDate = {};
+      for (let i = 0; i < auxPlanDates.length; i++) {
+        planDates[auxPlanDates[i]] = calendarMarkTemplate;
+      }
       const attractions = await axios.get(
         `${API_URL}/attractions/scheduled-list?size=50`
       );
@@ -79,11 +104,12 @@ export default function UserCalendar() {
           }
         }
         setScheduledAttractions(hash);
-        setMarkedDates(dates);
+        setMarkedDates({ ...dates, ...planDates });
       }
     } catch (e) {
       alert(e);
     }
+
     setLoading(false);
   };
 
@@ -94,7 +120,11 @@ export default function UserCalendar() {
   }, [scheduledAttractions]);
 
   useEffect(() => {
-    getScheduledAttractions();
+    const getData = async () => {
+      getScheduledAttractions();
+    };
+
+    getData();
   }, []);
 
   const handleDayPress = (day: string) => {
@@ -140,14 +170,28 @@ export default function UserCalendar() {
             {dateParser(selected)}
           </Text>
         )}
-        {attractions?.length ? (
+        {attractions?.length || planDates.includes(selected) ? (
           <ScrollView>
             <View style={{ marginTop: 5 }}></View>
+            {planDates.includes(selected) && (
+              <>
+                <Text style={{ marginLeft: 8, fontSize: 8 * 4 }}>Plans</Text>
+                {plans.map((value, index) => (
+                  <View key={value.id}>
+                    {selected in value.plan && <PlanCard {...value} />}
+                  </View>
+                ))}
+              </>
+            )}
+
             {Object.entries(scheduledAttractions).map(
               ([date, value], index) => (
                 <View key={date}>
                   {selected == date && (
                     <>
+                      <Text style={{ marginLeft: 8, fontSize: 8 * 4 }}>
+                        Attractions scheduled
+                      </Text>
                       {value.map((att, index) => (
                         <AttractionCard
                           key={att.attraction_id}
@@ -161,9 +205,17 @@ export default function UserCalendar() {
             )}
           </ScrollView>
         ) : (
-          <Text style={{ fontSize: 40, fontStyle: "italic" }}>
-            {" "}
-            No attractions scheduled for this day
+          <Text
+            style={{
+              marginLeft: 8,
+              fontSize: 8 * 4,
+              alignSelf: "center",
+              paddingVertical: 8 * 3,
+              fontStyle: "italic",
+              color: "gray",
+            }}
+          >
+            No activities on this date
           </Text>
         )}
       </View>

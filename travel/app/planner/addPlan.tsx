@@ -121,6 +121,7 @@ const NewPlan = () => {
             value={startDate}
             onChange={onChangeStartDate}
             minimumDate={new Date()}
+            timeZoneOffsetInMinutes={60 * 3}
           />
         )}
 
@@ -130,6 +131,7 @@ const NewPlan = () => {
             onChange={onChangeEndDate}
             minimumDate={addDays(startDate, 1)}
             maximumDate={addDays(startDate, 10)}
+            timeZoneOffsetInMinutes={60 * 3}
           />
         )}
 

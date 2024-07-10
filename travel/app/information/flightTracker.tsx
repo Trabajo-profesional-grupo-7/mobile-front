@@ -123,6 +123,7 @@ export default function FlightTracker() {
           value={date}
           display={"spinner"}
           onChange={onChangeDate}
+          timeZoneOffsetInMinutes={60 * 3}
         />
       )}
       {isLoading && <LoadingIndicator />}
