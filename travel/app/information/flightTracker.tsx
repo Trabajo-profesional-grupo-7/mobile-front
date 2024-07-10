@@ -121,7 +121,6 @@ export default function FlightTracker() {
       {showDatePicker && (
         <RNDateTimePicker
           value={date}
-          display={"spinner"}
           onChange={onChangeDate}
           timeZoneOffsetInMinutes={60 * 3}
         />

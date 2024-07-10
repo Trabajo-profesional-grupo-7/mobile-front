@@ -253,7 +253,6 @@ export default function SignupScreen() {
         <RNDateTimePicker
           value={date}
           minimumDate={new Date("1900-01-01")}
-          display={"spinner"}
           onChange={onChangeDate}
           maximumDate={new Date()}
           timeZoneOffsetInMinutes={60 * 3}

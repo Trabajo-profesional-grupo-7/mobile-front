@@ -29,16 +29,23 @@ import RNDateTimePicker, {
 import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
 import { LinearGradient } from "expo-linear-gradient";
 import { dateParser } from "@/components/Parsers";
+import { addDays } from "../planner/addPlan";
 
 const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
 
 export default function Attraction() {
   const params = useLocalSearchParams();
   const name = params.attraction_name;
-  let location = `${params.city}, ${params.country}`;
+  let formattedLocation = `${params.city}, ${params.country}`;
   if (!params.city) {
-    location = `${params.country}`;
+    if (params.country) {
+      formattedLocation = `${params.country}`;
+    } else {
+      formattedLocation = "";
+    }
   }
+
+  const [location, setLocation] = useState(formattedLocation);
   const id = params.attraction_id;
   const [photo, setPhoto] = useState(params.photo as string);
   const [isLiked, setIsLiked] = useState(false);
@@ -67,7 +74,7 @@ export default function Attraction() {
   const [commentModalVisible, setCommentModalVisible] = useState(false);
   const { onRefreshToken } = useAuth();
 
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(addDays(new Date(), 1));
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const onChangeDate = (
@@ -91,6 +98,12 @@ export default function Attraction() {
     try {
       const result = (await axios.get(`${API_URL}/attractions/byid/${id}`))
         .data;
+
+      if (result.country) {
+        setLocation(`${result.city}, ${result.country}`);
+      } else {
+        setLocation(result.city);
+      }
       setIsDone(result.is_done);
       setIsLiked(result.is_liked);
       setIsSaved(result.is_saved);
@@ -146,12 +159,18 @@ export default function Attraction() {
 
   const schedule = async (selectedDate: Date) => {
     await onRefreshToken!();
+    console.log(`${API_URL}/attractions/schedule`, {
+      attraction_id: id,
+      scheduled_time: selectedDate.toISOString(),
+    });
     try {
       await axios.post(`${API_URL}/attractions/schedule`, {
         attraction_id: id,
         scheduled_time: selectedDate.toISOString(),
       });
-      alert(`Scheduled succesfully for ${dateParser(selectedDate.toISOString())}`)
+      alert(
+        `Scheduled succesfully for ${dateParser(selectedDate.toISOString())}`
+      );
     } catch (e) {
       alert(e);
     }
@@ -577,7 +596,7 @@ export default function Attraction() {
         <RNDateTimePicker
           value={date}
           onChange={onChangeDate}
-          minimumDate={new Date()}
+          minimumDate={addDays(new Date(), 1)}
           timeZoneOffsetInMinutes={60 * 3}
         />
       )}

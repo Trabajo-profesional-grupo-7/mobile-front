@@ -20,12 +20,13 @@ import { dateParser } from "@/components/Parsers";
 import FloatingButton from "@/components/FloatingButton";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { useRouter } from "expo-router";
+import { usePlans } from "../context/PlansContext";
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
 const colors = Colors.light;
 const CITY_PLACEHOLDER = "Choose a city";
 
-const addDays = (date: Date, amount: number): Date => {
+export const addDays = (date: Date, amount: number): Date => {
   const newDate = new Date(date);
   newDate.setDate(newDate.getDate() + amount);
   return newDate;
@@ -36,7 +37,6 @@ const NewPlan = () => {
   const [city, setCity] = useState("");
   const [value, setValue] = useState<{ label: string; value: string }>();
   const [data, setData] = useState([]);
-
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
   const [loadingLocations, setLoadingLocations] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -141,6 +141,7 @@ const NewPlan = () => {
           onChangeText={setName}
           value={name}
           placeholder="Name"
+          maxLength={15}
         />
 
         <Dropdown

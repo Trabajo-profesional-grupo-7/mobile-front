@@ -127,7 +127,10 @@ const Plans = () => {
             </Text>
           </View>
         ) : plans.length ? (
-          plans.map((value, index) => <PlanCard key={index} {...value} />)
+          <>
+          {plans.map((value) => <PlanCard key={value.id} {...value} />)}
+          <View style={{height:8*4, backgroundColor:"transparent"}}></View>
+          </>
         ) : (
           <View>
             <Text
@@ -168,6 +171,8 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 8 * 3,
     fontWeight: "600",
+    width: "40%",
+    flexWrap:"wrap",
   },
   cardPlaceholder: {
     width: "95%",
