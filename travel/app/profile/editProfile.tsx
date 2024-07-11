@@ -1,0 +1,138 @@
+import {
+  Dimensions,
+  StyleSheet,
+  TextInput,
+} from "react-native";
+import { Text, View } from "@/components/Themed";
+import React, { useEffect, useState } from "react";
+import Colors from "@/constants/Colors";
+import { router } from "expo-router";
+import axios from "axios";
+import { API_URL } from "../context/AuthContext";
+import { MultiSelect } from "react-native-element-dropdown";
+import LoadingIndicator from "@/components/LoadingIndicator";
+import { useProfile } from "../context/ProfileContext";
+import FloatingButton from "@/components/FloatingButton";
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
+
+export default function EditProfile() {
+  const { profile, setProfile } = useProfile();
+  const [name, setName] = React.useState(profile.username);
+  const [selected, setSelected] = useState<string[]>(profile.preferences);
+  const [isLoading, setIsLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const getCategories = async () => {
+      setIsLoading(true);
+      try {
+        const result = await axios.get(`${API_URL}/metadata`);
+        const data = result.data.attraction_types.map((category: string) => ({
+          label: category
+            .split("_")
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" "),
+          value: category,
+        }));
+        setCategories(data);
+      } catch (e) {
+        alert(e);
+      }
+      setIsLoading(false);
+    };
+    getCategories();
+  }, []);
+
+  const validateFields = () => selected.length && name.length;
+
+  const editProfile = async () => {
+    if (validateFields()) {
+      setIsLoading(true);
+      try {
+        await axios.patch(`${API_URL}/users`, {
+          username: name,
+          preferences: selected,
+        });
+        setProfile({
+          ...profile,
+          username: name,
+          preferences: selected,
+        });
+        router.back();
+      } catch (e) {
+        alert(e);
+      }
+      setIsLoading(false);
+    } else {
+      alert("Can't have empty fields");
+    }
+  };
+
+  return (
+    <>
+      <FloatingButton icon={"save-outline"} onPress={editProfile} />
+      <View style={styles.container}>
+        <Text style={styles.title}>Name</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={setName}
+          value={name}
+          placeholder="Name"
+        />
+
+        <Text style={styles.title}>Travel preferences</Text>
+
+        <View style={{ width: "70%", height: "40%", marginLeft: 20 }}>
+          <MultiSelect
+            data={categories}
+            labelField="label"
+            valueField="value"
+            placeholder="Categories"
+            searchPlaceholder="Search..."
+            maxSelect={5}
+            search
+            value={selected}
+            onChange={(item) => {
+              setSelected(item);
+            }}
+          />
+        </View>
+      </View>
+      {isLoading && <LoadingIndicator />}
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 20,
+  },
+  title: {
+    fontSize: 25,
+    fontWeight: "bold",
+    marginLeft: 20,
+  },
+  chip: {
+    marginLeft: 15,
+    marginTop: 10,
+  },
+  chipsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginVertical: 10,
+    marginBottom: windowWidth * 0.05,
+  },
+  input: {
+    height: windowHeight * 0.05,
+    width: windowWidth * 0.9,
+    margin: 12,
+    marginTop: 0,
+    borderWidth: 0,
+    borderBottomWidth: 1,
+    padding: 10,
+    borderRadius: 10,
+    borderBottomColor: Colors.light.primary,
+  },
+});
